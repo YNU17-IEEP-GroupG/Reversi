@@ -23,13 +23,14 @@ public class Othello extends JFrame implements ActionListener {
     private JButton[][] buttonBoard = new JButton[BOARD_SIZE][BOARD_SIZE];
     private Stone[][] board = new Stone[BOARD_SIZE][BOARD_SIZE];
     private Stone myStone; // actionEventで使うため、仕方なくフィールドに
+    private Boolean passFlag = false;
 
     public Othello() {
         setTitle("Othello");
         getContentPane().setPreferredSize(new Dimension(BOARD_SIZE * IMAGE_ICON_SIZE,BOARD_SIZE * IMAGE_ICON_SIZE));
         pack();
 
-        myStone = Stone.Black;
+        myStone = Stone.White;
         initBoard();
         List<Point> hint = makeHint(myStone);
         displayHint(hint);
@@ -58,12 +59,26 @@ public class Othello extends JFrame implements ActionListener {
         board[r][c] = stone;
         reverseStone(r, c, stone, directions);
 
-        // テスト用
+        nextTurn();
+        printBoard();
+    }
+
+    private void nextTurn() {
         hideHint();
         myStone = getReverse(myStone);
         List<Point> hint = makeHint(myStone);
-        displayHint(hint);
-        printBoard();
+        if (hint.isEmpty()) {
+            if (passFlag)
+                gameOver();
+            else {
+                passFlag = true;
+                nextTurn();
+            }
+        }
+        else {
+            displayHint(hint);
+            passFlag = false;
+        }
     }
 
     private void reverseStone(int r, int c, Stone stone, EnumSet<Direction> directions) {
@@ -104,12 +119,6 @@ public class Othello extends JFrame implements ActionListener {
         hint.forEach(h -> buttonBoard[h.row][h.column].setIcon(canPutIcon));
     }
 
-    private void hideHint(List<Point> hint) {
-        hint.stream()
-                .filter(h -> buttonBoard[h.row][h.column].getIcon().equals(canPutIcon))
-                .forEach(h -> buttonBoard[h.row][h.column].setIcon(emptyIcon));
-    }
-
     private void hideHint() {
         for (int i = 0; i < BOARD_SIZE; i++)
             for (int j = 0; j < BOARD_SIZE; j++)
@@ -146,6 +155,27 @@ public class Othello extends JFrame implements ActionListener {
         return stone == Stone.Black ? Stone.White : Stone.Black;
     }
 
+    private void gameOver() {
+        int black = countStone(Stone.Black); int white = countStone(Stone.White);
+        JLabel result = new JLabel(String.format("黒：%d  白：%d", black, white));
+        JOptionPane.showMessageDialog(this, result, "ゲームセット", JOptionPane.INFORMATION_MESSAGE);
+        // 全てのボタンを無効化
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                buttonBoard[i][j].setEnabled(false);
+            }
+        }
+    }
+
+    private int countStone(Stone stone) {
+        int count = 0;
+        for (int i = 0; i < BOARD_SIZE; i++)
+            for (int j = 0; j < BOARD_SIZE; j++)
+                if (board[i][j] == stone)
+                    count++;
+        return count;
+    }
+
     private void initBoard() {
         setLayout(new GridLayout(BOARD_SIZE, BOARD_SIZE));
         for (int i = 0; i < BOARD_SIZE; i++) {
@@ -166,14 +196,6 @@ public class Othello extends JFrame implements ActionListener {
         buttonBoard[4][3].setIcon(whiteIcon); buttonBoard[4][4].setIcon(blackIcon);
         buttonBoard[3][3].setRolloverIcon(null); buttonBoard[3][4].setRolloverIcon(null);
         buttonBoard[4][3].setRolloverIcon(null); buttonBoard[4][4].setRolloverIcon(null);
-        // テスト用配置
-//        board[3][3] = Stone.Black; board[3][4] = Stone.Black; board[3][5] = Stone.Black;
-//        board[4][3] = Stone.Black; board[4][4] = Stone.White; board[4][5] = Stone.Black;
-//        board[5][3] = Stone.Black; board[5][4] = Stone.Black; board[5][5] = Stone.Black;
-//        buttonBoard[3][3].setIcon(blackIcon); buttonBoard[3][4].setIcon(blackIcon); buttonBoard[3][5].setIcon(blackIcon);
-//        buttonBoard[4][3].setIcon(blackIcon); buttonBoard[4][4].setIcon(whiteIcon); buttonBoard[4][5].setIcon(blackIcon);
-//        buttonBoard[5][3].setIcon(blackIcon); buttonBoard[5][4].setIcon(blackIcon); buttonBoard[5][5].setIcon(blackIcon);
-//        printBoard();
     }
 
     private void printBoard() {
