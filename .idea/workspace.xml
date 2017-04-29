@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/src/Othello.java" line="47" />
+    <bookmark url="file://$PROJECT_DIR$/src/Othello.java" line="49" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32907ca7-1f99-4cac-bff9-a43374bff67b" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/image/CanPut.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/image/Rollover.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Direction.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Stone.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bin/Othello$Stone.class" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/image/GreenFrame.jpg" afterPath="$PROJECT_DIR$/image/Empty.jpg" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/Othello$1.class" afterPath="$PROJECT_DIR$/bin/Othello$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/Othello$Stone.class" afterPath="$PROJECT_DIR$/bin/Othello$Stone.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/Othello$Point.class" afterPath="$PROJECT_DIR$/bin/Othello$Point.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/Othello$PointException.class" afterPath="$PROJECT_DIR$/bin/Othello$PointException.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/Othello.class" afterPath="$PROJECT_DIR$/bin/Othello.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Othello.java" afterPath="$PROJECT_DIR$/src/Othello.java" />
@@ -27,25 +30,37 @@
       <file leaf-file-name="Othello.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Othello.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1659">
-              <caret line="170" column="0" lean-forward="false" selection-start-line="170" selection-start-column="0" selection-end-line="189" selection-end-column="5" />
+            <state relative-caret-position="616">
+              <caret line="70" column="5" lean-forward="true" selection-start-line="70" selection-start-column="5" selection-end-line="70" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="method#actionPerformed#0;class#Othello#0" expanded="false" />
+                <element signature="method#reverseStone#0;class#Othello#0" expanded="false" />
+                <element signature="method#reverseLine#0;class#Othello#0" expanded="false" />
                 <element signature="method#makeHint#0;class#Othello#0" expanded="false" />
-                <element signature="method#displayHint#0;class#Othello#0" expanded="false" />
                 <element signature="method#hideHint#0;class#Othello#0" expanded="false" />
                 <element signature="method#hideHint#1;class#Othello#0" expanded="false" />
+                <element signature="method#canPut#0;class#Othello#0" expanded="false" />
                 <element signature="method#checkLine#0;class#Othello#0" expanded="false" />
                 <element signature="method#initBoard#0;class#Othello#0" expanded="false" />
                 <element signature="method#printBoard#0;class#Othello#0" expanded="false" />
                 <element signature="class#Point#0;class#Othello#0" expanded="false" />
-                <element signature="e#7133#7134#0" expanded="true" />
-                <element signature="e#7218#7219#0" expanded="true" />
+                <element signature="e#7890#7891#0" expanded="true" />
+                <element signature="e#7975#7976#0" expanded="true" />
                 <element signature="class#PointException#0;class#Othello#0" expanded="false" />
-                <element signature="e#7333#7334#0" expanded="true" />
-                <element signature="e#7371#7372#0" expanded="true" />
+                <element signature="e#8090#8091#0" expanded="true" />
+                <element signature="e#8128#8129#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Stone.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Stone.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="152">
+              <caret line="8" column="80" lean-forward="false" selection-start-line="8" selection-start-column="80" selection-end-line="8" selection-end-column="80" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -56,8 +71,15 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
+        <option value="Enum" />
       </list>
     </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>.equals</find>
+      <find>stream</find>
+    </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -71,6 +93,8 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/Point.java" />
+        <option value="$PROJECT_DIR$/src/Direction.java" />
+        <option value="$PROJECT_DIR$/src/Stone.java" />
         <option value="$PROJECT_DIR$/src/Othello.java" />
       </list>
     </option>
@@ -600,15 +624,15 @@
       <option name="presentableId" value="Default" />
       <updated>1493391599891</updated>
       <workItem from="1493391605742" duration="5044000" />
-      <workItem from="1493436825934" duration="7350000" />
+      <workItem from="1493436825934" duration="11835000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="12394000" />
+    <option name="totallyTimeSpent" value="16879000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
+    <frame x="-8" y="-8" width="1616" height="876" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -650,7 +674,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="3" />
+      <option name="time" value="4" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -666,19 +690,21 @@
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="method#actionPerformed#0;class#Othello#0" expanded="false" />
+            <element signature="method#reverseStone#0;class#Othello#0" expanded="false" />
+            <element signature="method#reverseLine#0;class#Othello#0" expanded="false" />
             <element signature="method#makeHint#0;class#Othello#0" expanded="false" />
-            <element signature="method#displayHint#0;class#Othello#0" expanded="false" />
             <element signature="method#hideHint#0;class#Othello#0" expanded="false" />
             <element signature="method#hideHint#1;class#Othello#0" expanded="false" />
+            <element signature="method#canPut#0;class#Othello#0" expanded="false" />
             <element signature="method#checkLine#0;class#Othello#0" expanded="false" />
             <element signature="method#initBoard#0;class#Othello#0" expanded="false" />
             <element signature="method#printBoard#0;class#Othello#0" expanded="false" />
             <element signature="class#Point#0;class#Othello#0" expanded="false" />
-            <element signature="e#7133#7134#0" expanded="true" />
-            <element signature="e#7218#7219#0" expanded="true" />
+            <element signature="e#7890#7891#0" expanded="true" />
+            <element signature="e#7975#7976#0" expanded="true" />
             <element signature="class#PointException#0;class#Othello#0" expanded="false" />
-            <element signature="e#7333#7334#0" expanded="true" />
-            <element signature="e#7371#7372#0" expanded="true" />
+            <element signature="e#8090#8091#0" expanded="true" />
+            <element signature="e#8128#8129#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -690,7 +716,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/image/GreenFrame.jpg">
+    <entry file="file://$PROJECT_DIR$/image/Empty.jpg">
       <provider selected="true" editor-type-id="images">
         <state />
       </provider>
@@ -737,26 +763,44 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/Direction.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="15" column="0" lean-forward="true" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Stone.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="8" column="80" lean-forward="false" selection-start-line="8" selection-start-column="80" selection-end-line="8" selection-end-column="80" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Othello.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1659">
-          <caret line="170" column="0" lean-forward="false" selection-start-line="170" selection-start-column="0" selection-end-line="189" selection-end-column="5" />
+        <state relative-caret-position="616">
+          <caret line="70" column="5" lean-forward="true" selection-start-line="70" selection-start-column="5" selection-end-line="70" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="method#actionPerformed#0;class#Othello#0" expanded="false" />
+            <element signature="method#reverseStone#0;class#Othello#0" expanded="false" />
+            <element signature="method#reverseLine#0;class#Othello#0" expanded="false" />
             <element signature="method#makeHint#0;class#Othello#0" expanded="false" />
-            <element signature="method#displayHint#0;class#Othello#0" expanded="false" />
             <element signature="method#hideHint#0;class#Othello#0" expanded="false" />
             <element signature="method#hideHint#1;class#Othello#0" expanded="false" />
+            <element signature="method#canPut#0;class#Othello#0" expanded="false" />
             <element signature="method#checkLine#0;class#Othello#0" expanded="false" />
             <element signature="method#initBoard#0;class#Othello#0" expanded="false" />
             <element signature="method#printBoard#0;class#Othello#0" expanded="false" />
             <element signature="class#Point#0;class#Othello#0" expanded="false" />
-            <element signature="e#7133#7134#0" expanded="true" />
-            <element signature="e#7218#7219#0" expanded="true" />
+            <element signature="e#7890#7891#0" expanded="true" />
+            <element signature="e#7975#7976#0" expanded="true" />
             <element signature="class#PointException#0;class#Othello#0" expanded="false" />
-            <element signature="e#7333#7334#0" expanded="true" />
-            <element signature="e#7371#7372#0" expanded="true" />
+            <element signature="e#8090#8091#0" expanded="true" />
+            <element signature="e#8128#8129#0" expanded="true" />
           </folding>
         </state>
       </provider>
