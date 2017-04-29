@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
@@ -24,7 +25,7 @@ public class Othello extends JFrame implements ActionListener {
     private JButton[][] buttonBoard = new JButton[BOARD_SIZE][BOARD_SIZE];
     private Stone[][] board = new Stone[BOARD_SIZE][BOARD_SIZE];
     private Stone myStone; // actionEventで使うため、仕方なくフィールドに
-    private boolean myTurn = true;
+    private boolean myTurn;
     private boolean passFlag = false;
 
     public Othello() {
@@ -34,13 +35,14 @@ public class Othello extends JFrame implements ActionListener {
         setResizable(false);
         pack();
 
-        myStone = new Random().nextInt(2) == 0 ? Stone.Black : Stone.White;
+        Random random = new Random();
+        myStone = random.nextBoolean() ? Stone.Black : Stone.White;
+        myTurn = random.nextBoolean();
         initBoard();
-        List<Point> hint = makeHint(myStone);
-        displayHint(hint);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
+        nextTurn();
     }
 
     @Override
@@ -52,37 +54,53 @@ public class Othello extends JFrame implements ActionListener {
 
     public List<Point> makeHint(Stone stone) {
         List<Point> hint = new ArrayList<>();
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            for (int j = 0; j < BOARD_SIZE; j++) {
-                EnumSet<Direction> directions = canPut(i, j, stone);
-                if (!directions.isEmpty()) {
+        for (int i = 0; i < BOARD_SIZE; i++)
+            for (int j = 0; j < BOARD_SIZE; j++)
+                if (!selectDirections(i, j, stone).isEmpty())
                     hint.add(new Point(i, j));
-                }
-            }
-        }
         return hint;
     }
 
     private void putStone(int r, int c, Stone stone) {
-        EnumSet<Direction> directions = canPut(r, c, stone);
+        EnumSet<Direction> directions = selectDirections(r, c, stone);
         if (directions.isEmpty()) return;
-        JButton target = buttonBoard[r][c];
-        target.setRolloverIcon(null);
-        switch (stone) {
-            case Empty: target.setIcon(emptyIcon); break;
-            case Black: target.setIcon(blackIcon); break;
-            case White: target.setIcon(whiteIcon); break;
-        }
+
+        buttonBoard[r][c].setIcon(stone.getImageIcon());
+        buttonBoard[r][c].setRolloverIcon(null);
         board[r][c] = stone;
         reverseStone(r, c, stone, directions);
-        printBoard();
-//        myTurn = !myTurn;
+//        printBoard();
         nextTurn();
+    }
+
+    private EnumSet<Direction> selectDirections(int r, int c, Stone stone) {
+        EnumSet<Direction> directions = EnumSet.noneOf(Direction.class);
+        if (board[r][c] != Stone.Empty) return directions;
+        EnumSet.allOf(Direction.class)
+                .stream()
+                .filter(d -> checkLine(r, c, stone, d))
+                .forEach(directions::add);
+        return directions;
+    }
+
+    private boolean checkLine (int r, int c, Stone stone, Direction direction) {
+        int dr = direction.getDR(); int dc = direction.getDC();
+        int i = r + dr;             int j = c + dc;
+
+        while (0 <= i && i < BOARD_SIZE && 0 <= j && j < BOARD_SIZE) {
+            if      (board[i][j] == Stone.Empty) break;
+            else if (board[i][j] == stone){
+                if (Math.abs(r - i) > 1 || Math.abs(c - j) > 1) return true;
+                else break;
+            }
+            i += dr; j += dc;
+        }
+        return false;
     }
 
     private void nextTurn() {
         myTurn = !myTurn;
-        myStone = getReverse(myStone);
+        myStone = myStone.getReverse();
         hideHint();
         List<Point> hint = makeHint(myStone);
         if (hint.isEmpty()) {
@@ -113,7 +131,7 @@ public class Othello extends JFrame implements ActionListener {
     private void reverseLine(int r, int c, Stone stone, Direction direction) {
         int dr = direction.getDR(); int dc = direction.getDC();
         int i = r + dr;             int j = c + dc;
-        Stone reverse = getReverse(stone);
+        Stone reverse = stone.getReverse();
 
         while (0 <= i && i < BOARD_SIZE && 0 <= j && j < BOARD_SIZE) {
             if (board[i][j] == reverse) {
@@ -138,54 +156,22 @@ public class Othello extends JFrame implements ActionListener {
                     buttonBoard[i][j].setIcon(emptyIcon);
     }
 
-    private EnumSet<Direction> canPut(int r, int c, Stone stone) {
-        EnumSet<Direction> directions = EnumSet.noneOf(Direction.class);
-        if (board[r][c] != Stone.Empty) return directions;
-        EnumSet.allOf(Direction.class)
-                .stream()
-                .filter(d -> checkLine(r, c, stone, d))
-                .forEach(directions::add);
-        return directions;
-    }
-
-    private boolean checkLine (int r, int c, Stone stone, Direction direction) {
-        int dr = direction.getDR(); int dc = direction.getDC();
-        int i = r + dr;             int j = c + dc;
-
-        while (0 <= i && i < BOARD_SIZE && 0 <= j && j < BOARD_SIZE) {
-            if      (board[i][j] == Stone.Empty) break;
-            else if (board[i][j] == stone){
-                if (Math.abs(r - i) > 1 || Math.abs(c - j) > 1) return true;
-                else break;
-            }
-            i += dr; j += dc;
-        }
-        return false;
-    }
-
-    private Stone getReverse(Stone stone) {
-        return stone == Stone.Black ? Stone.White : Stone.Black;
-    }
-
     private void gameOver() {
         int black = countStone(Stone.Black); int white = countStone(Stone.White);
         JLabel result = new JLabel(String.format("黒：%d  白：%d", black, white));
         JOptionPane.showMessageDialog(this, result, "ゲームセット", JOptionPane.INFORMATION_MESSAGE);
         // 全てのボタンを無効化
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            for (int j = 0; j < BOARD_SIZE; j++) {
-                buttonBoard[i][j].setEnabled(false);
-            }
-        }
+        for (JButton[] buttons : buttonBoard)
+            for (JButton button : buttons)
+                button.setEnabled(false);
     }
 
     private int countStone(Stone stone) {
-        int count = 0;
-        for (int i = 0; i < BOARD_SIZE; i++)
-            for (int j = 0; j < BOARD_SIZE; j++)
-                if (board[i][j] == stone)
-                    count++;
-        return count;
+        return (int)Arrays.stream(board)
+                    .mapToLong(ss -> Arrays.stream(ss)
+                        .filter(s -> s == stone)
+                        .count())
+                    .sum();
     }
 
     private void initBoard() {
@@ -215,10 +201,8 @@ public class Othello extends JFrame implements ActionListener {
     }
 
     private void printBoard() {
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            for (int j = 0; j < BOARD_SIZE; j++) {
-                System.out.print(board[i][j] + " ");
-            }
+        for (Stone[] stones : board) {
+            for (Stone stone : stones) System.out.print(stone + " ");
             System.out.println();
         }
         System.out.println();
