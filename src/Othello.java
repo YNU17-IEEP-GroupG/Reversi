@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by shiita on 2017/04/29.
@@ -23,14 +24,15 @@ public class Othello extends JFrame implements ActionListener {
     private JButton[][] buttonBoard = new JButton[BOARD_SIZE][BOARD_SIZE];
     private Stone[][] board = new Stone[BOARD_SIZE][BOARD_SIZE];
     private Stone myStone; // actionEventで使うため、仕方なくフィールドに
-    private Boolean passFlag = false;
+    private boolean myTurn = true;
+    private boolean passFlag = false;
 
     public Othello() {
         setTitle("Othello");
         getContentPane().setPreferredSize(new Dimension(BOARD_SIZE * IMAGE_ICON_SIZE,BOARD_SIZE * IMAGE_ICON_SIZE));
         pack();
 
-        myStone = Stone.White;
+        myStone = new Random().nextInt(2) == 0 ? Stone.Black : Stone.White;
         initBoard();
         List<Point> hint = makeHint(myStone);
         displayHint(hint);
@@ -46,6 +48,19 @@ public class Othello extends JFrame implements ActionListener {
         putStone(r, c, myStone);
     }
 
+    public List<Point> makeHint(Stone stone) {
+        List<Point> hint = new ArrayList<>();
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                EnumSet<Direction> directions = canPut(i, j, stone);
+                if (!directions.isEmpty()) {
+                    hint.add(new Point(i, j));
+                }
+            }
+        }
+        return hint;
+    }
+
     private void putStone(int r, int c, Stone stone) {
         EnumSet<Direction> directions = canPut(r, c, stone);
         if (directions.isEmpty()) return;
@@ -58,26 +73,34 @@ public class Othello extends JFrame implements ActionListener {
         }
         board[r][c] = stone;
         reverseStone(r, c, stone, directions);
-
-        nextTurn();
         printBoard();
+//        myTurn = !myTurn;
+        nextTurn();
     }
 
     private void nextTurn() {
-        hideHint();
+        myTurn = !myTurn;
         myStone = getReverse(myStone);
+        hideHint();
         List<Point> hint = makeHint(myStone);
         if (hint.isEmpty()) {
-            if (passFlag)
+            if (passFlag) {
                 gameOver();
+            }
             else {
                 passFlag = true;
                 nextTurn();
             }
         }
         else {
-            displayHint(hint);
             passFlag = false;
+            if (!myTurn) {
+                RandomAI ai = new RandomAI(hint);
+                putStone(ai.getRow(), ai.getColumn(), myStone);
+            }
+            else {
+                displayHint(hint);
+            }
         }
     }
 
@@ -100,19 +123,6 @@ public class Othello extends JFrame implements ActionListener {
             }
             i += dr; j += dc;
         }
-    }
-
-    private List<Point> makeHint(Stone stone) {
-        List<Point> hint = new ArrayList<>();
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            for (int j = 0; j < BOARD_SIZE; j++) {
-                EnumSet<Direction> directions = canPut(i, j, stone);
-                if (!directions.isEmpty()) {
-                    hint.add(new Point(i, j));
-                }
-            }
-        }
-        return hint;
     }
 
     private void displayHint(List<Point> hint) {
@@ -196,6 +206,10 @@ public class Othello extends JFrame implements ActionListener {
         buttonBoard[4][3].setIcon(whiteIcon); buttonBoard[4][4].setIcon(blackIcon);
         buttonBoard[3][3].setRolloverIcon(null); buttonBoard[3][4].setRolloverIcon(null);
         buttonBoard[4][3].setRolloverIcon(null); buttonBoard[4][4].setRolloverIcon(null);
+
+//        // パステスト
+//        board[0][0] = Stone.White; buttonBoard[0][0].setIcon(whiteIcon);
+//        board[0][1] = Stone.Black; buttonBoard[0][1].setIcon(blackIcon);
     }
 
     private void printBoard() {
@@ -210,32 +224,5 @@ public class Othello extends JFrame implements ActionListener {
 
     public static void main(String[] args) {
         new Othello();
-    }
-
-    private class Point {
-        int row = 0;
-        int column = 0;
-
-        public Point(int row, int column) throws PointException {
-            if (0 <= row && row <= BOARD_SIZE)
-                this.row = row;
-            else
-                throw new PointException("Pointの行の値が範囲外です。");
-            if (0 <= column && column <= BOARD_SIZE)
-                this.column = column;
-            else
-                throw new PointException("Pointの列の値が範囲外です。");
-        }
-
-        @Override
-        public String toString() {
-            return String.format("(row, column) = (%d, %d)", row, column);
-        }
-    }
-
-    private class PointException extends RuntimeException {
-        public PointException(String message) {
-            super(message);
-        }
     }
 }
