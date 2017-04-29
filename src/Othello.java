@@ -30,6 +30,8 @@ public class Othello extends JFrame implements ActionListener {
     public Othello() {
         setTitle("Othello");
         getContentPane().setPreferredSize(new Dimension(BOARD_SIZE * IMAGE_ICON_SIZE,BOARD_SIZE * IMAGE_ICON_SIZE));
+        // setResizable() -> pack()の順でないと大きさがずれる
+        setResizable(false);
         pack();
 
         myStone = new Random().nextInt(2) == 0 ? Stone.Black : Stone.White;
