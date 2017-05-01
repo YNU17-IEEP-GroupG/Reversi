@@ -28,7 +28,7 @@ public class Othello extends JFrame implements ActionListener {
     private boolean myTurn;
     private boolean passFlag = false;
 
-    public Othello() {
+    private Othello() {
         setTitle("Othello");
         getContentPane().setPreferredSize(new Dimension(BOARD_SIZE * IMAGE_ICON_SIZE,BOARD_SIZE * IMAGE_ICON_SIZE));
         // setResizable() -> pack()の順でないと大きさがずれる
@@ -40,7 +40,7 @@ public class Othello extends JFrame implements ActionListener {
         myTurn = random.nextBoolean();
         initBoard();
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
         nextTurn();
     }
@@ -114,14 +114,30 @@ public class Othello extends JFrame implements ActionListener {
         }
         else {
             passFlag = false;
-            if (!myTurn) {
-                RandomAI ai = new RandomAI(hint);
-                putStone(ai.getRow(), ai.getColumn(), myStone);
-            }
-            else {
+            if (myTurn) {
                 displayHint(hint);
             }
+            else {
+                removeAllListener();
+                new Thread(() -> {
+                    RandomAI ai = new RandomAI(hint);
+                    putStone(ai.getRow(), ai.getColumn(), myStone);
+                    addAllListener();
+                }).start();
+            }
         }
+    }
+
+    private void removeAllListener() {
+        for (JButton[] buttons : buttonBoard)
+            for (JButton button : buttons)
+                button.removeActionListener(this);
+    }
+
+    private void addAllListener() {
+        for (JButton[] buttons : buttonBoard)
+            for (JButton button : buttons)
+                button.addActionListener(this);
     }
 
     private void reverseStone(int r, int c, Stone stone, EnumSet<Direction> directions) {
@@ -146,20 +162,19 @@ public class Othello extends JFrame implements ActionListener {
     }
 
     private void displayHint(List<Point> hint) {
-        hint.forEach(h -> buttonBoard[h.row][h.column].setIcon(canPutIcon));
+        hint.forEach(p -> buttonBoard[p.row][p.column].setIcon(canPutIcon));
     }
 
     private void hideHint() {
-        for (int i = 0; i < BOARD_SIZE; i++)
-            for (int j = 0; j < BOARD_SIZE; j++)
-                if (buttonBoard[i][j].getIcon().equals(canPutIcon))
-                    buttonBoard[i][j].setIcon(emptyIcon);
+        for (JButton[] buttons : buttonBoard)
+            for (JButton button : buttons)
+                if (button.getIcon().equals(canPutIcon))
+                    button.setIcon(emptyIcon);
     }
 
     private void gameOver() {
-        int black = countStone(Stone.Black); int white = countStone(Stone.White);
-        JLabel result = new JLabel(String.format("黒：%d  白：%d", black, white));
-        JOptionPane.showMessageDialog(this, result, "ゲームセット", JOptionPane.INFORMATION_MESSAGE);
+        String result = String.format("黒：%d  白：%d", countStone(Stone.Black), countStone(Stone.White));
+        JOptionPane.showMessageDialog(this, new JLabel(result), "ゲームセット", JOptionPane.INFORMATION_MESSAGE);
         // 全てのボタンを無効化
         for (JButton[] buttons : buttonBoard)
             for (JButton button : buttons)
@@ -178,13 +193,13 @@ public class Othello extends JFrame implements ActionListener {
         setLayout(new GridLayout(BOARD_SIZE, BOARD_SIZE));
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
-                JButton box = new JButton(emptyIcon);
-                box.setRolloverIcon(rolloverIcon);
-                box.setBorder(new EmptyBorder(0,0,0,0));
-                box.setActionCommand(i + "," + j);
-                box.addActionListener(this);
-                add(box);
-                buttonBoard[i][j] = box;
+                JButton button = new JButton(emptyIcon);
+                button.setRolloverIcon(rolloverIcon);
+                button.setBorder(new EmptyBorder(0,0,0,0));
+                button.setActionCommand(i + "," + j);
+                button.addActionListener(this);
+                add(button);
+                buttonBoard[i][j] = button;
                 board[i][j] = Stone.Empty;
             }
         }
