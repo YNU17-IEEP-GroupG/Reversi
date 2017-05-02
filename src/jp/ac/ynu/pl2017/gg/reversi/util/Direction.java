@@ -1,4 +1,4 @@
-package jp.ac.ynu.pl2017.gg.reversi.ai;
+package jp.ac.ynu.pl2017.gg.reversi.util;
 /**
  * Created by shiita on 2017/04/29.
  */

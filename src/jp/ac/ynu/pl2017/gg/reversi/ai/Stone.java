@@ -1,6 +1,8 @@
 package jp.ac.ynu.pl2017.gg.reversi.ai;
 import javax.swing.*;
 
+import jp.ac.ynu.pl2017.gg.reversi.gui.Othello;
+
 /**
  * Created by shiita on 2017/04/29.
  */

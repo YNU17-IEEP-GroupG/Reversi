@@ -1,6 +1,12 @@
-package jp.ac.ynu.pl2017.gg.reversi.ai;
+package jp.ac.ynu.pl2017.gg.reversi.gui;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+
+import jp.ac.ynu.pl2017.gg.reversi.ai.RandomAI;
+import jp.ac.ynu.pl2017.gg.reversi.ai.Stone;
+import jp.ac.ynu.pl2017.gg.reversi.util.Direction;
+import jp.ac.ynu.pl2017.gg.reversi.util.Point;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -163,7 +169,7 @@ public class Othello extends JFrame implements ActionListener {
     }
 
     private void displayHint(List<Point> hint) {
-        hint.forEach(p -> buttonBoard[p.row][p.column].setIcon(canPutIcon));
+        hint.forEach(p -> buttonBoard[p.getRow()][p.getColumn()].setIcon(canPutIcon));
     }
 
     private void hideHint() {

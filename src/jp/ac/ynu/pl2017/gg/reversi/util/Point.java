@@ -1,4 +1,7 @@
-package jp.ac.ynu.pl2017.gg.reversi.ai;
+package jp.ac.ynu.pl2017.gg.reversi.util;
+
+import jp.ac.ynu.pl2017.gg.reversi.gui.Othello;
+
 /**
  * Created by shiita on 2017/04/29.
  */
@@ -16,6 +19,14 @@ public class Point {
         else
             throw new PointException("Pointの列の値が範囲外です。");
     }
+    
+    public int getColumn() {
+		return column;
+	}
+    
+    public int getRow() {
+		return row;
+	}
 
     @Override
     public String toString() {
