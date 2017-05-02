@@ -1,8 +1,11 @@
 # Java
 bin/
-
-# Idea
 .idea
 *.iml
 *.iws
 *.ipr
+# eclipse
+/.settings/
+/.project
+/.classpath
+/bin/
