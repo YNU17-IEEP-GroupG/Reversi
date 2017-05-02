@@ -1,3 +1,4 @@
+package jp.ac.ynu.pl2017.gg.reversi.ai;
 import java.util.List;
 import java.util.Random;
 
