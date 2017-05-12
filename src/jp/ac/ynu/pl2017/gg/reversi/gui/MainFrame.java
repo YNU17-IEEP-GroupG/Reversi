@@ -1,31 +1,46 @@
 package jp.ac.ynu.pl2017.gg.reversi.gui;
 
+import java.awt.*;
 import java.awt.Dialog.ModalityType;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
 
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
 
-public class MainFrame extends JFrame {
+public class MainFrame extends JFrame implements TitlePanel.Transition{
 
 	/**
 	 * 
 	 */
 	private static final long	serialVersionUID	= 248580253941254005L;
+	public static final int panelW = 854;
+	public static final int panelH = 480;
+	private static final String TITLE = "title";
+	private static final String ONLINE = "online";
+	private static final String OFFLINE = "offline";
+	private static final String SETTINGS = "settings";
+	private CardLayout layout;
 
 	public MainFrame() {
 		super();
-		setSize(854, 480);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setTitle("オセロ対戦ゲーム");
+		getContentPane().setPreferredSize(new Dimension(panelW, panelH));
 		setResizable(false);
+		pack();
+
+		// メモリを食うようならCardLayoutはやめたほうが良いかも
+		layout = new CardLayout();
+		setLayout(layout);
+		TitlePanel titleCard = new TitlePanel(this);
+		OfflinePlayPanel offlineCard = new OfflinePlayPanel(this);
+		OnlinePlayPanel onlineCard = new OnlinePlayPanel(this);
+		SettingsPanel settingsCard = new SettingsPanel();
+
+		add(titleCard, TITLE);
+		add(offlineCard, OFFLINE);
+		add(onlineCard, ONLINE);
+		add(settingsCard, SETTINGS);
 
 		setVisible(true);
-		setContentPane(new SettingsPanel());
-		validate();
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 	}
 
 	public void showLoginPopup() {
@@ -44,6 +59,26 @@ public class MainFrame extends JFrame {
 
 		JPanel lPassPanel = new JPanel(new FlowLayout());
 
+	}
+
+	@Override
+	public void changeOfflinePlayPanel() {
+		layout.show(getContentPane(), OFFLINE);
+	}
+
+	@Override
+	public void changeOnlinePlayPanel() {
+		layout.show(getContentPane(), ONLINE);
+	}
+
+	@Override
+	public void changeSettingsPanel() {
+		layout.show(getContentPane(), SETTINGS);
+	}
+
+	@Override
+	public void returnTitlePanel() {
+		layout.show(getContentPane(), TITLE);
 	}
 
 	public static void main(String[] args) {
