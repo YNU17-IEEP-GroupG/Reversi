@@ -1,4 +1,4 @@
-package jp.ac.ynu.pl2017.gg.reversi.ai;
+package jp.ac.ynu.pl2017.gg.reversi.util;
 import javax.swing.*;
 
 import jp.ac.ynu.pl2017.gg.reversi.gui.Othello;

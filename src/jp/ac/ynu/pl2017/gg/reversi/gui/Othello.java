@@ -3,7 +3,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import jp.ac.ynu.pl2017.gg.reversi.ai.RandomAI;
-import jp.ac.ynu.pl2017.gg.reversi.ai.Stone;
+import jp.ac.ynu.pl2017.gg.reversi.util.Stone;
 import jp.ac.ynu.pl2017.gg.reversi.util.Direction;
 import jp.ac.ynu.pl2017.gg.reversi.util.Point;
 
