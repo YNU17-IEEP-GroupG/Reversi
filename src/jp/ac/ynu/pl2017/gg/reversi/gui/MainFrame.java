@@ -27,6 +27,7 @@ public class MainFrame extends JFrame implements TitlePanel.Transition{
 		pack();
 
 		// メモリを食うようならCardLayoutはやめたほうが良いかも
+		// TODO setContentPane() -> validate()では駄目?
 		layout = new CardLayout();
 		setLayout(layout);
 		TitlePanel titleCard = new TitlePanel(this);
