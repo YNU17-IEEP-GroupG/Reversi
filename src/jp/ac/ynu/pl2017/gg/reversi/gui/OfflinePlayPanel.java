@@ -22,11 +22,13 @@ public class OfflinePlayPanel extends JPanel {
 //		lLocalLabel.setHorizontalTextPosition(SwingConstants.CENTER);
 		add(lLocalLabel, BorderLayout.NORTH);
 		
+		/*
 		Othello othelloPanel = new Othello();
 		JPanel lCoverPanel = new JPanel();
 		lCoverPanel.setPreferredSize(othelloPanel.getSize());
 		lCoverPanel.add(othelloPanel);
 		add(lCoverPanel, BorderLayout.CENTER);
+		*/
 		
 		JButton returnButton = new JButton("タイトルに戻る");
 		returnButton.addActionListener(e -> callback.returnTitlePanel());
