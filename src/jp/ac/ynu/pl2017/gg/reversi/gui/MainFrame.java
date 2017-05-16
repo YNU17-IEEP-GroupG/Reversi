@@ -5,19 +5,19 @@ import java.awt.Dialog.ModalityType;
 
 import javax.swing.*;
 
-public class MainFrame extends JFrame implements TitlePanel.Transition{
+public class MainFrame extends JFrame implements TitlePanel.Transition {
 
 	/**
 	 * 
 	 */
 	private static final long	serialVersionUID	= 248580253941254005L;
-	public static final int panelW = 854;
-	public static final int panelH = 480;
-	private static final String TITLE = "title";
-	private static final String ONLINE = "online";
-	private static final String OFFLINE = "offline";
-	private static final String SETTINGS = "settings";
-	private CardLayout layout;
+	public static final int		panelW				= 854;
+	public static final int		panelH				= 480;
+	private static final String	TITLE				= "title";
+	private static final String	ONLINE				= "online";
+	private static final String	OFFLINE				= "offline";
+	private static final String	SETTINGS			= "settings";
+	private CardLayout			layout;
 
 	public MainFrame() {
 		super();
@@ -33,7 +33,7 @@ public class MainFrame extends JFrame implements TitlePanel.Transition{
 		TitlePanel titleCard = new TitlePanel(this);
 		OfflinePlayPanel offlineCard = new OfflinePlayPanel(this);
 		OnlinePlayPanel onlineCard = new OnlinePlayPanel(this);
-		SettingsPanel settingsCard = new SettingsPanel();
+		SettingsPanel settingsCard = new SettingsPanel(this);
 
 		add(titleCard, TITLE);
 		add(offlineCard, OFFLINE);
@@ -84,6 +84,12 @@ public class MainFrame extends JFrame implements TitlePanel.Transition{
 
 	public static void main(String[] args) {
 		new MainFrame();
+	}
+
+	@Override
+	public void changePlayPanel() {
+		setContentPane(new PlayPanel(this));
+		validate();
 	}
 
 }

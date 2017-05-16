@@ -19,7 +19,7 @@ public class SettingsPanel extends JPanel {
 	 */
 	private static final long	serialVersionUID	= 1395349167588587208L;
 
-	public SettingsPanel() {
+	public SettingsPanel(TitlePanel.Transition callback) {
 		super();
 
 		setSize(854, 480);
@@ -58,6 +58,13 @@ public class SettingsPanel extends JPanel {
 		lIconNamePanel.add(lNamePanel, BorderLayout.CENTER);
 
 		add(lIconNamePanel);
+
+		/*
+		 * 戻る
+		 */
+		JButton returnButton = new JButton("タイトルに戻る");
+		returnButton.addActionListener(e -> callback.returnTitlePanel());
+		add(returnButton, BorderLayout.SOUTH);
 	}
 
 	@Override
