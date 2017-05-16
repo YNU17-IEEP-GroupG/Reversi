@@ -29,8 +29,8 @@ public class Othello
 	public static final int			BOARD_SIZE		= 8;
 	public static final int			IMAGE_ICON_SIZE	= 40;
 	public static final ImageIcon	emptyIcon		= new ImageIcon("image/Empty.jpg");
-	public static final ImageIcon	blackIcon		= new ImageIcon("image/Black.jpg");
-	public static final ImageIcon	whiteIcon		= new ImageIcon("image/White.jpg");
+	public static final ImageIcon	blackIcon		= new ImageIcon("image/black.png");
+	public static final ImageIcon	whiteIcon		= new ImageIcon("image/white.png");
 	public static final ImageIcon	rolloverIcon	= new ImageIcon("image/Rollover.png");
 	public static final ImageIcon	canPutIcon		= new ImageIcon("image/CanPut.png");
 
