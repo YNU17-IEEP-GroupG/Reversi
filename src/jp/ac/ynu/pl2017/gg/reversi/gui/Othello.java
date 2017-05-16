@@ -37,7 +37,7 @@ public class Othello
 	public static final ImageIcon	cannotPutIcon		= new ImageIcon("image/bannedpanel.png");
 	public static final ImageIcon	turn1Icon		= new ImageIcon("image/45degree.png");
 	public static final ImageIcon	turn2Icon		= new ImageIcon("image/90degree.png");
-	public static final ImageIcon	turn3Icon		= new ImageIcon("image/135degree.png);
+	public static final ImageIcon	turn3Icon		= new ImageIcon("image/135degree.png");
 	private JButton[][]				buttonBoard		= new JButton[BOARD_SIZE][BOARD_SIZE];
 	private Stone[][]				board			= new Stone[BOARD_SIZE][BOARD_SIZE];
 	private Stone					myStone;												// actionEventで使うため、仕方なくフィールドに
