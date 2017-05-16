@@ -4,7 +4,7 @@ public class Userdata {
 	
 	public	static String	USERNAME;
 	// オンライン勝敗
-	private	static int		onlineWL;
+	private	static int		onlineWL[][];
 	// ”強い”勝敗
 	private static int		hardCPUWL[][];
 	// "普通"勝敗
