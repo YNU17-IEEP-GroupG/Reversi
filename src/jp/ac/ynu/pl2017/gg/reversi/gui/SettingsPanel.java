@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
@@ -40,13 +41,31 @@ public class SettingsPanel extends JPanel {
 	public SettingsPanel(TitlePanel.Transition callback) {
 		super();
 
-		setSize(854, 480);
+		setSize(MainFrame.panelW, MainFrame.panelH);
 
 		setLayout(new FlowLayout());
 
 		/*
 		 * 画面上部
 		 */
+		/*
+		 * 戻る
+		 */
+		JPanel lReturnPanel = new JPanel();
+		lReturnPanel.setPreferredSize(new Dimension(MainFrame.panelW, 50));
+		SpringLayout lRLayout = new SpringLayout();
+		lReturnPanel.setLayout(lRLayout);
+		
+		JButton returnButton = new JButton("タイトルに戻る");
+		returnButton.addActionListener(e -> callback.returnTitlePanel());
+//		lReturnPanel.add(returnButton, BorderLayout.EAST);
+		lRLayout.putConstraint(SpringLayout.NORTH, returnButton, 10,
+				SpringLayout.NORTH, lReturnPanel);
+		lRLayout.putConstraint(SpringLayout.EAST, returnButton, -10, SpringLayout.EAST,
+				lReturnPanel);
+		lReturnPanel.add(returnButton);
+		add(lReturnPanel);
+		
 		JPanel lIconNamePanel = new JPanel(new BorderLayout());
 		lIconNamePanel.setPreferredSize(new Dimension(840, 220));
 
@@ -68,6 +87,7 @@ public class SettingsPanel extends JPanel {
 		 * 名前
 		 */
 		JPanel lNamePanel = new JPanel(new FlowLayout());
+
 		JLabel lNameLabel = new JLabel("肋助", SwingConstants.LEFT);
 		Font lNameFont = new Font("Serif", Font.BOLD, 48);
 		lNameLabel.setFont(lNameFont);
@@ -79,7 +99,7 @@ public class SettingsPanel extends JPanel {
 		JButton lBackChangeButton = new JButton("背景変更");
 		lBackChangeButton.addActionListener(e -> showImageSelectDialog(1));
 		
-		lNamePanel.add(lNameLabel, BorderLayout.NORTH);
+		lNamePanel.add(lNameLabel);
 		lNamePanel.add(lInfoChangeButton);
 		lNamePanel.add(lBackChangeButton);
 		
@@ -130,12 +150,6 @@ public class SettingsPanel extends JPanel {
 		add(lOnlineInfoPanel);
 		add(lOfflineInfoPanel);
 
-		/*
-		 * 戻る
-		 */
-		JButton returnButton = new JButton("タイトルに戻る");
-		returnButton.addActionListener(e -> callback.returnTitlePanel());
-		add(returnButton, BorderLayout.SOUTH);
 	}
 
 	public void showChangeInfoDialog() {
