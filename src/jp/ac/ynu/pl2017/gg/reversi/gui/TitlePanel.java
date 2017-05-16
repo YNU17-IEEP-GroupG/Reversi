@@ -53,7 +53,12 @@ public class TitlePanel extends JPanel {
 		add(online);
 		add(option);
 
-		offline.addActionListener(e -> callback.changeOfflinePlayPanel());
+		offline.addActionListener(e -> {
+		    // TODO: ログインできているかどうかを必ず確認してから画面遷移をするようにする
+		    // if () ログイン出来ていなかったら
+            // showLoginDialog();
+            callback.changeOfflinePlayPanel();
+        });
 		online.addActionListener(e -> callback.changeOnlinePlayPanel());
 		option.addActionListener(e -> callback.changeSettingsPanel());
 	}
@@ -68,5 +73,7 @@ public class TitlePanel extends JPanel {
 		void returnTitlePanel();
 
 		void changePlayPanel();
+
+		void showLoginDialog();
 	}
 }

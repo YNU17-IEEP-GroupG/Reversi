@@ -4,6 +4,9 @@ import sun.applet.Main;
 
 import java.awt.*;
 import java.awt.Dialog.ModalityType;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.*;
 
@@ -78,14 +81,16 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 		validate();
 	}
 
-	private void showLoginDialog() {
+	@Override
+	public void showLoginDialog() {
 		new LoginDialog(this);
 	}
 
 	private class LoginDialog extends JDialog {
 		MainFrame mainFrame;
+        boolean login = false;
 
-		public LoginDialog(Frame owner) {
+		private LoginDialog(Frame owner) {
 			super(owner);
 			mainFrame = (MainFrame) owner;
 			setTitle("ログイン");
@@ -96,40 +101,41 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 			setLocation((int)(pSize.getWidth() - width) / 2, (int)(pSize.getHeight() - height) / 2);
             setModal(true);
 
-			JLabel userLabel = new JLabel("ユーザー名");
-			JTextField userInput = new JTextField(14);
-			JLabel passLabel = new JLabel("パスワード");
+            JLabel userLabel = new JLabel("ユーザー名");
+            JTextField userInput = new JTextField(14);
+            JLabel passLabel = new JLabel("パスワード");
             JPasswordField passInput = new JPasswordField(14);
             JPanel inputPanel = new JPanel();
             userInput.setHorizontalAlignment(JTextField.CENTER);
             passInput.setHorizontalAlignment(JPasswordField.CENTER);
             inputPanel.setLayout(new GridLayout(2, 2));
-			inputPanel.add(userLabel);
-			inputPanel.add(userInput);
-			inputPanel.add(passLabel);
-			inputPanel.add(passInput);
+            inputPanel.add(userLabel);
+            inputPanel.add(userInput);
+            inputPanel.add(passLabel);
+            inputPanel.add(passInput);
 
-			JButton loginButton = new JButton("OK");
-			JButton createButton = new JButton("新規作成");
-			loginButton.addActionListener(e -> {
-			    // TODO: ログインの通信処理を書いてください
+            JButton loginButton = new JButton("OK");
+            JButton createButton = new JButton("新規作成");
+            loginButton.addActionListener(e -> {
+                // TODO: ログインの通信処理を書いてください
                 // 通信クラスのメソッド呼び出しなど
                 // 今はOKを押したらダイアログが消えるようにします
+                login = true;
                 dispose();
             });
-			createButton.addActionListener(e -> {
-			    // TODO: アカウント新規作成の処理を書いてください
+            createButton.addActionListener(e -> {
+                // TODO: アカウント新規作成の処理を書いてください
             });
 
-			setLayout(new FlowLayout());
-			add(inputPanel);
-			add(loginButton);
-			add(createButton);
+            setLayout(new FlowLayout());
+            add(inputPanel);
+            add(loginButton);
+            add(createButton);
 
-			setVisible(true);
-			setDefaultCloseOperation(WindowConstants	.DISPOSE_ON_CLOSE);
-		}
-	}
+            setVisible(true);
+            setDefaultCloseOperation(WindowConstants	.DISPOSE_ON_CLOSE);
+        }
+    }
 }
 
 
