@@ -22,7 +22,10 @@ public class OfflinePlayPanel
 			TitlePanel.Transition callback) {
 		setSize(panelW, panelH);
 		setLayout(new BorderLayout());
-
+				
+		public static final ImageIcon lockIcon = new ImageIcon("image/lock.png");
+		public static final ImageIcon playIcon = new ImageIcon("image/unlock.png");
+					
 		JLabel lLocalLabel = new JLabel("難易度選択");
 		// lLocalLabel.setPreferredSize(new Dimension(MainFrame.panelW, 60));
 		// lLocalLabel.setHorizontalTextPosition(SwingConstants.CENTER);
