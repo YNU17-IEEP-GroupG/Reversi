@@ -3,8 +3,7 @@ package jp.ac.ynu.pl2017.gg.reversi.gui;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-import jp.ac.ynu.pl2017.gg.reversi.ai.RandomAI;
-import jp.ac.ynu.pl2017.gg.reversi.ai.SquareEvaluationAI;
+import jp.ac.ynu.pl2017.gg.reversi.ai.OmegaAI;
 import jp.ac.ynu.pl2017.gg.reversi.util.Stone;
 import jp.ac.ynu.pl2017.gg.reversi.util.Direction;
 import jp.ac.ynu.pl2017.gg.reversi.util.Point;
@@ -156,7 +155,8 @@ public class Othello extends JPanel implements ActionListener {
 				displayHint(hint);
 			} else {
 				removeAllListener();
-                SquareEvaluationAI ai = new SquareEvaluationAI(board, myStone, 4, 10, hint);
+                OmegaAI ai = new OmegaAI(hint, myStone, board, 2);
+                ai.think();
                 putStone(ai.getRow(), ai.getColumn(), myStone);
                 addAllListener();
 			}

@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
  */
 public class Search {
     private Stone targetStone;
+    // TODO: beamSearchの探索の深さを指定できるように
     // TODO: typeをフィールドに
     public Search(Stone targetStone) {
         this.targetStone = targetStone;
