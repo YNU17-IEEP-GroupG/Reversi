@@ -15,6 +15,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
+import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
+
 public class MainFrame extends JFrame implements TitlePanel.Transition {
 
 	/**
@@ -91,8 +93,8 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 	}
 
 	@Override
-	public void changePlayPanel() {
-		setContentPane(new PlayPanel(this));
+	public void changePlayPanel(Class<BaseAI> pAi, int pDifficulty) {
+		setContentPane(new PlayPanel(this, pAi, pDifficulty));
 		validate();
 	}
 

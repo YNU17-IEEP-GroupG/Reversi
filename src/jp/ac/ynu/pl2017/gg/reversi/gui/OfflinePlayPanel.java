@@ -5,19 +5,27 @@ import static jp.ac.ynu.pl2017.gg.reversi.gui.MainFrame.panelW;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.lang.reflect.Constructor;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import jp.ac.ynu.pl2017.gg.reversi.ai.AlphaAI;
+import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
+import jp.ac.ynu.pl2017.gg.reversi.ai.BetaAI;
+import jp.ac.ynu.pl2017.gg.reversi.ai.GammaAI;
+import jp.ac.ynu.pl2017.gg.reversi.ai.OmegaAI;
 
 /**
  * 難易度選択からのプレイ画面遷移.
  * 
  * Created by shiita on 2017/05/13.
  */
-public class OfflinePlayPanel
-		extends
-		JPanel {
+public class OfflinePlayPanel extends JPanel {
+	
+	private	static final Class[]	aiList = {AlphaAI.class, BetaAI.class, GammaAI.class, OmegaAI.class};
+	
 	public OfflinePlayPanel(
 			TitlePanel.Transition callback) {
 		setSize(panelW, panelH);
@@ -56,7 +64,10 @@ public class OfflinePlayPanel
 					lDifficultyPanel.add(tLvLabel);
 				} else {
 					JButton tPlayButton = new JButton("PLAY");
-					tPlayButton.addActionListener(e -> callback.changePlayPanel());
+					
+					final int tAiType = c-1;
+					final int tAiDiff = 2-r;
+					tPlayButton.addActionListener(e -> callback.changePlayPanel(aiList[tAiType], tAiDiff));
 					lDifficultyPanel.add(tPlayButton);
 				}
 			}

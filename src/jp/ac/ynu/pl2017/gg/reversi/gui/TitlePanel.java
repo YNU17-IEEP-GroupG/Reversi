@@ -2,6 +2,8 @@ package jp.ac.ynu.pl2017.gg.reversi.gui;
 
 import javax.swing.*;
 
+import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
+
 import static jp.ac.ynu.pl2017.gg.reversi.gui.MainFrame.panelH;
 import static jp.ac.ynu.pl2017.gg.reversi.gui.MainFrame.panelW;
 
@@ -72,8 +74,8 @@ public class TitlePanel extends JPanel {
 
 		void returnTitlePanel();
 
-		void changePlayPanel();
-
 		void showLoginDialog();
+
+		void changePlayPanel(Class<BaseAI> pAi, int pDifficulty);
 	}
 }

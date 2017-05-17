@@ -11,6 +11,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
+
 /**
  * ゲーム画面を構築するJPanel. 対人・対CPU問わずここに飛んでくる発想.
  *
@@ -32,13 +34,13 @@ public class PlayPanel extends JPanel implements PlayEndCallback {
 	
 	private TitlePanel.Transition	callback;
 
-	public PlayPanel(TitlePanel.Transition pCallback) {
+	public PlayPanel(TitlePanel.Transition pCallback, Class<BaseAI> pAi, int pDifficulty) {
 		callback = pCallback;
 		
 		setPreferredSize(new Dimension(MainFrame.panelW, MainFrame.panelH));
 		setLayout(new BorderLayout());
 
-		lOthelloPanel = new Othello(this);
+		lOthelloPanel = new Othello(this, pAi, pDifficulty);
 		lCoverPanel = new JPanel();
 		lCoverPanel.setLayout(new FlowLayout());
 

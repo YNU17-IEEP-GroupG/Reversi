@@ -3,6 +3,7 @@ package jp.ac.ynu.pl2017.gg.reversi.gui;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
+import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
 import jp.ac.ynu.pl2017.gg.reversi.ai.OmegaAI;
 import jp.ac.ynu.pl2017.gg.reversi.util.Stone;
 import jp.ac.ynu.pl2017.gg.reversi.util.Direction;
@@ -11,6 +12,8 @@ import jp.ac.ynu.pl2017.gg.reversi.util.Point;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -43,9 +46,12 @@ public class Othello extends JPanel implements ActionListener {
 	private boolean					myTurn;
 	private boolean					passFlag		= false;
 	
+	private Class<BaseAI>			selectedAI;
+	private int						selectedDifficulty;
+	
 	private PlayEndCallback			callback;
 
-	public Othello(PlayEndCallback pCallback) {
+	public Othello(PlayEndCallback pCallback, Class<BaseAI> pAi, int pDifficulty) {
 		Dimension lDimension = new Dimension(BOARD_SIZE * IMAGE_ICON_SIZE, BOARD_SIZE * IMAGE_ICON_SIZE);
 		setSize(lDimension);
 		setPreferredSize(lDimension);
@@ -58,6 +64,9 @@ public class Othello extends JPanel implements ActionListener {
 		myTurn = random.nextBoolean();
 		
 		callback = pCallback;
+
+		selectedAI = pAi;
+		selectedDifficulty = pDifficulty;
 		
 		initBoard();
 
@@ -72,7 +81,7 @@ public class Othello extends JPanel implements ActionListener {
 		String[] position = e.getActionCommand().split(",");
 		int r = Integer.parseInt(position[0]);
 		int c = Integer.parseInt(position[1]);
-		putStone(r, c, myStone);
+		putStone(r, c, myStone, true);
 	}
 
 	public List<Point> makeHint(
@@ -88,7 +97,8 @@ public class Othello extends JPanel implements ActionListener {
 	private void putStone(
 			int r,
 			int c,
-			Stone stone) {
+			Stone stone,
+			boolean isPlayer) {
 		EnumSet<Direction> directions = selectDirections(r, c, stone);
 		if (directions.isEmpty())
 			return;
@@ -155,10 +165,23 @@ public class Othello extends JPanel implements ActionListener {
 				displayHint(hint);
 			} else {
 				removeAllListener();
-                OmegaAI ai = new OmegaAI(hint, myStone, board, 2);
-                ai.think();
-                putStone(ai.getRow(), ai.getColumn(), myStone);
-                addAllListener();
+//				OmegaAI ai = new OmegaAI(hint, myStone, board, selectedDifficulty);
+//				ai.think();
+//				putStone(ai.getRow(), ai.getColumn(), myStone);
+				
+				// Create AI Instance
+				try {
+					Constructor<BaseAI> tConstructor =
+							selectedAI.getConstructor(List.class, Stone.class, Stone[][].class, int.class);
+					Object[] tArgs = {hint, myStone, board, selectedDifficulty};
+					BaseAI ai = (BaseAI) tConstructor.newInstance(tArgs);
+					ai.think();
+					putStone(ai.getRow(), ai.getColumn(), myStone, false);
+				} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException |
+						IllegalArgumentException | InvocationTargetException e) {
+					throw new RuntimeException(e);
+				}
+				addAllListener();
 			}
 		}
 	}
