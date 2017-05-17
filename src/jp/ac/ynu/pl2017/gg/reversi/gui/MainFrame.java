@@ -28,27 +28,33 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 	private static final String	OFFLINE				= "offline";
 	private static final String	SETTINGS			= "settings";
 	private CardLayout			layout;
+	
+	private TitlePanel			titleCard;
+	private OfflinePlayPanel	offlineCard;
+	private OnlinePlayPanel		onlineCard;
+	private SettingsPanel		settingsCard;
 
 	public MainFrame() {
 		super();
 		setTitle("オセロ対戦ゲーム");
-		getContentPane().setPreferredSize(new Dimension(panelW, panelH));
+		/*getContentPane().*/setPreferredSize(new Dimension(panelW, panelH));
 		setResizable(false);
 		pack();
 
-		// メモリを食うようならCardLayoutはやめたほうが良いかも
-		// TODO setContentPane() -> validate()では駄目?
 		layout = new CardLayout();
 		setLayout(layout);
-		TitlePanel titleCard = new TitlePanel(this);
-		OfflinePlayPanel offlineCard = new OfflinePlayPanel(this);
-		OnlinePlayPanel onlineCard = new OnlinePlayPanel(this);
-		SettingsPanel settingsCard = new SettingsPanel(this);
+		titleCard = new TitlePanel(this);
+		offlineCard = new OfflinePlayPanel(this);
+		onlineCard = new OnlinePlayPanel(this);
+		settingsCard = new SettingsPanel(this);
 
+		/*
 		add(titleCard, TITLE);
 		add(offlineCard, OFFLINE);
 		add(onlineCard, ONLINE);
 		add(settingsCard, SETTINGS);
+		*/
+		setContentPane(titleCard);
 
 		setVisible(true);
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -58,22 +64,26 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 
 	@Override
 	public void changeOfflinePlayPanel() {
-		layout.show(getContentPane(), OFFLINE);
+		setContentPane(offlineCard);
+		validate();
 	}
 
 	@Override
 	public void changeOnlinePlayPanel() {
-		layout.show(getContentPane(), ONLINE);
+		setContentPane(onlineCard);
+		validate();
 	}
 
 	@Override
 	public void changeSettingsPanel() {
-		layout.show(getContentPane(), SETTINGS);
+		setContentPane(settingsCard);
+		validate();
 	}
 
 	@Override
 	public void returnTitlePanel() {
-		layout.show(getContentPane(), TITLE);
+		setContentPane(titleCard);
+		validate();
 	}
 
 	public static void main(String[] args) {
@@ -93,7 +103,7 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 
 	private class LoginDialog extends JDialog {
 		MainFrame mainFrame;
-        boolean login = false;
+		boolean login = false;
 
 		private LoginDialog(Frame owner) {
 			super(owner);
@@ -104,51 +114,41 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 			setSize(width, height);
 			Dimension pSize = mainFrame.getSize();
 			setLocation((int)(pSize.getWidth() - width) / 2, (int)(pSize.getHeight() - height) / 2);
-            setModal(true);
+			setModal(true);
 
-            JLabel userLabel = new JLabel("ユーザー名");
-            JTextField userInput = new JTextField(14);
-            JLabel passLabel = new JLabel("パスワード");
-            JPasswordField passInput = new JPasswordField(14);
-            JPanel inputPanel = new JPanel();
-            userInput.setHorizontalAlignment(JTextField.CENTER);
-            passInput.setHorizontalAlignment(JPasswordField.CENTER);
-            inputPanel.setLayout(new GridLayout(2, 2));
-            inputPanel.add(userLabel);
-            inputPanel.add(userInput);
-            inputPanel.add(passLabel);
-            inputPanel.add(passInput);
+			JLabel userLabel = new JLabel("ユーザー名");
+			JTextField userInput = new JTextField(14);
+			JLabel passLabel = new JLabel("パスワード");
+			JPasswordField passInput = new JPasswordField(14);
+			JPanel inputPanel = new JPanel();
+			userInput.setHorizontalAlignment(JTextField.CENTER);
+			passInput.setHorizontalAlignment(JPasswordField.CENTER);
+			inputPanel.setLayout(new GridLayout(2, 2));
+			inputPanel.add(userLabel);
+			inputPanel.add(userInput);
+			inputPanel.add(passLabel);
+			inputPanel.add(passInput);
 
-            JButton loginButton = new JButton("OK");
-            JButton createButton = new JButton("新規作成");
-            loginButton.addActionListener(e -> {
-                // TODO: ログインの通信処理を書いてください
-                // 通信クラスのメソッド呼び出しなど
-                // 今はOKを押したらダイアログが消えるようにします
-                login = true;
-                dispose();
-            });
-            createButton.addActionListener(e -> {
-                // TODO: アカウント新規作成の処理を書いてください
-            });
+			JButton loginButton = new JButton("OK");
+			JButton createButton = new JButton("新規作成");
+			loginButton.addActionListener(e -> {
+				// TODO: ログインの通信処理を書いてください
+				// 通信クラスのメソッド呼び出しなど
+				// 今はOKを押したらダイアログが消えるようにします
+				login = true;
+				dispose();
+			});
+			createButton.addActionListener(e -> {
+				// TODO: アカウント新規作成の処理を書いてください
+			});
 
-            setLayout(new FlowLayout());
-            add(inputPanel);
-            add(loginButton);
-            add(createButton);
+			setLayout(new FlowLayout());
+			add(inputPanel);
+			add(loginButton);
+			add(createButton);
 
-            setVisible(true);
-            setDefaultCloseOperation(WindowConstants	.DISPOSE_ON_CLOSE);
-        }
-    }
+			setVisible(true);
+			setDefaultCloseOperation(WindowConstants	.DISPOSE_ON_CLOSE);
+		}
+	}
 }
-
-
-
-
-
-
-
-
-
-
