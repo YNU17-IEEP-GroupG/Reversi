@@ -10,6 +10,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -29,14 +30,18 @@ public class SettingsPanel extends JPanel {
 	 */
 	private static final long	serialVersionUID	= 1395349167588587208L;
 	
-	private String	username	= "6s";
-	private int		onlineWL;
-	private int		hardCPUWL[][];
-	private int		mediumCPUWL[][];
-	private int		basicCPUWL[][];
-	private int		iconIndex	= 0;
-	private int		backIndex	= 0;
-	private int		temp		= 0;
+	// ユーザーデータ保管場所
+	public static String	username	= "6s";
+	// オンライン勝敗
+	public static int		onlineWL;
+	// CPU勝敗
+	public static int		CPUWL[][][];
+	// アイコン
+	public static int		iconIndex	= 0;
+	// 背景
+	public static int		backIndex	= 0;
+
+	public static int		temp		= 0;
 
 	public SettingsPanel(TitlePanel.Transition callback) {
 		super();
@@ -107,11 +112,11 @@ public class SettingsPanel extends JPanel {
 		 * オンライン情報
 		 */
 		JPanel lOnlineInfoPanel = new JPanel(new FlowLayout());
-		lOnlineInfoPanel.setPreferredSize(new Dimension(MainFrame.panelW, 60));
+		lOnlineInfoPanel.setPreferredSize(new Dimension(MainFrame.panelW, 40));
 		JLabel lLabel1 = new JLabel("オンライン");
 		
 		JLabel lOnlineWLLabel = new JLabel("0勝0敗");
-		Font lOnlineWLFont = new Font("Serif", Font.BOLD, 36);
+		Font lOnlineWLFont = new Font("Serif", Font.BOLD, 24);
 		lOnlineWLLabel.setFont(lOnlineWLFont);
 		
 		lOnlineInfoPanel.add(lLabel1);
@@ -121,11 +126,10 @@ public class SettingsPanel extends JPanel {
 		 * オフライン情報
 		 */
 		JPanel lOfflineInfoPanel = new JPanel(new GridLayout(4, 5));
+		lOfflineInfoPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		lOfflineInfoPanel.setPreferredSize(new Dimension(MainFrame.panelW, 120));
 		String CAP[] = {"オフライン", "vs α", "vs β", "vs γ", "vs ω"};
 		String ROW[] = {"強い", "普通", "弱い"};
-		
-		
 		
 		for (int r = 0; r < 4; r++) {
 			for (int c = 0; c < 5; c ++) {
@@ -234,7 +238,8 @@ public class SettingsPanel extends JPanel {
 		JButton lSelectButtons[] = new JButton[4];
 		for (int i = 0; i < 4; i++) {
 			final int ii = i;
-			lSelectButtons[i] = new JButton();
+			String tImagePath = "image/" + (mode == 0 ? "icon" : "back") + (i+1) + ".png";
+			lSelectButtons[i] = new JButton(new ImageIcon(tImagePath));
 			lSelectButtons[i].setPreferredSize(new Dimension(90, 90));
 			lSelectButtons[i].addActionListener(new ActionListener() {
 				
