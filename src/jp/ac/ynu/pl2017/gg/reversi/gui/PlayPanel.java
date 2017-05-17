@@ -6,14 +6,16 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 
 import javax.swing.BoxLayout;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
  * ゲーム画面を構築するJPanel. 対人・対CPU問わずここに飛んでくる発想.
  *
  */
-public class PlayPanel extends JPanel {
+public class PlayPanel extends JPanel implements PlayEndCallback {
 
 	private boolean	isCPU	= false;
 	/**
@@ -27,12 +29,16 @@ public class PlayPanel extends JPanel {
 
 	public Othello	lOthelloPanel;
 	private JPanel	lCoverPanel;
+	
+	private TitlePanel.Transition	callback;
 
-	public PlayPanel(TitlePanel.Transition callback) {
+	public PlayPanel(TitlePanel.Transition pCallback) {
+		callback = pCallback;
+		
 		setPreferredSize(new Dimension(MainFrame.panelW, MainFrame.panelH));
 		setLayout(new BorderLayout());
 
-		lOthelloPanel = new Othello();
+		lOthelloPanel = new Othello(this);
 		lCoverPanel = new JPanel();
 		lCoverPanel.setLayout(new FlowLayout());
 
@@ -130,6 +136,27 @@ public class PlayPanel extends JPanel {
 
 	public void setType(int pType) {
 		cpuType = pType;
+	}
+
+	@Override
+	public void onGameOver() {
+		int lDialogResult = JOptionPane.showConfirmDialog(null, "再戦しますか？", "Retry?",
+				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+		if (lDialogResult == JOptionPane.YES_NO_OPTION) {
+			if (isCPU) {
+				// 対CPU戦は同じ難易度でもう一度
+			} else {
+				// 対人戦は再戦を申し込む
+			}
+		} else {
+			// 終了
+			callback.returnTitlePanel();
+		}
+		
+	}
+
+	@Override
+	public void onGameAborted() {
 	}
 
 }

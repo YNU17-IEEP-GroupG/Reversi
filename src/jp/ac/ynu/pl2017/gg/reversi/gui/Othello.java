@@ -42,8 +42,10 @@ public class Othello extends JPanel implements ActionListener {
 	private Stone					myStone;												// actionEventで使うため、仕方なくフィールドに
 	private boolean					myTurn;
 	private boolean					passFlag		= false;
+	
+	private PlayEndCallback			callback;
 
-	public Othello() {
+	public Othello(PlayEndCallback pCallback) {
 		Dimension lDimension = new Dimension(BOARD_SIZE * IMAGE_ICON_SIZE, BOARD_SIZE * IMAGE_ICON_SIZE);
 		setSize(lDimension);
 		setPreferredSize(lDimension);
@@ -54,6 +56,9 @@ public class Othello extends JPanel implements ActionListener {
 		Random random = new Random();
 		myStone = random.nextBoolean() ? Stone.Black : Stone.White;
 		myTurn = random.nextBoolean();
+		
+		callback = pCallback;
+		
 		initBoard();
 
 		// setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -246,6 +251,8 @@ public class Othello extends JPanel implements ActionListener {
 		for (JButton[] buttons : buttonBoard)
 			for (JButton button : buttons)
 				button.setEnabled(false);
+		// PlayPanelにコールバック
+		callback.onGameOver();
 	}
 
 	private int countStone(
