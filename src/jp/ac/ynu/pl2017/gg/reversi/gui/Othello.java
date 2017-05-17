@@ -7,6 +7,8 @@ import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
 import jp.ac.ynu.pl2017.gg.reversi.ai.OmegaAI;
 import jp.ac.ynu.pl2017.gg.reversi.util.Stone;
 import jp.ac.ynu.pl2017.gg.reversi.util.Direction;
+import jp.ac.ynu.pl2017.gg.reversi.util.FinishListenedThread;
+import jp.ac.ynu.pl2017.gg.reversi.util.FinishListenedThread.ThreadFinishListener;
 import jp.ac.ynu.pl2017.gg.reversi.util.Point;
 
 import java.awt.*;
@@ -23,7 +25,7 @@ import java.util.Random;
 /**
  * Created by shiita on 2017/04/29.
  */
-public class Othello extends JPanel implements ActionListener {
+public class Othello extends JPanel implements ActionListener, ThreadFinishListener {
 
 	public static final int			BOARD_SIZE		= 8;
 	public static final int			IMAGE_ICON_SIZE	= 40;
@@ -81,7 +83,7 @@ public class Othello extends JPanel implements ActionListener {
 		String[] position = e.getActionCommand().split(",");
 		int r = Integer.parseInt(position[0]);
 		int c = Integer.parseInt(position[1]);
-		putStone(r, c, myStone, true);
+		putStone(r, c, myStone);
 	}
 
 	public List<Point> makeHint(
@@ -97,17 +99,31 @@ public class Othello extends JPanel implements ActionListener {
 	private void putStone(
 			int r,
 			int c,
-			Stone stone,
-			boolean isPlayer) {
+			Stone stone) {
 		EnumSet<Direction> directions = selectDirections(r, c, stone);
 		if (directions.isEmpty())
 			return;
 
+		hideHint();
 		buttonBoard[r][c].setIcon(stone.getImageIcon());
 		buttonBoard[r][c].setRolloverIcon(null);
 		board[r][c] = stone;
 		reverseStone(r, c, stone, directions);
 		// printBoard();
+		new FinishListenedThread(this) {
+			
+			@Override
+			public void doRun() {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+				}
+			}
+		}.start();
+	}
+
+	@Override
+	public void onThreadFinish() {
 		nextTurn();
 	}
 
@@ -176,7 +192,7 @@ public class Othello extends JPanel implements ActionListener {
 					Object[] tArgs = {hint, myStone, board, selectedDifficulty};
 					BaseAI ai = (BaseAI) tConstructor.newInstance(tArgs);
 					ai.think();
-					putStone(ai.getRow(), ai.getColumn(), myStone, false);
+					putStone(ai.getRow(), ai.getColumn(), myStone);
 				} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException |
 						IllegalArgumentException | InvocationTargetException e) {
 					throw new RuntimeException(e);
