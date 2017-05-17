@@ -1,15 +1,19 @@
 package jp.ac.ynu.pl2017.gg.reversi.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.FlowLayout;import java.awt.Font;
 import java.awt.GridLayout;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
 
@@ -33,6 +37,9 @@ public class PlayPanel extends JPanel implements PlayEndCallback {
 	private JPanel	lCoverPanel;
 	
 	private TitlePanel.Transition	callback;
+	
+	private	Class<BaseAI>	selectedAI;
+	private	int				selectedDifficulty;
 
 	public PlayPanel(TitlePanel.Transition pCallback, Class<BaseAI> pAi, int pDifficulty) {
 		callback = pCallback;
@@ -43,15 +50,17 @@ public class PlayPanel extends JPanel implements PlayEndCallback {
 		lOthelloPanel = new Othello(this, pAi, pDifficulty);
 		lCoverPanel = new JPanel();
 		lCoverPanel.setLayout(new FlowLayout());
+		
+		selectedAI = pAi;
+		selectedDifficulty = pDifficulty;
 
-		JPanel lEmptyPanel = new JPanel();
-		lEmptyPanel.setPreferredSize(new Dimension(MainFrame.panelW, (MainFrame.panelH - lOthelloPanel.getHeight()) / 2));
 		// FlowLayout flow1 = new FlowLayout();
 		// flow1.setAlignment(FlowLayout.CENTER);
 		// lCoverPanel.setLayout(flow1);
-		lCoverPanel.setPreferredSize(new Dimension(lOthelloPanel.getWidth() + 50, lOthelloPanel.getHeight()));
+		lCoverPanel.setPreferredSize(new Dimension(lOthelloPanel.getWidth() + 50, MainFrame.panelH));
+		int margin = (MainFrame.panelH - lOthelloPanel.getHeight()) / 2;
+		lCoverPanel.setBorder(BorderFactory.createEmptyBorder(margin, 0, margin, 0));
 
-		lCoverPanel.add(lEmptyPanel);
 		lCoverPanel.add(lOthelloPanel);
 		add(lCoverPanel, BorderLayout.CENTER);
 
@@ -78,21 +87,33 @@ public class PlayPanel extends JPanel implements PlayEndCallback {
 		// アイコン
 		JLabel lOpponentIcon = new JLabel();
 		lOpponentIcon.setPreferredSize(new Dimension(80, 80));
+		lOpponentIcon.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		lOpponentPanel.add(lOpponentIcon, BorderLayout.EAST);
 
 		// 名前
 		JPanel lOpponentNIPanel = new JPanel();
-		lOpponentNIPanel.setPreferredSize(new Dimension(MainFrame.panelW - lOthelloPanel.getWidth(), 80));
-		lOpponentNIPanel.setLayout(new GridLayout(2, 1));
+		lOpponentNIPanel.setPreferredSize(new Dimension(MainFrame.panelW - lOthelloPanel.getWidth(), 100));
+		lOpponentPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		lOpponentNIPanel.setLayout(new BorderLayout());
 		JLabel lOpponentNameLabel = new JLabel("CPU");
-		lOpponentNIPanel.add(lOpponentNameLabel);
+		lOpponentNameLabel.setFont(new Font("Serif", Font.BOLD, 20));
+		lOpponentNIPanel.add(lOpponentNameLabel, BorderLayout.NORTH);
 		// 石数とアイテム
 		JPanel lOpponentSIPanel = new JPanel();
-		lOpponentSIPanel.setLayout(new FlowLayout());
-		JLabel lStoneLabel = new JLabel("2");
-		JLabel lItemLabel = new JLabel();
-		lOpponentSIPanel.add(lStoneLabel);
-		lOpponentSIPanel.add(lItemLabel);
+		FlowLayout lOpponentSILayout = new FlowLayout();
+		lOpponentSILayout.setAlignment(FlowLayout.LEFT);
+		lOpponentSIPanel.setLayout(lOpponentSILayout);
+		JLabel lOpponentStoneLabel = new JLabel("2");
+		lOpponentStoneLabel.setPreferredSize(new Dimension(60, 60));
+		lOpponentStoneLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		lOpponentStoneLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lOpponentStoneLabel.setFont(new Font("monospace", Font.BOLD, 16));
+		lOpponentStoneLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		JButton lOppponentItemButton = new JButton();
+		lOppponentItemButton.setEnabled(false);
+		lOpponentSIPanel.add(lOpponentStoneLabel);
+		lOpponentSIPanel.add(lOppponentItemButton);
+		lOppponentItemButton.setPreferredSize(new Dimension(60, 60));
 		lOpponentNIPanel.add(lOpponentSIPanel);
 
 		lOpponentPanel.add(lOpponentNIPanel, BorderLayout.CENTER);
@@ -106,25 +127,35 @@ public class PlayPanel extends JPanel implements PlayEndCallback {
 		// アイコン
 		JLabel lPlayerIcon = new JLabel();
 		lPlayerIcon.setPreferredSize(new Dimension(80, 80));
+		lPlayerIcon.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		lPlayerPanel.add(lPlayerIcon, BorderLayout.WEST);
 
 		// 名前
 		JPanel lPlayerNIPanel = new JPanel();
-		lPlayerNIPanel.setPreferredSize(new Dimension(MainFrame.panelW - lOthelloPanel.getWidth(), 80));
-		lPlayerNIPanel.setLayout(new GridLayout(2, 1));
-		JLabel lPlayerNameLabel = new JLabel("Player");
-
+		lPlayerNIPanel.setPreferredSize(new Dimension(MainFrame.panelW - lOthelloPanel.getWidth(), 100));
+		lPlayerPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		lPlayerNIPanel.setLayout(new BorderLayout());
+		JLabel lPlayerNameLabel = new JLabel(SettingsPanel.username);
+		lPlayerNameLabel.setFont(new Font("Serif", Font.BOLD, 20));
+		lPlayerNIPanel.add(lPlayerNameLabel, BorderLayout.SOUTH);
 		// 石数とアイテム
 		JPanel lPlayerSIPanel = new JPanel();
-		lPlayerSIPanel.setLayout(new FlowLayout());
-		JLabel lPStoneLabel = new JLabel("2");
-		JLabel lPItemLabel = new JLabel();
-		lPlayerSIPanel.add(lPStoneLabel);
-		lPlayerSIPanel.add(lPItemLabel);
+		FlowLayout lPlayerSILayout = new FlowLayout();
+		lPlayerSILayout.setAlignment(FlowLayout.RIGHT);
+		lPlayerSIPanel.setLayout(lPlayerSILayout);
+		JLabel lPlayerStoneLabel = new JLabel("2");
+		lPlayerStoneLabel.setPreferredSize(new Dimension(60, 60));
+		lPlayerStoneLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		lPlayerStoneLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lPlayerStoneLabel.setFont(new Font("monospace", Font.BOLD, 16));
+		lPlayerStoneLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		JButton lPlayerItemButton = new JButton();
+		lPlayerSIPanel.add(lPlayerStoneLabel);
+		lPlayerSIPanel.add(lPlayerItemButton);
+		lPlayerItemButton.setPreferredSize(new Dimension(60, 60));
 		lPlayerNIPanel.add(lPlayerSIPanel);
 
 		lPlayerPanel.add(lPlayerNIPanel, BorderLayout.CENTER);
-		lPlayerNIPanel.add(lPlayerNameLabel);
 
 		lInfoPanel.add(lOpponentPanel, BorderLayout.NORTH);
 		lInfoPanel.add(lPlayerPanel, BorderLayout.SOUTH);
@@ -147,6 +178,7 @@ public class PlayPanel extends JPanel implements PlayEndCallback {
 		if (lDialogResult == JOptionPane.YES_NO_OPTION) {
 			if (isCPU) {
 				// 対CPU戦は同じ難易度でもう一度
+				callback.changePlayPanel(selectedAI, selectedDifficulty);
 			} else {
 				// 対人戦は再戦を申し込む
 			}
