@@ -34,6 +34,9 @@ public class Othello extends JPanel implements ActionListener {
 	public static final ImageIcon	turn1Icon		= new ImageIcon("image/45degree.png");
 	public static final ImageIcon	turn2Icon		= new ImageIcon("image/90degree.png");
 	public static final ImageIcon	turn3Icon		= new ImageIcon("image/135degree.png");
+	public static final ImageIcon[]	turnBtoW		= {turn1Icon, turn2Icon, turn3Icon, whiteIcon};
+	public static final ImageIcon[]	turnWtoB		= {turn3Icon, turn2Icon, turn1Icon, blackIcon};
+	
 	private JButton[][]				buttonBoard		= new JButton[BOARD_SIZE][BOARD_SIZE];
 	private Stone[][]				board			= new Stone[BOARD_SIZE][BOARD_SIZE];
 	private Stone					myStone;												// actionEventで使うため、仕方なくフィールドに
@@ -190,13 +193,38 @@ public class Othello extends JPanel implements ActionListener {
 		while (0 <= i && i < BOARD_SIZE && 0 <= j && j < BOARD_SIZE) {
 			if (board[i][j] == reverse) {
 				board[i][j] = stone;
-				buttonBoard[i][j].setIcon(stone.getImageIcon());
+				showAnimation(buttonBoard[i][j], stone);
+//				buttonBoard[i][j].setIcon(stone.getImageIcon());
 			} else {
 				break;
 			}
 			i += dr;
 			j += dc;
 		}
+	}
+	
+	private void showAnimation(final JButton pTargetButton, final Stone pDestStone) {
+		new Thread(){
+			@Override
+			public void run() {
+				ImageIcon[] targetIcons;
+				if (pDestStone.equals(Stone.White)) {
+					// 黒→白
+					targetIcons = turnBtoW;
+				} else {
+					targetIcons = turnWtoB;
+				}
+				for (int i = 0; i < 4; i++) {
+					pTargetButton.setIcon(targetIcons[i]);
+					try {
+						Thread.sleep(120);
+					} catch (InterruptedException e) {
+						pTargetButton.setIcon(targetIcons[3]);
+						break;
+					}
+				}
+			}
+		}.start();
 	}
 
 	private void displayHint(
