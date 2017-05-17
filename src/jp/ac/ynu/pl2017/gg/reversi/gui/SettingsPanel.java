@@ -29,14 +29,18 @@ public class SettingsPanel extends JPanel {
 	 */
 	private static final long	serialVersionUID	= 1395349167588587208L;
 	
-	private String	username	= "6s";
-	private int		onlineWL;
-	private int		hardCPUWL[][];
-	private int		mediumCPUWL[][];
-	private int		basicCPUWL[][];
-	private int		iconIndex	= 0;
-	private int		backIndex	= 0;
-	private int		temp		= 0;
+	// ユーザーデータ保管場所
+	public static String	username	= "6s";
+	// オンライン勝敗
+	public static int		onlineWL;
+	// CPU勝敗
+	public static int		CPUWL[][][];
+	// アイコン
+	public static int		iconIndex	= 0;
+	// 背景
+	public static int		backIndex	= 0;
+
+	public static int		temp		= 0;
 
 	public SettingsPanel(TitlePanel.Transition callback) {
 		super();
