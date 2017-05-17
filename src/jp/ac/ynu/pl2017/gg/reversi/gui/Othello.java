@@ -20,21 +20,17 @@ import java.util.Random;
 /**
  * Created by shiita on 2017/04/29.
  */
-public class Othello
-		extends
-		JPanel
-		implements
-		ActionListener {
+public class Othello extends JPanel implements ActionListener {
 
 	public static final int			BOARD_SIZE		= 8;
 	public static final int			IMAGE_ICON_SIZE	= 40;
-	public static final ImageIcon	emptyIcon		= new ImageIcon("image/Empty.jpg");
+	public static final ImageIcon	emptyIcon		= new ImageIcon("image/Empty.png");
 	public static final ImageIcon	blackIcon		= new ImageIcon("image/black.png");
 	public static final ImageIcon	whiteIcon		= new ImageIcon("image/white.png");
 	public static final ImageIcon	rolloverIcon	= new ImageIcon("image/Rollover.png");
 	public static final ImageIcon	canPutIcon		= new ImageIcon("image/CanPut.png");
-	public static final ImageIcon   grayIcon		= new ImageIcon("image/graypanel.png"); 			
-	public static final ImageIcon	cannotPutIcon		= new ImageIcon("image/bannedpanel.png");
+	public static final ImageIcon	grayIcon		= new ImageIcon("image/graypanel.png");
+	public static final ImageIcon	cannotPutIcon	= new ImageIcon("image/bannedpanel.png");
 	public static final ImageIcon	turn1Icon		= new ImageIcon("image/45degree.png");
 	public static final ImageIcon	turn2Icon		= new ImageIcon("image/90degree.png");
 	public static final ImageIcon	turn3Icon		= new ImageIcon("image/135degree.png");
@@ -268,10 +264,5 @@ public class Othello
 			System.out.println();
 		}
 		System.out.println();
-	}
-
-	public static void main(
-			String[] args) {
-		new Othello();
 	}
 }

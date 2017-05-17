@@ -1,14 +1,19 @@
 package jp.ac.ynu.pl2017.gg.reversi.gui;
 
-import sun.applet.Main;
+import java.awt.CardLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Frame;
+import java.awt.GridLayout;
 
-import java.awt.*;
-import java.awt.Dialog.ModalityType;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.WindowConstants;
 
 public class MainFrame extends JFrame implements TitlePanel.Transition {
 
