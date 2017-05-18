@@ -4,7 +4,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
-import jp.ac.ynu.pl2017.gg.reversi.ai.OmegaAI;
+import jp.ac.ynu.pl2017.gg.reversi.ai.Evaluation;
 import jp.ac.ynu.pl2017.gg.reversi.util.Stone;
 import jp.ac.ynu.pl2017.gg.reversi.util.Direction;
 import jp.ac.ynu.pl2017.gg.reversi.util.FinishListenedThread;
@@ -29,21 +29,25 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 
 	public static final int			BOARD_SIZE		= 8;
 	public static final int			IMAGE_ICON_SIZE	= 40;
+	public static final int         ITEM_COUNT      = 3;
 	public static final ImageIcon	emptyIcon		= new ImageIcon("image/board/Empty.png");
 	public static final ImageIcon	blackIcon		= new ImageIcon("image/board/black.png");
 	public static final ImageIcon	whiteIcon		= new ImageIcon("image/board/white.png");
-	public static final ImageIcon	rolloverIcon	= new ImageIcon("image/board/Rollover.png");
+	public static final ImageIcon	rolloverIcon	    = new ImageIcon("image/board/Rollover.png");
 	public static final ImageIcon	canPutIcon		= new ImageIcon("image/board/CanPut.png");
-	public static final ImageIcon	grayIcon		= new ImageIcon("image/board/graypanel.png");
+	public static final ImageIcon	grayIcon		    = new ImageIcon("image/board/graypanel.png");
 	public static final ImageIcon	cannotPutIcon	= new ImageIcon("image/board/bannedpanel.png");
 	public static final ImageIcon	turn1Icon		= new ImageIcon("image/board/45degree.png");
 	public static final ImageIcon	turn2Icon		= new ImageIcon("image/board/90degree.png");
 	public static final ImageIcon	turn3Icon		= new ImageIcon("image/board/135degree.png");
-	public static final ImageIcon[]	turnBtoW		= {turn1Icon, turn2Icon, turn3Icon, whiteIcon};
-	public static final ImageIcon[]	turnWtoB		= {turn3Icon, turn2Icon, turn1Icon, blackIcon};
+	public static final ImageIcon[]	turnBtoW		    = {turn1Icon, turn2Icon, turn3Icon, whiteIcon};
+	public static final ImageIcon[]	turnWtoB		    = {turn3Icon, turn2Icon, turn1Icon, blackIcon};
+	public static final ImageIcon   itemIcon        = new ImageIcon("image/board/item.png");
+	public static final ImageIcon   itemCanPutIcon  = new ImageIcon("image/board/itemCanPut.png");
 	
 	private JButton[][]				buttonBoard		= new JButton[BOARD_SIZE][BOARD_SIZE];
 	private Stone[][]				board			= new Stone[BOARD_SIZE][BOARD_SIZE];
+	private List<Point>             itemPoints      = new ArrayList<>();
 	private Stone					myStone;												// actionEventで使うため、仕方なくフィールドに
 	private boolean					myTurn;
 	private boolean					passFlag		= false;
@@ -62,6 +66,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		// pack();
 
 		Random random = new Random();
+		selectItemPoints();
 		myStone = random.nextBoolean() ? Stone.Black : Stone.White;
 		myTurn = random.nextBoolean();
 		
@@ -108,6 +113,10 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		buttonBoard[r][c].setIcon(stone.getImageIcon());
 		buttonBoard[r][c].setRolloverIcon(null);
 		board[r][c] = stone;
+		Point point = new Point(r, c);
+		if (itemPoints.contains(point)) {
+		    gainItem(point);
+        }
 		reverseStone(r, c, stone, directions);
 		// printBoard();
 		new FinishListenedThread(this) {
@@ -272,7 +281,12 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 
 	private void displayHint(
 			List<Point> hint) {
-		hint.forEach(p -> buttonBoard[p.getRow()][p.getColumn()].setIcon(canPutIcon));
+		hint.forEach(p ->  {
+            if (itemPoints.contains(p))
+                buttonBoard[p.getRow()][p.getColumn()].setIcon(itemCanPutIcon);
+            else
+                buttonBoard[p.getRow()][p.getColumn()].setIcon(canPutIcon);
+        });
 	}
 
 	private void hideHint() {
@@ -325,10 +339,33 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		buttonBoard[4][3].setRolloverIcon(null);
 		buttonBoard[4][4].setRolloverIcon(null);
 
-		// // パステスト
-		// board[0][0] = Stone.White; buttonBoard[0][0].setIcon(whiteIcon);
-		// board[0][1] = Stone.Black; buttonBoard[0][1].setIcon(blackIcon);
+		buttonBoard[itemPoints.get(0).getRow()][itemPoints.get(0).getColumn()].setIcon(itemIcon);
+		buttonBoard[itemPoints.get(1).getRow()][itemPoints.get(1).getColumn()].setIcon(itemIcon);
+		buttonBoard[itemPoints.get(2).getRow()][itemPoints.get(2).getColumn()].setIcon(itemIcon);
+		buttonBoard[itemPoints.get(0).getRow()][itemPoints.get(0).getColumn()].setRolloverIcon(null);
+		buttonBoard[itemPoints.get(1).getRow()][itemPoints.get(1).getColumn()].setRolloverIcon(null);
+		buttonBoard[itemPoints.get(2).getRow()][itemPoints.get(2).getColumn()].setRolloverIcon(null);
 	}
+
+	private void selectItemPoints() {
+	    Random random = new Random();
+	    while (itemPoints.size() < ITEM_COUNT) {
+	        int r = random.nextInt(8);
+	        int c = random.nextInt(8);
+	        if (2 <= r && r <= 5 && 2 <= c && c <= 5)
+	            continue;
+	        Point point = new Point(r, c);
+            if (!itemPoints.contains(point)) {
+                itemPoints.add(point);
+                Evaluation.updateSquare(point);
+            }
+        }
+    }
+
+    private void gainItem(Point point) {
+	    itemPoints.remove(point);
+        // TODO: アイテムをPlayPanelにセットするメソッドを使用
+    }
 
 	private void printBoard() {
 		for (Stone[] stones : board) {

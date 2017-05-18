@@ -1,6 +1,7 @@
 package jp.ac.ynu.pl2017.gg.reversi.ai;
 
 import jp.ac.ynu.pl2017.gg.reversi.util.BoardHelper;
+import jp.ac.ynu.pl2017.gg.reversi.util.Point;
 import jp.ac.ynu.pl2017.gg.reversi.util.Stone;
 
 import static jp.ac.ynu.pl2017.gg.reversi.gui.Othello.BOARD_SIZE;
@@ -12,7 +13,7 @@ import static jp.ac.ynu.pl2017.gg.reversi.gui.Othello.BOARD_SIZE;
 public class Evaluation {
     public enum EvaluationType { SQUARE, COUNT }
     // TODO: 複数の評価配列を作成する。
-    private static final int[][] square =
+    private static int[][] square =
             {{ 30, -12,  0, -1, -1,  0, -12,  30},
                     {-12, -15, -3, -3, -3, -3, -15, -12},
                     {  0,  -3,  0, -1, -1,  0,  -3,   0},
@@ -21,6 +22,10 @@ public class Evaluation {
                     {  0,  -3,  0, -1, -1,  0,  -3,   0},
                     {-12, -15, -3, -3, -3, -3, -15, -12},
                     { 30, -12,  0, -1, -1,  0, -12,  30},};
+
+    public static void updateSquare(Point point) {
+        square[point.getRow()][point.getColumn()] += 40;
+    }
 
     public static int squareEvaluation(Stone stone, Stone[][] board) {
         Stone reverse = stone.getReverse();

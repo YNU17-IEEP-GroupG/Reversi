@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
+import jp.ac.ynu.pl2017.gg.reversi.util.Item;
 
 /**
  * ゲーム画面を構築するJPanel. 対人・対CPU問わずここに飛んでくる発想.
@@ -32,6 +33,9 @@ public class PlayPanel extends JPanel implements PlayEndCallback {
 	 * 0:弱い; 2:強い
 	 */
 	private int		cpuDiff	= 0;
+
+	// TODO: itemをOthelloクラスのgainItem()からセットできるようにしてください。アイテムの使用はOthelloクラスのuseItem()を利用してください
+	private Item item = Item.NONE;
 
 	public Othello	lOthelloPanel;
 	private JPanel	lCoverPanel;
