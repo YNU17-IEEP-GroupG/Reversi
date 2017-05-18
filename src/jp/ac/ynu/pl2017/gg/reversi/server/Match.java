@@ -1,4 +1,4 @@
-import java.net.*;
+package jp.ac.ynu.pl2017.gg.reversi.server;
 
 public class Match {
 	private int room;
