@@ -16,6 +16,7 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
 import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
+import jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection;
 
 public class MainFrame extends JFrame implements TitlePanel.Transition {
 
@@ -33,7 +34,6 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 	
 	private TitlePanel			titleCard;
 	private OfflinePlayPanel	offlineCard;
-	private OnlinePlayPanel		onlineCard;
 	private SettingsPanel		settingsCard;
 
 	public MainFrame() {
@@ -42,12 +42,13 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 		/*getContentPane().*/setPreferredSize(new Dimension(panelW, panelH));
 		setResizable(false);
 		pack();
+		
+//		ClientConnection.init();
 
 		layout = new CardLayout();
 		setLayout(layout);
 		titleCard = new TitlePanel(this);
 		offlineCard = new OfflinePlayPanel(this);
-		onlineCard = new OnlinePlayPanel(this);
 		settingsCard = new SettingsPanel(this);
 
 		/*
@@ -72,7 +73,7 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 
 	@Override
 	public void changeOnlinePlayPanel() {
-		setContentPane(onlineCard);
+		setContentPane(new OnlinePlayPanel(this));
 		validate();
 	}
 

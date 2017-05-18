@@ -1,6 +1,10 @@
 package jp.ac.ynu.pl2017.gg.reversi.util;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 
 public class ClientConnection {
@@ -9,17 +13,17 @@ public class ClientConnection {
 	 * 通信用.すべての通信はここを通す
 	 */
 	private	static Socket	theSocket;
-	public	static String	SERVER_ADDRESS;
-	public	static int		SERVER_PORT;
+	public	static String	SERVER;
+	public	static int		PORT;
 	
 	/**
 	 * 初期化
 	 */
 	public static void init() {
 		try {
-			theSocket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+			theSocket = new Socket(SERVER, PORT);
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			e.printStackTrace();
 		}
 	}
 	
@@ -39,10 +43,29 @@ public class ClientConnection {
 	 * @param pPassword
 	 * @return ログイン可否
 	 */
-	public static boolean logIn(String pUsername, String pPassword) {
-		return false;
+	public static boolean login(String name, String pass) {
+		boolean log = false;// ログインできたかどうか
+
+		try {
+//			theSocket = new Socket(SERVER, PORT);
+			OutputStream os = theSocket.getOutputStream();
+			DataOutputStream dos = new DataOutputStream(os);
+			
+			InputStream is = theSocket.getInputStream();
+			DataInputStream dis = new DataInputStream(is);
+			
+			dos.writeUTF(name);
+			dos.writeUTF(pass);
+
+			log = dis.readBoolean();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return log;
 	}
-	
+
 	/**
 	 * パスワード変更
 	 * @param pUsername
@@ -86,6 +109,69 @@ public class ClientConnection {
 	 */
 	public static Object[] receiveItemUse() {
 		return null;
+	}
+
+	public static boolean match(boolean random, String enemy) { // random,true:ランダムマッチ,false:特定の人と
+		boolean turn=true; //true:先手,false:後手
+		
+		try {
+			
+			OutputStream os = theSocket.getOutputStream();
+			DataOutputStream dos = new DataOutputStream(os);
+			
+			InputStream is = theSocket.getInputStream();
+			DataInputStream dis = new DataInputStream(is);
+			
+			if (random) {
+				dos.writeUTF("RANDOM_MATCH");
+				turn = dis.readBoolean();
+			} else {
+				dos.writeUTF(enemy);
+				turn = dis.readBoolean();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return turn;
+	}
+
+	// TODO 座標どう送る?
+	public static void send(int coordinate){
+		
+		try {
+			OutputStream os = theSocket.getOutputStream();
+			DataOutputStream dos = new DataOutputStream(os);
+			
+			InputStream is = theSocket.getInputStream();
+			DataInputStream dis = new DataInputStream(is);
+			
+			
+			dos.writeInt(coordinate);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	public static int recieve(){
+		int Ecoordinate=0;
+		
+		try{
+			OutputStream os = theSocket.getOutputStream();
+			DataOutputStream dos = new DataOutputStream(os);
+			
+			InputStream is = theSocket.getInputStream();
+			DataInputStream dis = new DataInputStream(is);
+			
+			
+			Ecoordinate = dis.readInt();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return Ecoordinate;
 	}
 
 }
