@@ -35,6 +35,8 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	public static final ImageIcon	emptyIcon		= new ImageIcon("image/board/Empty.png");
 	public static final ImageIcon	blackIcon		= new ImageIcon("image/board/black.png");
 	public static final ImageIcon	whiteIcon		= new ImageIcon("image/board/white.png");
+    public static final ImageIcon	tripleBlackIcon	= new ImageIcon("image/board/tripleB.png");
+    public static final ImageIcon	tripleWhiteIcon = new ImageIcon("image/board/tripleW.png");
 	public static final ImageIcon	rolloverIcon	    = new ImageIcon("image/board/Rollover.png");
 	public static final ImageIcon	canPutIcon		= new ImageIcon("image/board/CanPut.png");
 	public static final ImageIcon	grayIcon		    = new ImageIcon("image/board/graypanel.png");
@@ -55,6 +57,8 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	private boolean					passFlag		= false;
 	private boolean                 dropFlag        = false;
 	private int                     grayTurn        = 0;
+	private boolean                 tripleFlag      = false;
+	private List<Point>             triplePoints    = new ArrayList<>();
 
 	private Class<BaseAI>			selectedAI;
 	private int						selectedDifficulty;
@@ -96,10 +100,10 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
             drop(r, c);
 		    return;
         }
-		// テストに使用
-        if (r == BOARD_SIZE - 1 && c == BOARD_SIZE -1) {
-            useDrop();
-        }
+//		 //デバッグに使用
+//        if (r == BOARD_SIZE - 1 && c == BOARD_SIZE -1) {
+//            useTriple();
+//        }
 		putStone(r, c, myStone);
 	}
 
@@ -122,7 +126,14 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 			return;
 
 		hideHint();
-		buttonBoard[r][c].setIcon(stone.getImageIcon());
+		if (tripleFlag) {
+            buttonBoard[r][c].setIcon(stone.getTripleImageIcon());
+            triplePoints.add(new Point(r, c));
+            tripleFlag = false;
+        }
+        else {
+            buttonBoard[r][c].setIcon(stone.getImageIcon());
+        }
 		buttonBoard[r][c].setRolloverIcon(null);
 		board[r][c] = stone;
 		Point point = new Point(r, c);
@@ -289,6 +300,13 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 						break;
 					}
 				}
+
+				// 3倍石の反映
+                String[] position = pTargetButton.getActionCommand().split(",");
+                int r = Integer.parseInt(position[0]);
+                int c = Integer.parseInt(position[1]);
+                if (triplePoints.contains(new Point(r, c)))
+                    pTargetButton.setIcon(pDestStone.getTripleImageIcon());
 			}
 		}.start();
 	}
@@ -323,7 +341,13 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 
 	private int countStone(
 			Stone stone) {
-		return (int) Arrays.stream(board).mapToLong(ss -> Arrays.stream(ss).filter(s -> s == stone).count()).sum();
+		int count = (int) Arrays.stream(board).mapToLong(ss -> Arrays.stream(ss).filter(s -> s == stone).count()).sum();
+        // 三倍石の反映
+        for (Point p : triplePoints) {
+            if (board[p.getRow()][p.getColumn()] == stone)
+                count += 2;
+        }
+		return count;
 	}
 
 	private void initBoard() {
@@ -424,7 +448,6 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
     }
 
     private void drop(int r, int c) {
-        System.out.println("drop" + r + "," + c);
         board[r][c] = Stone.Empty;
         buttonBoard[r][c].setIcon(emptyIcon);
         buttonBoard[r][c].setRolloverIcon(rolloverIcon);
@@ -458,5 +481,9 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	        for (int j = 0; j < BOARD_SIZE; j++)
 	            if (buttonBoard[i][j].getIcon() == grayIcon)
                     buttonBoard[i][j].setIcon(board[i][j].getImageIcon());
+    }
+
+    private void useTriple() {
+	    tripleFlag = true;
     }
 }
