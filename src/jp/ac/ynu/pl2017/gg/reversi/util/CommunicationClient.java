@@ -1,166 +1,170 @@
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.net.*;
-
-import javax.swing.*;
-
-public class CommunicationClient extends JFrame implements ActionListener {
-	static String name = "0";
-	static String pass = "0";
-	static String enemy = "0";
-	static boolean turn = false; // true:æè,false:Œãè
-
-	static int coordinate = 11;
-	static int Ecoordinate = 11; // “G‚Ì’u‚¢‚½À•W
-	static boolean log = false;
-	static boolean mat = false;
-	static Socket socket;
-	Communication cn = new Communication(socket); // ’ÊM—p
-
-	JLabel Llabel = new JLabel("–¢ƒƒOƒCƒ“");
-	JLabel Mlabel = new JLabel("ƒ}ƒbƒ`ƒ“ƒO’†");
-	JLabel Tlabel = new JLabel("");
-	static JLabel Clabel = new JLabel("‘Šè‚Ì’u‚¢‚½À•W:");
-	JTextField text1;
-	JPasswordField text2;
-	JTextField textm;
-	JTextField textc;
-
-	JButton send = new JButton("ƒƒOƒCƒ“");
-	JButton match = new JButton("OK");
-	JButton rmatch = new JButton("ƒ‰ƒ“ƒ_ƒ€ƒ}ƒbƒ`");
-	JButton put = new JButton("Î‚ğ’u‚­");
-	JButton start = new JButton("ŠJn");
-
-	CommunicationClient() {
-		send.addActionListener(this);
-		match.addActionListener(this);
-		rmatch.addActionListener(this);
-		put.addActionListener(this);
-		start.addActionListener(this);
-
-		match.setEnabled(false);
-		rmatch.setEnabled(false);
-		put.setEnabled(false);
-		start.setEnabled(false);
-
-		text1 = new JTextField("ƒ†[ƒU–¼", 15);
-		text2 = new JPasswordField("pass", 15);
-		textm = new JTextField("‘Îí‘Šè‚Ìƒ†[ƒU–¼", 15);
-		textc = new JTextField("11", 15);
-
-		JPanel pn = new JPanel();
-		pn.setLayout(new GridLayout(4, 2));
-		pn.add(text1);
-		pn.add(text2);
-		pn.add(send);
-		pn.add(Llabel);
-
-		pn.add(textm);
-		pn.add(Mlabel);
-		pn.add(match);
-		pn.add(rmatch);
-		add(pn, "North");
-
-		JPanel pc = new JPanel();
-		pc.setLayout(new GridLayout(2, 1));
-
-		JPanel jp = new JPanel();
-		jp.setLayout(new GridLayout(2, 2));
-		jp.add(Tlabel);
-		jp.add(Clabel);
-		jp.add(textc);
-		jp.add(put);
-
-		pc.add(start);
-		pc.add(jp);
-		add(pc, "Center");
-	}
-
-	@SuppressWarnings("deprecation")
-	public void actionPerformed(ActionEvent e) {
-		String cmd = e.getActionCommand();
-
-		if (cmd.equals("ƒƒOƒCƒ“")) {
-
-			name = text1.getText();
-			pass = text2.getText();
-
-			if (cn.login(name, pass)) {
-				Llabel.setText("ƒƒOƒCƒ“’†");
-				send.setEnabled(false);
-				match.setEnabled(true);
-				rmatch.setEnabled(true);
-			} else {
-				Llabel.setText("ƒpƒXƒ[ƒh‚ªˆá‚¢‚Ü‚·");
-			}
-		}
-
-		if (cmd.equals("OK")) {
-			enemy = textm.getText();
-			System.out.println(enemy+";"+name);
-			if (!enemy.equals(name)) {
-				match.setEnabled(false);
-				rmatch.setEnabled(false);
-
-				turn = cn.match(false, enemy);
-
-				Mlabel.setText("ƒ}ƒbƒ`ƒ“ƒO¬Œ÷");
-				start.setEnabled(true);
-
-				if (turn) {
-					Tlabel.setText("‚ ‚È‚½‚Íæè‚Å‚·");
-				} else {
-					Tlabel.setText("‚ ‚È‚½‚ÍŒãè‚Å‚·");
-				}
-			}else{
-				Mlabel.setText("©•ª‚Ì–¼‘O‚Å‚·");
-			}
-		}
-
-		if (cmd.equals("ƒ‰ƒ“ƒ_ƒ€ƒ}ƒbƒ`")) {
-			
-			match.setEnabled(false);
-			rmatch.setEnabled(false);
-			
-			turn = cn.match(true, null);
-
-			Mlabel.setText("ƒ}ƒbƒ`ƒ“ƒO¬Œ÷");
-			start.setEnabled(true);
-
-			if (turn) {
-				Tlabel.setText("‚ ‚È‚½‚Íæè‚Å‚·");
-			} else {
-				Tlabel.setText("‚ ‚È‚½‚ÍŒãè‚Å‚·");
-			}
-		}
-
-		if (cmd.equals("ŠJn")) {
-
-			if (turn) {
-				put.setEnabled(true);
-			} else {
-				Clabel.setText(Integer.toString(cn.recieve()));
-				put.setEnabled(true);
-			}
-		}
-
-		if (cmd.equals("Î‚ğ’u‚­")) {
-			cn.send(Integer.parseInt(textc.getText()));
-			put.setEnabled(false);
-			Clabel.setText(Integer.toString(cn.recieve()));
-		}
-	}
-
-	public static void main(String args[]) {
-
-		CommunicationClient frame = new CommunicationClient();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(500, 500);
-		frame.setTitle("Test");
-		frame.setVisible(true);
-
-	}
-
-}
+//package jp.ac.ynu.pl2017.gg.reversi.server;
+//
+//import jp.ac.ynu.pl2017.gg.reversi.util.Communication;
+//
+//import java.awt.*;
+//import java.awt.event.*;
+//import java.io.*;
+//import java.net.*;
+//
+//import javax.swing.*;
+//
+//public class CommunicationClient extends JFrame implements ActionListener {
+//    static String name = "0";
+//    static String pass = "0";
+//    static String enemy = "0";
+//    static boolean turn = false; // true:å…ˆæ‰‹,false:å¾Œæ‰‹
+//
+//    static int coordinate = 11;
+//    static int Ecoordinate = 11; // æ•µã®ç½®ã„ãŸåº§æ¨™
+//    static boolean log = false;
+//    static boolean mat = false;
+//    static Socket socket;
+////    Communication cn = new Communication(socket); // é€šä¿¡ç”¨
+//
+//    JLabel Llabel = new JLabel("æœªãƒ­ã‚°ã‚¤ãƒ³");
+//    JLabel Mlabel = new JLabel("ãƒãƒƒãƒãƒ³ã‚°ä¸­");
+//    JLabel Tlabel = new JLabel("");
+//    static JLabel Clabel = new JLabel("ç›¸æ‰‹ã®ç½®ã„ãŸåº§æ¨™:");
+//    JTextField text1;
+//    JPasswordField text2;
+//    JTextField textm;
+//    JTextField textc;
+//
+//    JButton send = new JButton("ãƒ­ã‚°ã‚¤ãƒ³");
+//    JButton match = new JButton("OK");
+//    JButton rmatch = new JButton("ãƒ©ãƒ³ãƒ€ãƒ ãƒãƒƒãƒ");
+//    JButton put = new JButton("çŸ³ã‚’ç½®ã");
+//    JButton start = new JButton("é–‹å§‹");
+//
+//    CommunicationClient() {
+//        send.addActionListener(this);
+//        match.addActionListener(this);
+//        rmatch.addActionListener(this);
+//        put.addActionListener(this);
+//        start.addActionListener(this);
+//
+//        match.setEnabled(false);
+//        rmatch.setEnabled(false);
+//        put.setEnabled(false);
+//        start.setEnabled(false);
+//
+//        text1 = new JTextField("ãƒ¦ãƒ¼ã‚¶å", 15);
+//        text2 = new JPasswordField("pass", 15);
+//        textm = new JTextField("å¯¾æˆ¦ç›¸æ‰‹ã®ãƒ¦ãƒ¼ã‚¶å", 15);
+//        textc = new JTextField("11", 15);
+//
+//        JPanel pn = new JPanel();
+//        pn.setLayout(new GridLayout(4, 2));
+//        pn.add(text1);
+//        pn.add(text2);
+//        pn.add(send);
+//        pn.add(Llabel);
+//
+//        pn.add(textm);
+//        pn.add(Mlabel);
+//        pn.add(match);
+//        pn.add(rmatch);
+//        add(pn, "North");
+//
+//        JPanel pc = new JPanel();
+//        pc.setLayout(new GridLayout(2, 1));
+//
+//        JPanel jp = new JPanel();
+//        jp.setLayout(new GridLayout(2, 2));
+//        jp.add(Tlabel);
+//        jp.add(Clabel);
+//        jp.add(textc);
+//        jp.add(put);
+//
+//        pc.add(start);
+//        pc.add(jp);
+//        add(pc, "Center");
+//    }
+//
+//    @SuppressWarnings("deprecation")
+//    public void actionPerformed(ActionEvent e) {
+//        String cmd = e.getActionCommand();
+//
+//        if (cmd.equals("ãƒ­ã‚°ã‚¤ãƒ³")) {
+//
+//            name = text1.getText();
+//            pass = text2.getText();
+//
+//            if (cn.login(name, pass)) {
+//                Llabel.setText("ãƒ­ã‚°ã‚¤ãƒ³ä¸­");
+//                send.setEnabled(false);
+//                match.setEnabled(true);
+//                rmatch.setEnabled(true);
+//            } else {
+//                Llabel.setText("ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ãŒé•ã„ã¾ã™");
+//            }
+//        }
+//
+//        if (cmd.equals("OK")) {
+//            enemy = textm.getText();
+//            System.out.println(enemy+";"+name);
+//            if (!enemy.equals(name)) {
+//                match.setEnabled(false);
+//                rmatch.setEnabled(false);
+//
+//                turn = cn.match(false, enemy);
+//
+//                Mlabel.setText("ãƒãƒƒãƒãƒ³ã‚°æˆåŠŸ");
+//                start.setEnabled(true);
+//
+//                if (turn) {
+//                    Tlabel.setText("ã‚ãªãŸã¯å…ˆæ‰‹ã§ã™");
+//                } else {
+//                    Tlabel.setText("ã‚ãªãŸã¯å¾Œæ‰‹ã§ã™");
+//                }
+//            }else{
+//                Mlabel.setText("è‡ªåˆ†ã®åå‰ã§ã™");
+//            }
+//        }
+//
+//        if (cmd.equals("ãƒ©ãƒ³ãƒ€ãƒ ãƒãƒƒãƒ")) {
+//
+//            match.setEnabled(false);
+//            rmatch.setEnabled(false);
+//
+//            turn = cn.match(true, null);
+//
+//            Mlabel.setText("ãƒãƒƒãƒãƒ³ã‚°æˆåŠŸ");
+//            start.setEnabled(true);
+//
+//            if (turn) {
+//                Tlabel.setText("ã‚ãªãŸã¯å…ˆæ‰‹ã§ã™");
+//            } else {
+//                Tlabel.setText("ã‚ãªãŸã¯å¾Œæ‰‹ã§ã™");
+//            }
+//        }
+//
+//        if (cmd.equals("é–‹å§‹")) {
+//
+//            if (turn) {
+//                put.setEnabled(true);
+//            } else {
+//                Clabel.setText(Integer.toString(cn.recieve()));
+//                put.setEnabled(true);
+//            }
+//        }
+//
+//        if (cmd.equals("çŸ³ã‚’ç½®ã")) {
+//            cn.send(Integer.parseInt(textc.getText()));
+//            put.setEnabled(false);
+//            Clabel.setText(Integer.toString(cn.recieve()));
+//        }
+//    }
+//
+//    public static void main(String args[]) {
+//
+//        CommunicationClient frame = new CommunicationClient();
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setSize(500, 500);
+//        frame.setTitle("Test");
+//        frame.setVisible(true);
+//
+//    }
+//
+//}

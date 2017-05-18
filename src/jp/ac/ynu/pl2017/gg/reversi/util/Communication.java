@@ -1,13 +1,13 @@
-/*’ÊM—p‚ÌƒNƒ‰ƒX*/
+package jp.ac.ynu.pl2017.gg.reversi.util;
 
-import java.awt.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.*;
+import java.net.Socket;
 
+// TODO: ClientConnection.javaã«çµ±åˆã—ã¦ãã ã•ã„
 public class Communication {
 	public Socket socket;
 	public static String SERVER;
@@ -19,7 +19,7 @@ public class Communication {
 	
 
 	public boolean login(String name, String pass) {
-		boolean log = false;// ƒƒOƒCƒ“‚Å‚«‚½‚©‚Ç‚¤‚©
+		boolean log = false;// ãƒ­ã‚°ã‚¤ãƒ³ã§ããŸã‹ã©ã†ã‹
 
 		try {
 			socket = new Socket(SERVER, PORT);
@@ -41,8 +41,8 @@ public class Communication {
 		return log;
 	}
 
-	public boolean match(boolean random, String enemy) { // random,true:ƒ‰ƒ“ƒ_ƒ€ƒ}ƒbƒ`,false:“Á’è‚Ìl‚Æ
-		boolean turn=true; //true:æè,false:Œãè
+	public boolean match(boolean random, String enemy) { // random,true:ãƒ©ãƒ³ãƒ€ãƒ ãƒãƒƒãƒ,false:ç‰¹å®šã®äººã¨
+		boolean turn=true; //true:å…ˆæ‰‹,false:å¾Œæ‰‹
 		
 		try {
 			
