@@ -53,8 +53,9 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	private Stone					myStone;												// actionEventで使うため、仕方なくフィールドに
 	private boolean					myTurn;
 	private boolean					passFlag		= false;
+	private boolean                 dropFlag        = false;
 	private int                     grayTurn        = 0;
-	
+
 	private Class<BaseAI>			selectedAI;
 	private int						selectedDifficulty;
 	
@@ -91,9 +92,13 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		String[] position = e.getActionCommand().split(",");
 		int r = Integer.parseInt(position[0]);
 		int c = Integer.parseInt(position[1]);
+		if (dropFlag) {
+            drop(r, c);
+		    return;
+        }
 		// テストに使用
         if (r == BOARD_SIZE - 1 && c == BOARD_SIZE -1) {
-            useGray();
+            useDrop();
         }
 		putStone(r, c, myStone);
 	}
@@ -182,7 +187,6 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	private void nextTurn() {
 		myTurn = !myTurn;
 		myStone = myStone.getReverse();
-        System.out.println(grayTurn);
         if (grayTurn < 0) undoGray();
 		hideHint();
 		List<Point> hint = makeHint(myStone);
@@ -374,7 +378,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 
     private void gainItem(Point point) {
 	    itemPoints.remove(point);
-        // TODO: アイテムをPlayPanelにセットするメソッドを使用
+        // TODO: アイテムをPlayPanelにランダムにセットするメソッドを使用
     }
 
     public void useItem(Item item) {
@@ -406,6 +410,41 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
         }
     }
 
+    private void useDrop() {
+	    dropFlag = true;
+	    hideHint();
+	    removeAllListener();
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if (board[i][j] == myStone.getReverse()) {
+                    buttonBoard[i][j].addActionListener(this);
+                }
+            }
+        }
+    }
+
+    private void drop(int r, int c) {
+        System.out.println("drop" + r + "," + c);
+        board[r][c] = Stone.Empty;
+        buttonBoard[r][c].setIcon(emptyIcon);
+        buttonBoard[r][c].setRolloverIcon(rolloverIcon);
+        dropFlag = false;
+        // TODO: ここに落ちるアニメーションを追加してください
+        // リスナがdropだけでなく普通に配置することにも反応してしまうため、遅延させる
+        // TODO: 要修正、連続して置けるバグと同じことが起こる
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            addAllListener();
+            List<Point> hint = makeHint(myStone);
+            displayHint(hint);
+        }).start();
+    }
+
     private void useGray() {
 	    grayTurn = 1;
 	    for (JButton[] buttons : buttonBoard)
@@ -415,7 +454,6 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
     }
 
     private void undoGray() {
-        System.out.println("undo");
         for (int i = 0; i < BOARD_SIZE; i++)
 	        for (int j = 0; j < BOARD_SIZE; j++)
 	            if (buttonBoard[i][j].getIcon() == grayIcon)
