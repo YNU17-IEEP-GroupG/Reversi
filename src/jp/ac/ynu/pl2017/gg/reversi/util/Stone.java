@@ -12,7 +12,9 @@ public enum Stone {
     Black { @Override public ImageIcon getImageIcon() { return Othello.blackIcon; }
             @Override public Stone getReverse() { return White; } },
     White { @Override public ImageIcon getImageIcon() { return Othello.whiteIcon; }
-            @Override public Stone getReverse() { return Black; } };
+            @Override public Stone getReverse() { return Black; } },
+    Ban   { @Override public ImageIcon getImageIcon() { return Othello.cannotPutIcon; }
+            @Override public Stone getReverse() { return Ban; } };
     public abstract ImageIcon getImageIcon();
     public abstract Stone getReverse();
 }

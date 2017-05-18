@@ -36,7 +36,7 @@ public class BoardHelper {
         int i = r + dr;             int j = c + dc;
 
         while (0 <= i && i < BOARD_SIZE && 0 <= j && j < BOARD_SIZE) {
-            if      (board[i][j] == Stone.Empty) break;
+            if      (board[i][j] == Stone.Empty || board[i][j] == Stone.Ban) break;
             else if (board[i][j] == stone){
                 if (Math.abs(r - i) > 1 || Math.abs(c - j) > 1) return true;
                 else break;
@@ -97,6 +97,18 @@ public class BoardHelper {
         return Arrays.stream(board)
                 .map(ss -> ss.clone())
                 .toArray(Stone[][]::new);
+    }
+
+    public static List<Point> getPoints(Stone stone, Stone[][] board) {
+        List<Point> points = new ArrayList<>();
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if (board[i][j] == stone) {
+                    points.add(new Point(i, j));
+                }
+            }
+        }
+        return  points;
     }
 
     public static void printBoard(Stone[][] board) {

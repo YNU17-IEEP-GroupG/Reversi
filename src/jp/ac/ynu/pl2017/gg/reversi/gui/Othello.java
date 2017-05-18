@@ -5,6 +5,8 @@ import javax.swing.border.EmptyBorder;
 
 import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
 import jp.ac.ynu.pl2017.gg.reversi.ai.Evaluation;
+import jp.ac.ynu.pl2017.gg.reversi.util.BoardHelper;
+import jp.ac.ynu.pl2017.gg.reversi.util.Item;
 import jp.ac.ynu.pl2017.gg.reversi.util.Stone;
 import jp.ac.ynu.pl2017.gg.reversi.util.Direction;
 import jp.ac.ynu.pl2017.gg.reversi.util.FinishListenedThread;
@@ -158,7 +160,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		int j = c + dc;
 
 		while (0 <= i && i < BOARD_SIZE && 0 <= j && j < BOARD_SIZE) {
-			if (board[i][j] == Stone.Empty)
+			if (board[i][j] == Stone.Empty || board[i][j] == Stone.Ban)
 				break;
 			else if (board[i][j] == stone) {
 				if (Math.abs(r - i) > 1 || Math.abs(c - j) > 1)
@@ -367,12 +369,31 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
         // TODO: アイテムをPlayPanelにセットするメソッドを使用
     }
 
-	private void printBoard() {
-		for (Stone[] stones : board) {
-			for (Stone stone : stones)
-				System.out.print(stone + " ");
-			System.out.println();
-		}
-		System.out.println();
-	}
+    public void useItem(Item item) {
+        switch (item) {
+            case BAN:
+                useBan();
+                break;
+            case DROP:
+                break;
+            case GRAY:
+                break;
+            case TRIPLE:
+                break;
+            case CONTROLER:
+                break;
+        }
+    }
+
+    private void useBan() {
+        Random random = new Random();
+        List<Point> emptyPoints = BoardHelper.getPoints(Stone.Empty, board);
+        int count = Math.min(3, emptyPoints.size());
+        for (int i = 0; i < count; i++) {
+            Point p = emptyPoints.get(random.nextInt(emptyPoints.size()));
+            board[p.getRow()][p.getColumn()] = Stone.Ban;
+            buttonBoard[p.getRow()][p.getColumn()].setIcon(cannotPutIcon);
+            buttonBoard[p.getRow()][p.getColumn()].setRolloverIcon(null);
+        }
+    }
 }
