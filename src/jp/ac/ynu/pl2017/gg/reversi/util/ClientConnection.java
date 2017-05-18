@@ -111,7 +111,7 @@ public class ClientConnection {
 		return null;
 	}
 
-	public boolean match(boolean random, String enemy) { // random,true:ランダムマッチ,false:特定の人と
+	public static boolean match(boolean random, String enemy) { // random,true:ランダムマッチ,false:特定の人と
 		boolean turn=true; //true:先手,false:後手
 		
 		try {
@@ -137,7 +137,7 @@ public class ClientConnection {
 	}
 
 	// TODO 座標どう送る?
-	public void send(int coordinate){
+	public static void send(int coordinate){
 		
 		try {
 			OutputStream os = theSocket.getOutputStream();
@@ -155,7 +155,7 @@ public class ClientConnection {
 		
 	}
 
-	public int recieve(){
+	public static int recieve(){
 		int Ecoordinate=0;
 		
 		try{
