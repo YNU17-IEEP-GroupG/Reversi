@@ -104,6 +104,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 //        if (r == BOARD_SIZE - 1 && c == BOARD_SIZE -1) {
 //            useTriple();
 //        }
+//		removeAllListener();
 		putStone(r, c, myStone);
 	}
 
@@ -121,6 +122,8 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 			int r,
 			int c,
 			Stone stone) {
+		removeAllListener();
+		
 		EnumSet<Direction> directions = selectDirections(r, c, stone);
 		if (directions.isEmpty())
 			return;
@@ -212,9 +215,10 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 			passFlag = false;
 			if (myTurn) {
 				displayHint(hint);
+				addAllListener();
 				grayTurn--;
 			} else {
-				removeAllListener();
+//				removeAllListener();
 //				OmegaAI ai = new OmegaAI(hint, myStone, board, selectedDifficulty);
 //				ai.think();
 //				putStone(ai.getRow(), ai.getColumn(), myStone);
@@ -231,7 +235,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 						IllegalArgumentException | InvocationTargetException e) {
 					throw new RuntimeException(e);
 				}
-				addAllListener();
+//				addAllListener();
 			}
 		}
 	}
@@ -302,11 +306,11 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 				}
 
 				// 3倍石の反映
-                String[] position = pTargetButton.getActionCommand().split(",");
-                int r = Integer.parseInt(position[0]);
-                int c = Integer.parseInt(position[1]);
-                if (triplePoints.contains(new Point(r, c)))
-                    pTargetButton.setIcon(pDestStone.getTripleImageIcon());
+				String[] position = pTargetButton.getActionCommand().split(",");
+				int r = Integer.parseInt(position[0]);
+				int c = Integer.parseInt(position[1]);
+				if (triplePoints.contains(new Point(r, c)))
+					pTargetButton.setIcon(pDestStone.getTripleImageIcon());
 			}
 		}.start();
 	}
