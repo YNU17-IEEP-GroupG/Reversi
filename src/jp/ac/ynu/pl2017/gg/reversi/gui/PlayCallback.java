@@ -1,6 +1,11 @@
 package jp.ac.ynu.pl2017.gg.reversi.gui;
 
-public interface PlayEndCallback {
+public interface PlayCallback {
+	
+	/**
+	 * アイテム取得
+	 */
+	void onGainItem();
 	
 	/**
 	 * 対局終了

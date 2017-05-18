@@ -5,9 +5,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -22,7 +26,7 @@ import jp.ac.ynu.pl2017.gg.reversi.util.Item;
  * ゲーム画面を構築するJPanel. 対人・対CPU問わずここに飛んでくる発想.
  *
  */
-public class PlayPanel extends JPanel implements PlayEndCallback {
+public class PlayPanel extends JPanel implements PlayCallback {
 
 	private boolean	isCPU	= false;
 	/**
@@ -40,10 +44,13 @@ public class PlayPanel extends JPanel implements PlayEndCallback {
 	public Othello	lOthelloPanel;
 	private JPanel	lCoverPanel;
 	
+	private	Item havingItem;
+	
 	private TitlePanel.Transition	callback;
 	
 	private	Class<BaseAI>	selectedAI;
 	private	int				selectedDifficulty;
+	private	JButton			playerItemButton;
 
 	public PlayPanel(TitlePanel.Transition pCallback, Class<BaseAI> pAi, int pDifficulty) {
 		callback = pCallback;
@@ -153,10 +160,11 @@ public class PlayPanel extends JPanel implements PlayEndCallback {
 		lPlayerStoneLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lPlayerStoneLabel.setFont(new Font("monospace", Font.BOLD, 16));
 		lPlayerStoneLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		JButton lPlayerItemButton = new JButton();
+		playerItemButton = new JButton();
+		playerItemButton.setEnabled(false);
 		lPlayerSIPanel.add(lPlayerStoneLabel);
-		lPlayerSIPanel.add(lPlayerItemButton);
-		lPlayerItemButton.setPreferredSize(new Dimension(60, 60));
+		lPlayerSIPanel.add(playerItemButton);
+		playerItemButton.setPreferredSize(new Dimension(60, 60));
 		lPlayerNIPanel.add(lPlayerSIPanel);
 
 		lPlayerPanel.add(lPlayerNIPanel, BorderLayout.CENTER);
@@ -195,6 +203,20 @@ public class PlayPanel extends JPanel implements PlayEndCallback {
 
 	@Override
 	public void onGameAborted() {
+	}
+
+	@Override
+	public void onGainItem() {
+		int tR = new Random().nextInt(Item.values().length - 1);
+		havingItem = Item.values()[tR + 1];
+		playerItemButton.setEnabled(true);
+		playerItemButton.setIcon(new ImageIcon("image/item/"+havingItem.name().toLowerCase()+".png"));
+		playerItemButton.addActionListener(e -> {
+			if(havingItem != null) lOthelloPanel.useItem(havingItem);
+			havingItem = null;
+			playerItemButton.setIcon(null);
+			playerItemButton.setEnabled(false);
+		});
 	}
 
 }

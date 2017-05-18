@@ -31,41 +31,50 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 
 	public static final int			BOARD_SIZE		= 8;
 	public static final int			IMAGE_ICON_SIZE	= 40;
-	public static final int         ITEM_COUNT      = 3;
+	public static final int		 ITEM_COUNT	  = 3;
 	public static final ImageIcon	emptyIcon		= new ImageIcon("image/board/Empty.png");
 	public static final ImageIcon	blackIcon		= new ImageIcon("image/board/black.png");
 	public static final ImageIcon	whiteIcon		= new ImageIcon("image/board/white.png");
-    public static final ImageIcon	tripleBlackIcon	= new ImageIcon("image/board/tripleB.png");
-    public static final ImageIcon	tripleWhiteIcon = new ImageIcon("image/board/tripleW.png");
-	public static final ImageIcon	rolloverIcon	    = new ImageIcon("image/board/Rollover.png");
+	public static final ImageIcon	tripleBlackIcon	= new ImageIcon("image/board/tripleB.png");
+	public static final ImageIcon	tripleWhiteIcon = new ImageIcon("image/board/tripleW.png");
+	public static final ImageIcon	rolloverIcon		= new ImageIcon("image/board/Rollover.png");
 	public static final ImageIcon	canPutIcon		= new ImageIcon("image/board/CanPut.png");
-	public static final ImageIcon	grayIcon		    = new ImageIcon("image/board/graypanel.png");
+	public static final ImageIcon	grayIcon			= new ImageIcon("image/board/graypanel.png");
 	public static final ImageIcon	cannotPutIcon	= new ImageIcon("image/board/bannedpanel.png");
 	public static final ImageIcon	turn1Icon		= new ImageIcon("image/board/45degree.png");
 	public static final ImageIcon	turn2Icon		= new ImageIcon("image/board/90degree.png");
 	public static final ImageIcon	turn3Icon		= new ImageIcon("image/board/135degree.png");
-	public static final ImageIcon[]	turnBtoW		    = {turn1Icon, turn2Icon, turn3Icon, whiteIcon};
-	public static final ImageIcon[]	turnWtoB		    = {turn3Icon, turn2Icon, turn1Icon, blackIcon};
-	public static final ImageIcon   itemIcon        = new ImageIcon("image/board/item.png");
+	public static final ImageIcon	dropB1Icon		= new ImageIcon("image/board/dropB1.png");
+	public static final ImageIcon	dropB2Icon		= new ImageIcon("image/board/dropB2.png");
+	public static final ImageIcon	dropB3Icon		= new ImageIcon("image/board/dropB3.png");
+	public static final ImageIcon	dropW1Icon		= new ImageIcon("image/board/dropW1.png");
+	public static final ImageIcon	dropW2Icon		= new ImageIcon("image/board/dropW2.png");
+	public static final ImageIcon	dropW3Icon		= new ImageIcon("image/board/dropW3.png");
+	
+	public static final ImageIcon[]	turnBtoW			= {turn1Icon, turn2Icon, turn3Icon, whiteIcon};
+	public static final ImageIcon[]	turnWtoB			= {turn3Icon, turn2Icon, turn1Icon, blackIcon};
+	public static final ImageIcon[]	turnWtoE			= {dropW1Icon, dropW2Icon, dropW3Icon, emptyIcon};
+	public static final ImageIcon[]	turnBtoE			= {dropB1Icon, dropB2Icon, dropB3Icon, emptyIcon};
+	public static final ImageIcon   itemIcon		= new ImageIcon("image/board/item.png");
 	public static final ImageIcon   itemCanPutIcon  = new ImageIcon("image/board/itemCanPut.png");
 	
 	private JButton[][]				buttonBoard		= new JButton[BOARD_SIZE][BOARD_SIZE];
 	private Stone[][]				board			= new Stone[BOARD_SIZE][BOARD_SIZE];
-	private List<Point>             itemPoints      = new ArrayList<>();
+	private List<Point>			 itemPoints	  = new ArrayList<>();
 	private Stone					myStone;												// actionEventで使うため、仕方なくフィールドに
 	private boolean					myTurn;
 	private boolean					passFlag		= false;
-	private boolean                 dropFlag        = false;
-	private int                     grayTurn        = 0;
-	private boolean                 tripleFlag      = false;
-	private List<Point>             triplePoints    = new ArrayList<>();
+	private boolean				 dropFlag		= false;
+	private int					 grayTurn		= 0;
+	private boolean				 tripleFlag	  = false;
+	private List<Point>			 triplePoints	= new ArrayList<>();
 
 	private Class<BaseAI>			selectedAI;
 	private int						selectedDifficulty;
 	
-	private PlayEndCallback			callback;
+	private PlayCallback			callback;
 
-	public Othello(PlayEndCallback pCallback, Class<BaseAI> pAi, int pDifficulty) {
+	public Othello(PlayCallback pCallback, Class<BaseAI> pAi, int pDifficulty) {
 		Dimension lDimension = new Dimension(BOARD_SIZE * IMAGE_ICON_SIZE, BOARD_SIZE * IMAGE_ICON_SIZE);
 		setSize(lDimension);
 		setPreferredSize(lDimension);
@@ -97,13 +106,13 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		int r = Integer.parseInt(position[0]);
 		int c = Integer.parseInt(position[1]);
 		if (dropFlag) {
-            drop(r, c);
-		    return;
-        }
+			drop(r, c);
+			return;
+		}
 //		 //デバッグに使用
-//        if (r == BOARD_SIZE - 1 && c == BOARD_SIZE -1) {
-//            useTriple();
-//        }
+//		if (r == BOARD_SIZE - 1 && c == BOARD_SIZE -1) {
+//			useTriple();
+//		}
 //		removeAllListener();
 		putStone(r, c, myStone);
 	}
@@ -130,19 +139,19 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 
 		hideHint();
 		if (tripleFlag) {
-            buttonBoard[r][c].setIcon(stone.getTripleImageIcon());
-            triplePoints.add(new Point(r, c));
-            tripleFlag = false;
-        }
-        else {
-            buttonBoard[r][c].setIcon(stone.getImageIcon());
-        }
+			buttonBoard[r][c].setIcon(stone.getTripleImageIcon());
+			triplePoints.add(new Point(r, c));
+			tripleFlag = false;
+		}
+		else {
+			buttonBoard[r][c].setIcon(stone.getImageIcon());
+		}
 		buttonBoard[r][c].setRolloverIcon(null);
 		board[r][c] = stone;
 		Point point = new Point(r, c);
 		if (itemPoints.contains(point)) {
-		    gainItem(point);
-        }
+			gainItem(point);
+		}
 		reverseStone(r, c, stone, directions);
 		// printBoard();
 		new FinishListenedThread(this) {
@@ -201,7 +210,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	private void nextTurn() {
 		myTurn = !myTurn;
 		myStone = myStone.getReverse();
-        if (grayTurn < 0) undoGray();
+		if (grayTurn < 0) undoGray();
 		hideHint();
 		List<Point> hint = makeHint(myStone);
 		if (hint.isEmpty()) {
@@ -274,7 +283,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		while (0 <= i && i < BOARD_SIZE && 0 <= j && j < BOARD_SIZE) {
 			if (board[i][j] == reverse) {
 				board[i][j] = stone;
-				showAnimation(buttonBoard[i][j], stone);
+				showAnimation(buttonBoard[i][j], stone, false);
 //				buttonBoard[i][j].setIcon(stone.getImageIcon());
 			} else {
 				break;
@@ -284,16 +293,21 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		}
 	}
 	
-	private void showAnimation(final JButton pTargetButton, final Stone pDestStone) {
+	private void showAnimation(final JButton pTargetButton, final Stone pStone, boolean pIsDrop) {
 		new Thread(){
 			@Override
 			public void run() {
-				ImageIcon[] targetIcons;
-				if (pDestStone.equals(Stone.White)) {
-					// 黒→白
-					targetIcons = turnBtoW;
+				ImageIcon[] targetIcons = null;
+				if (pIsDrop) {
+					//ドロップ
+					targetIcons = pStone.equals(Stone.Black) ? turnBtoE : turnWtoE;
 				} else {
-					targetIcons = turnWtoB;
+					if (pStone.equals(Stone.White)) {
+						// 黒→白
+						targetIcons = turnBtoW;
+					} else if (pStone.equals(Stone.Black)) {
+						targetIcons = turnWtoB;
+					}
 				}
 				for (int i = 0; i < 4; i++) {
 					pTargetButton.setIcon(targetIcons[i]);
@@ -310,7 +324,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 				int r = Integer.parseInt(position[0]);
 				int c = Integer.parseInt(position[1]);
 				if (triplePoints.contains(new Point(r, c)))
-					pTargetButton.setIcon(pDestStone.getTripleImageIcon());
+					pTargetButton.setIcon(pStone.getTripleImageIcon());
 			}
 		}.start();
 	}
@@ -318,11 +332,11 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	private void displayHint(
 			List<Point> hint) {
 		hint.forEach(p ->  {
-            if (itemPoints.contains(p))
-                buttonBoard[p.getRow()][p.getColumn()].setIcon(itemCanPutIcon);
-            else
-                buttonBoard[p.getRow()][p.getColumn()].setIcon(canPutIcon);
-        });
+			if (itemPoints.contains(p))
+				buttonBoard[p.getRow()][p.getColumn()].setIcon(itemCanPutIcon);
+			else
+				buttonBoard[p.getRow()][p.getColumn()].setIcon(canPutIcon);
+		});
 	}
 
 	private void hideHint() {
@@ -346,11 +360,11 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	private int countStone(
 			Stone stone) {
 		int count = (int) Arrays.stream(board).mapToLong(ss -> Arrays.stream(ss).filter(s -> s == stone).count()).sum();
-        // 三倍石の反映
-        for (Point p : triplePoints) {
-            if (board[p.getRow()][p.getColumn()] == stone)
-                count += 2;
-        }
+		// 三倍石の反映
+		for (Point p : triplePoints) {
+			if (board[p.getRow()][p.getColumn()] == stone)
+				count += 2;
+		}
 		return count;
 	}
 
@@ -390,104 +404,132 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	}
 
 	private void selectItemPoints() {
-	    Random random = new Random();
-	    while (itemPoints.size() < ITEM_COUNT) {
-	        int r = random.nextInt(8);
-	        int c = random.nextInt(8);
-	        if (2 <= r && r <= 5 && 2 <= c && c <= 5)
-	            continue;
-	        Point point = new Point(r, c);
-            if (!itemPoints.contains(point)) {
-                itemPoints.add(point);
-                Evaluation.updateSquare(point);
-            }
-        }
-    }
+		Random random = new Random();
+		while (itemPoints.size() < ITEM_COUNT) {
+			int r = random.nextInt(8);
+			int c = random.nextInt(8);
+			if (2 <= r && r <= 5 && 2 <= c && c <= 5)
+				continue;
+			Point point = new Point(r, c);
+			if (!itemPoints.contains(point)) {
+				itemPoints.add(point);
+				Evaluation.updateSquare(point);
+			}
+		}
+	}
 
-    private void gainItem(Point point) {
-	    itemPoints.remove(point);
-        // TODO: アイテムをPlayPanelにランダムにセットするメソッドを使用
-    }
+	private void gainItem(Point point) {
+		itemPoints.remove(point);
+		if (myTurn) {
+			callback.onGainItem();
+		}
+	}
 
-    public void useItem(Item item) {
-        switch (item) {
-            case BAN:
-                useBan();
-                break;
-            case DROP:
-                break;
-            case GRAY:
-                useGray();
-                break;
-            case TRIPLE:
-                break;
-            case CONTROLER:
-                break;
-        }
-    }
+	public void useItem(Item item) {
+		switch (item) {
+			case BAN:
+				useBan();
+				break;
+			case DROP:
+				break;
+			case GRAY:
+				useGray();
+				break;
+			case TRIPLE:
+				break;
+			case CONTROLER:
+				break;
+		}
+	}
 
-    private void useBan() {
-        Random random = new Random();
-        List<Point> emptyPoints = BoardHelper.getPoints(Stone.Empty, board);
-        int count = Math.min(3, emptyPoints.size());
-        for (int i = 0; i < count; i++) {
-            Point p = emptyPoints.get(random.nextInt(emptyPoints.size()));
-            board[p.getRow()][p.getColumn()] = Stone.Ban;
-            buttonBoard[p.getRow()][p.getColumn()].setIcon(cannotPutIcon);
-            buttonBoard[p.getRow()][p.getColumn()].setRolloverIcon(null);
-        }
-    }
+	private void useBan() {
+		Random random = new Random();
+		List<Point> emptyPoints = BoardHelper.getPoints(Stone.Empty, board);
+		int count = Math.min(3, emptyPoints.size());
+		for (int i = 0; i < count; i++) {
+			Point p = emptyPoints.get(random.nextInt(emptyPoints.size()));
+			board[p.getRow()][p.getColumn()] = Stone.Ban;
+			buttonBoard[p.getRow()][p.getColumn()].setIcon(cannotPutIcon);
+			buttonBoard[p.getRow()][p.getColumn()].setRolloverIcon(null);
+		}
+	}
 
-    private void useDrop() {
-	    dropFlag = true;
-	    hideHint();
-	    removeAllListener();
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            for (int j = 0; j < BOARD_SIZE; j++) {
-                if (board[i][j] == myStone.getReverse()) {
-                    buttonBoard[i][j].addActionListener(this);
-                }
-            }
-        }
-    }
+	private void useDrop() {
+		dropFlag = true;
+		hideHint();
+		removeAllListener();
+		for (int i = 0; i < BOARD_SIZE; i++) {
+			for (int j = 0; j < BOARD_SIZE; j++) {
+				if (board[i][j] == myStone.getReverse()) {
+					buttonBoard[i][j].addActionListener(this);
+				}
+			}
+		}
+	}
 
-    private void drop(int r, int c) {
-        board[r][c] = Stone.Empty;
-        buttonBoard[r][c].setIcon(emptyIcon);
-        buttonBoard[r][c].setRolloverIcon(rolloverIcon);
-        dropFlag = false;
-        // TODO: ここに落ちるアニメーションを追加してください
-        // リスナがdropだけでなく普通に配置することにも反応してしまうため、遅延させる
-        // TODO: 要修正、連続して置けるバグと同じことが起こる
-        new Thread(() -> {
-            try {
-                Thread.sleep(1000);
-            }
-            catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            addAllListener();
-            List<Point> hint = makeHint(myStone);
-            displayHint(hint);
-        }).start();
-    }
+	private void drop(int r, int c) {
+		removeAllListener();
+		
+		showAnimation(buttonBoard[r][c], board[r][c], true);
+	
+		board[r][c] = Stone.Empty;
+		buttonBoard[r][c].setIcon(emptyIcon);
+		buttonBoard[r][c].setRolloverIcon(rolloverIcon);
+		dropFlag = false;
+		
+		new FinishListenedThread(new ThreadFinishListener() {
+			
+			@Override
+			public void onThreadFinish() {
+				addAllListener();
+				List<Point> hint = makeHint(myStone);
+				displayHint(hint);
+			}
+		}) {
+			
+			@Override
+			public void doRun() {
+				// TODO Auto-generated method stub
+				try {
+					Thread.sleep(1000);
+				}
+				catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}.start();
+		
+		/*
+		new Thread(() -> {
+			try {
+				Thread.sleep(1000);
+			}
+			catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			addAllListener();
+			List<Point> hint = makeHint(myStone);
+			displayHint(hint);
+		}).start();
+		*/
+	}
 
-    private void useGray() {
-	    grayTurn = 1;
-	    for (JButton[] buttons : buttonBoard)
-	        for (JButton button : buttons)
-	            if (button.getIcon() == blackIcon || button.getIcon() == whiteIcon)
-	                button.setIcon(grayIcon);
-    }
+	private void useGray() {
+		grayTurn = 1;
+		for (JButton[] buttons : buttonBoard)
+			for (JButton button : buttons)
+				if (button.getIcon() == blackIcon || button.getIcon() == whiteIcon)
+					button.setIcon(grayIcon);
+	}
 
-    private void undoGray() {
-        for (int i = 0; i < BOARD_SIZE; i++)
-	        for (int j = 0; j < BOARD_SIZE; j++)
-	            if (buttonBoard[i][j].getIcon() == grayIcon)
-                    buttonBoard[i][j].setIcon(board[i][j].getImageIcon());
-    }
+	private void undoGray() {
+		for (int i = 0; i < BOARD_SIZE; i++)
+			for (int j = 0; j < BOARD_SIZE; j++)
+				if (buttonBoard[i][j].getIcon() == grayIcon)
+					buttonBoard[i][j].setIcon(board[i][j].getImageIcon());
+	}
 
-    private void useTriple() {
-	    tripleFlag = true;
-    }
+	private void useTriple() {
+		tripleFlag = true;
+	}
 }
