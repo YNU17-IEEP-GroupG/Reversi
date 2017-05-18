@@ -29,16 +29,16 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 
 	public static final int			BOARD_SIZE		= 8;
 	public static final int			IMAGE_ICON_SIZE	= 40;
-	public static final ImageIcon	emptyIcon		= new ImageIcon("image/Empty.png");
-	public static final ImageIcon	blackIcon		= new ImageIcon("image/black.png");
-	public static final ImageIcon	whiteIcon		= new ImageIcon("image/white.png");
-	public static final ImageIcon	rolloverIcon	= new ImageIcon("image/Rollover.png");
-	public static final ImageIcon	canPutIcon		= new ImageIcon("image/CanPut.png");
-	public static final ImageIcon	grayIcon		= new ImageIcon("image/graypanel.png");
-	public static final ImageIcon	cannotPutIcon	= new ImageIcon("image/bannedpanel.png");
-	public static final ImageIcon	turn1Icon		= new ImageIcon("image/45degree.png");
-	public static final ImageIcon	turn2Icon		= new ImageIcon("image/90degree.png");
-	public static final ImageIcon	turn3Icon		= new ImageIcon("image/135degree.png");
+	public static final ImageIcon	emptyIcon		= new ImageIcon("image/board/Empty.png");
+	public static final ImageIcon	blackIcon		= new ImageIcon("image/board/black.png");
+	public static final ImageIcon	whiteIcon		= new ImageIcon("image/board/white.png");
+	public static final ImageIcon	rolloverIcon	= new ImageIcon("image/board/Rollover.png");
+	public static final ImageIcon	canPutIcon		= new ImageIcon("image/board/CanPut.png");
+	public static final ImageIcon	grayIcon		= new ImageIcon("image/board/graypanel.png");
+	public static final ImageIcon	cannotPutIcon	= new ImageIcon("image/board/bannedpanel.png");
+	public static final ImageIcon	turn1Icon		= new ImageIcon("image/board/45degree.png");
+	public static final ImageIcon	turn2Icon		= new ImageIcon("image/board/90degree.png");
+	public static final ImageIcon	turn3Icon		= new ImageIcon("image/board/135degree.png");
 	public static final ImageIcon[]	turnBtoW		= {turn1Icon, turn2Icon, turn3Icon, whiteIcon};
 	public static final ImageIcon[]	turnWtoB		= {turn3Icon, turn2Icon, turn1Icon, blackIcon};
 	
