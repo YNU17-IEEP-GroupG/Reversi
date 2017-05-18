@@ -53,6 +53,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	private Stone					myStone;												// actionEventで使うため、仕方なくフィールドに
 	private boolean					myTurn;
 	private boolean					passFlag		= false;
+	private int                     grayTurn        = 0;
 	
 	private Class<BaseAI>			selectedAI;
 	private int						selectedDifficulty;
@@ -90,6 +91,10 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		String[] position = e.getActionCommand().split(",");
 		int r = Integer.parseInt(position[0]);
 		int c = Integer.parseInt(position[1]);
+		// テストに使用
+        if (r == BOARD_SIZE - 1 && c == BOARD_SIZE -1) {
+            useGray();
+        }
 		putStone(r, c, myStone);
 	}
 
@@ -177,6 +182,8 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	private void nextTurn() {
 		myTurn = !myTurn;
 		myStone = myStone.getReverse();
+        System.out.println(grayTurn);
+        if (grayTurn < 0) undoGray();
 		hideHint();
 		List<Point> hint = makeHint(myStone);
 		if (hint.isEmpty()) {
@@ -190,6 +197,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 			passFlag = false;
 			if (myTurn) {
 				displayHint(hint);
+				grayTurn--;
 			} else {
 				removeAllListener();
 //				OmegaAI ai = new OmegaAI(hint, myStone, board, selectedDifficulty);
@@ -377,6 +385,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
             case DROP:
                 break;
             case GRAY:
+                useGray();
                 break;
             case TRIPLE:
                 break;
@@ -395,5 +404,21 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
             buttonBoard[p.getRow()][p.getColumn()].setIcon(cannotPutIcon);
             buttonBoard[p.getRow()][p.getColumn()].setRolloverIcon(null);
         }
+    }
+
+    private void useGray() {
+	    grayTurn = 1;
+	    for (JButton[] buttons : buttonBoard)
+	        for (JButton button : buttons)
+	            if (button.getIcon() == blackIcon || button.getIcon() == whiteIcon)
+	                button.setIcon(grayIcon);
+    }
+
+    private void undoGray() {
+        System.out.println("undo");
+        for (int i = 0; i < BOARD_SIZE; i++)
+	        for (int j = 0; j < BOARD_SIZE; j++)
+	            if (buttonBoard[i][j].getIcon() == grayIcon)
+                    buttonBoard[i][j].setIcon(board[i][j].getImageIcon());
     }
 }
