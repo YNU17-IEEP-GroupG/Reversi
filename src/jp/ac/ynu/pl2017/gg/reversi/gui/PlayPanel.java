@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
+import jp.ac.ynu.pl2017.gg.reversi.ai.OnlineDummyAI;
 import jp.ac.ynu.pl2017.gg.reversi.util.Item;
 
 /**
@@ -61,6 +62,8 @@ public class PlayPanel extends JPanel implements PlayCallback {
 		
 		setPreferredSize(new Dimension(MainFrame.panelW, MainFrame.panelH));
 		setLayout(new BorderLayout());
+		
+		isCPU = !pAi.equals(OnlineDummyAI.class);
 		
 		turnIcon = new JLabel[2];
 		for (int i = 0; i < 2; i++){
@@ -227,7 +230,7 @@ public class PlayPanel extends JPanel implements PlayCallback {
 	public void onGameOver() {
 		int lDialogResult = JOptionPane.showConfirmDialog(null, "再戦しますか？", "Retry?",
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-		if (lDialogResult == JOptionPane.YES_NO_OPTION) {
+		if (lDialogResult == JOptionPane.YES_OPTION) {
 			if (isCPU) {
 				// 対CPU戦は同じ難易度でもう一度
 				callback.changePlayPanel(selectedAI, selectedDifficulty);
