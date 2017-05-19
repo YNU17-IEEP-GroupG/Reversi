@@ -50,11 +50,12 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	public static final ImageIcon	dropW1Icon		= new ImageIcon("image/board/dropW1.png");
 	public static final ImageIcon	dropW2Icon		= new ImageIcon("image/board/dropW2.png");
 	public static final ImageIcon	dropW3Icon		= new ImageIcon("image/board/dropW3.png");
+	public static final ImageIcon	dropK1Icon		= new ImageIcon("image/board/dropback1.png");
 	
 	public static final ImageIcon[]	turnBtoW			= {turn1Icon, turn2Icon, turn3Icon, whiteIcon};
 	public static final ImageIcon[]	turnWtoB			= {turn3Icon, turn2Icon, turn1Icon, blackIcon};
-	public static final ImageIcon[]	turnWtoE			= {dropW1Icon, dropW2Icon, dropW3Icon, emptyIcon};
-	public static final ImageIcon[]	turnBtoE			= {dropB1Icon, dropB2Icon, dropB3Icon, emptyIcon};
+	public static final ImageIcon[]	turnWtoE			= {dropW1Icon, dropW2Icon, dropW3Icon, dropK1Icon, emptyIcon};
+	public static final ImageIcon[]	turnBtoE			= {dropB1Icon, dropB2Icon, dropB3Icon, dropK1Icon, emptyIcon};
 	public static final ImageIcon   itemIcon		= new ImageIcon("image/board/item.png");
 	public static final ImageIcon   itemCanPutIcon  = new ImageIcon("image/board/itemCanPut.png");
 	
@@ -112,6 +113,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 //		 //デバッグに使用
 //		if (r == BOARD_SIZE - 1 && c == BOARD_SIZE -1) {
 //			useTriple();
+//			useDrop();
 //		}
 //		removeAllListener();
 		putStone(r, c, myStone);
@@ -314,7 +316,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 						targetIcons = turnWtoB;
 					}
 				}
-				for (int i = 0; i < 4; i++) {
+				for (int i = 0; i < targetIcons.length; i++) {
 					pTargetButton.setIcon(targetIcons[i]);
 					try {
 						Thread.sleep(120);
@@ -436,11 +438,13 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 				useBan();
 				break;
 			case DROP:
+				useDrop();
 				break;
 			case GRAY:
 				useGray();
 				break;
 			case TRIPLE:
+				useTriple();
 				break;
 			case CONTROLER:
 				break;
@@ -475,15 +479,15 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	private void drop(int r, int c) {
 		removeAllListener();
 		
-		showAnimation(buttonBoard[r][c], board[r][c], true);
-	
+		Stone lbkStone = board[r][c];
 		board[r][c] = Stone.Empty;
-		buttonBoard[r][c].setIcon(emptyIcon);
-		buttonBoard[r][c].setRolloverIcon(rolloverIcon);
+//		buttonBoard[r][c].setIcon(emptyIcon);
+//		buttonBoard[r][c].setRolloverIcon(rolloverIcon);
 		dropFlag = false;
 		
+		showAnimation(buttonBoard[r][c], lbkStone, true);
+
 		new FinishListenedThread(new ThreadFinishListener() {
-			
 			@Override
 			public void onThreadFinish() {
 				addAllListener();
@@ -499,7 +503,6 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 					Thread.sleep(1000);
 				}
 				catch (InterruptedException e) {
-					e.printStackTrace();
 				}
 			}
 		}.start();
