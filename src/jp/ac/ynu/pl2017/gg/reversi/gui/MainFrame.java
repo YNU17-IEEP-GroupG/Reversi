@@ -94,8 +94,9 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 	}
 
 	@Override
-	public void changePlayPanel(Class<BaseAI> pAi, int pDifficulty, int pPIcon, int pOIcon) {
-		setContentPane(new PlayPanel(this, pAi, pDifficulty, pPIcon, pOIcon));
+	public void changePlayPanel(Class<BaseAI> pAi, int pDifficulty,
+			int pPIcon, int pOIcon, int pBack) {
+		setContentPane(new PlayPanel(this, pAi, pDifficulty, pPIcon, pOIcon, pBack));
 		validate();
 	}
 
