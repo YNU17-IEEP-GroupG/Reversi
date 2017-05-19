@@ -77,6 +77,6 @@ public class TitlePanel extends JPanel {
 		void showLoginDialog();
 
 		void changePlayPanel(Class<BaseAI> pAi, int pDifficulty,
-				int pPIcon, int pOIcon, int pBack);
+				int pPIcon, int pOIcon);
 	}
 }

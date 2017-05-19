@@ -27,7 +27,7 @@ import jp.ac.ynu.pl2017.gg.reversi.util.Item;
  * ゲーム画面を構築するJPanel. 対人・対CPU問わずここに飛んでくる発想.
  *
  */
-public class PlayPanel extends BackgroundedJPanel implements PlayCallback {
+public class PlayPanel extends JPanel implements PlayCallback {
 
 	private boolean	isCPU	= false;
 
@@ -38,7 +38,6 @@ public class PlayPanel extends BackgroundedJPanel implements PlayCallback {
 	
 	private	int		playerIconNum;
 	private	int		opponentIconNum;
-	private	int		backIndex;
 	private	Item havingItem;
 	
 	private TitlePanel.Transition	callback;
@@ -57,10 +56,8 @@ public class PlayPanel extends BackgroundedJPanel implements PlayCallback {
 	private JLabel	lPlayerIcon;
 
 	public PlayPanel(TitlePanel.Transition pCallback, Class<BaseAI> pAi, int pDifficulty,
-			int pPIcon, int pOIcon, int pBack) {
-		super("./image/background/back"+(pBack+1)+".png");
+			int pPIcon, int pOIcon) {
 		callback = pCallback;
-		backIndex = pBack;
 		
 		setPreferredSize(new Dimension(MainFrame.panelW, MainFrame.panelH));
 		setLayout(new BorderLayout());
@@ -233,7 +230,7 @@ public class PlayPanel extends BackgroundedJPanel implements PlayCallback {
 			if (isCPU) {
 				// 対CPU戦は同じ難易度でもう一度
 				callback.changePlayPanel(selectedAI, selectedDifficulty,
-						playerIconNum, opponentIconNum, backIndex);
+						playerIconNum, opponentIconNum);
 			} else {
 				// 対人戦は再戦を申し込む
 			}
