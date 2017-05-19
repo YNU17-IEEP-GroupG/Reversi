@@ -238,7 +238,7 @@ public class SettingsPanel extends JPanel {
 		JButton lSelectButtons[] = new JButton[4];
 		for (int i = 0; i < 4; i++) {
 			final int ii = i;
-			String tImagePath = "image/" + (mode == 0 ? "icon/icon" : "background/back") + (i+1) + ".png";
+			String tImagePath = "image/" + (mode == 0 ? "icon/icon" : "background/backThumb") + (i+1) + ".png";
 			lSelectButtons[i] = new JButton(new ImageIcon(tImagePath));
 			lSelectButtons[i].setPreferredSize(new Dimension(90, 90));
 			lSelectButtons[i].addActionListener(new ActionListener() {
