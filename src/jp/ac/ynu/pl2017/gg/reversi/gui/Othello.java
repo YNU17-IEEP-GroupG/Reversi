@@ -58,6 +58,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	public static final ImageIcon[]	turnBtoE			= {dropB1Icon, dropB2Icon, dropB3Icon, dropK1Icon, emptyIcon};
 	public static final ImageIcon   itemIcon		= new ImageIcon("image/board/item.png");
 	public static final ImageIcon   itemCanPutIcon  = new ImageIcon("image/board/itemCanPut.png");
+	public static final ImageIcon	itemRollOver	= new ImageIcon("image/board/itemPutting.png");
 	
 	private JButton[][]				buttonBoard		= new JButton[BOARD_SIZE][BOARD_SIZE];
 	private Stone[][]				board			= new Stone[BOARD_SIZE][BOARD_SIZE];
