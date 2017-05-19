@@ -56,6 +56,7 @@ public class PlayPanel extends JPanel implements PlayCallback {
 	 * 0:自分 1:相手
 	 */
 	private JLabel	turnIcon[];
+	private JLabel	playerStoneLabel[];
 
 	public PlayPanel(TitlePanel.Transition pCallback, Class<BaseAI> pAi, int pDifficulty) {
 		callback = pCallback;
@@ -66,12 +67,22 @@ public class PlayPanel extends JPanel implements PlayCallback {
 		isCPU = !pAi.equals(OnlineDummyAI.class);
 		
 		turnIcon = new JLabel[2];
+		playerStoneLabel = new JLabel[2];
+		
 		for (int i = 0; i < 2; i++){
 			turnIcon[i] = new JLabel();
 			turnIcon[i].setPreferredSize(new Dimension(60, 60));
 			turnIcon[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+			playerStoneLabel[i] = new JLabel("2");
+			playerStoneLabel[i].setPreferredSize(new Dimension(60, 60));
+			playerStoneLabel[i].setSize(new Dimension(60, 60));
+			playerStoneLabel[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+			playerStoneLabel[i].setHorizontalAlignment(SwingConstants.CENTER);
+			playerStoneLabel[i].setFont(new Font("monospace", Font.BOLD, 16));
+			playerStoneLabel[i].setHorizontalAlignment(SwingConstants.RIGHT);
 		}
-		
+
 		lOthelloPanel = new Othello(this, pAi, pDifficulty);
 		lCoverPanel = new JPanel();
 		lCoverPanel.setLayout(new FlowLayout());
@@ -128,15 +139,9 @@ public class PlayPanel extends JPanel implements PlayCallback {
 		FlowLayout lOpponentSILayout = new FlowLayout();
 		lOpponentSILayout.setAlignment(FlowLayout.LEFT);
 		lOpponentSIPanel.setLayout(lOpponentSILayout);
-		JLabel lOpponentStoneLabel = new JLabel("2");
-		lOpponentStoneLabel.setPreferredSize(new Dimension(60, 60));
-		lOpponentStoneLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		lOpponentStoneLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lOpponentStoneLabel.setFont(new Font("monospace", Font.BOLD, 16));
-		lOpponentStoneLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		JButton lOppponentItemButton = new JButton();
 		lOppponentItemButton.setEnabled(false);
-		lOpponentSIPanel.add(lOpponentStoneLabel);
+		lOpponentSIPanel.add(playerStoneLabel[1]);
 		lOpponentSIPanel.add(lOppponentItemButton);
 		lOppponentItemButton.setPreferredSize(new Dimension(60, 60));
 		lOpponentNIPanel.add(lOpponentSIPanel);
@@ -168,15 +173,9 @@ public class PlayPanel extends JPanel implements PlayCallback {
 		FlowLayout lPlayerSILayout = new FlowLayout();
 		lPlayerSILayout.setAlignment(FlowLayout.RIGHT);
 		lPlayerSIPanel.setLayout(lPlayerSILayout);
-		JLabel lPlayerStoneLabel = new JLabel("2");
-		lPlayerStoneLabel.setPreferredSize(new Dimension(60, 60));
-		lPlayerStoneLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		lPlayerStoneLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lPlayerStoneLabel.setFont(new Font("monospace", Font.BOLD, 16));
-		lPlayerStoneLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		playerItemButton = new JButton();
 		playerItemButton.setEnabled(false);
-		lPlayerSIPanel.add(lPlayerStoneLabel);
+		lPlayerSIPanel.add(playerStoneLabel[0]);
 		lPlayerSIPanel.add(playerItemButton);
 		playerItemButton.setPreferredSize(new Dimension(60, 60));
 		lPlayerNIPanel.add(lPlayerSIPanel);
@@ -221,9 +220,12 @@ public class PlayPanel extends JPanel implements PlayCallback {
 	}
 
 	@Override
-	public void onTurnChange(boolean isMyTurn) {
+	public void onTurnChange(boolean isMyTurn, int[] pCountStones) {
 		turnIcon[0].setVisible(isMyTurn);
 		turnIcon[1].setVisible(!isMyTurn);
+		
+		for (int i = 0; i < 2; i++)
+			playerStoneLabel[i].setText("" + pCountStones[i]);
 	}
 
 	@Override

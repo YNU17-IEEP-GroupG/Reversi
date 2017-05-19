@@ -4,7 +4,7 @@ public interface PlayCallback {
 	/**
 	 * ターン変更
 	 */
-	void onTurnChange(boolean isMyTurn);
+	void onTurnChange(boolean isMyTurn, int[] pCountStones);
 	
 	/**
 	 * アイテム取得

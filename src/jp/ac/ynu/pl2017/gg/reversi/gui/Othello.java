@@ -212,8 +212,9 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 
 	private void nextTurn() {
 		myTurn = !myTurn;
-		callback.onTurnChange(myTurn);
 		myStone = myStone.getReverse();
+		Stone playersStone = myTurn ? myStone : myStone.getReverse();
+		callback.onTurnChange(myTurn, new int[]{countStone(playersStone), countStone(playersStone.getReverse())});
 		if (grayTurn < 0) undoGray();
 		hideHint();
 		List<Point> hint = makeHint(myStone);
