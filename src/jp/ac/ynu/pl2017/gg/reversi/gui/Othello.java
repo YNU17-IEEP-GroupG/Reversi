@@ -58,7 +58,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	public static final ImageIcon[]	turnBtoE			= {dropB1Icon, dropB2Icon, dropB3Icon, dropK1Icon, emptyIcon};
 	public static final ImageIcon   itemIcon		= new ImageIcon("image/board/item.png");
 	public static final ImageIcon   itemCanPutIcon  = new ImageIcon("image/board/itemCanPut.png");
-	public static final ImageIcon	itemRollOver	= new ImageIcon("image/board/itemPutting.png");
+	public static final ImageIcon	itemRollOver  	= new ImageIcon("image/board/itemRollover.png");
 	
 	private JButton[][]				buttonBoard		= new JButton[BOARD_SIZE][BOARD_SIZE];
 	private Stone[][]				board			= new Stone[BOARD_SIZE][BOARD_SIZE];
@@ -124,10 +124,12 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 //		 //デバッグに使用
 //		if (r == BOARD_SIZE - 1 && c == BOARD_SIZE -1) {
 //			useTriple();
-//			useDrop();
 //		}
+//		if (r == BOARD_SIZE - 1 && c == BOARD_SIZE - 2) {
+//            useDrop();
+//        }
 //		removeAllListener();
-		putStone(r, c, myStone);
+        putStone(r, c, myStone);
 	}
 
 	public List<Point> makeHint(
@@ -418,9 +420,9 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		buttonBoard[itemPoints.get(0).getRow()][itemPoints.get(0).getColumn()].setIcon(itemIcon);
 		buttonBoard[itemPoints.get(1).getRow()][itemPoints.get(1).getColumn()].setIcon(itemIcon);
 		buttonBoard[itemPoints.get(2).getRow()][itemPoints.get(2).getColumn()].setIcon(itemIcon);
-		buttonBoard[itemPoints.get(0).getRow()][itemPoints.get(0).getColumn()].setRolloverIcon(null);
-		buttonBoard[itemPoints.get(1).getRow()][itemPoints.get(1).getColumn()].setRolloverIcon(null);
-		buttonBoard[itemPoints.get(2).getRow()][itemPoints.get(2).getColumn()].setRolloverIcon(null);
+		buttonBoard[itemPoints.get(0).getRow()][itemPoints.get(0).getColumn()].setRolloverIcon(itemRollOver);
+		buttonBoard[itemPoints.get(1).getRow()][itemPoints.get(1).getColumn()].setRolloverIcon(itemRollOver);
+		buttonBoard[itemPoints.get(2).getRow()][itemPoints.get(2).getColumn()].setRolloverIcon(itemRollOver);
 	}
 
 	private void selectItemPoints() {
@@ -494,8 +496,8 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		
 		Stone lbkStone = board[r][c];
 		board[r][c] = Stone.Empty;
-//		buttonBoard[r][c].setIcon(emptyIcon);
-//		buttonBoard[r][c].setRolloverIcon(rolloverIcon);
+		// 三倍の石のリストからの削除
+        triplePoints.remove(new Point(r, c));
 		dropFlag = false;
 		
 		showAnimation(buttonBoard[r][c], lbkStone, true);
