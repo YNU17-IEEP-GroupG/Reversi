@@ -98,7 +98,17 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 
 		// setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setVisible(true);
-		nextTurn();
+		
+		new FinishListenedThread(this) {
+			
+			@Override
+			public void doRun() {
+				try {
+					Thread.sleep(1500);
+				} catch (InterruptedException e) {
+				}
+			}
+		}.start();
 	}
 
 	@Override
