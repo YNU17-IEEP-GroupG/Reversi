@@ -30,14 +30,6 @@ import jp.ac.ynu.pl2017.gg.reversi.util.Item;
 public class PlayPanel extends JPanel implements PlayCallback {
 
 	private boolean	isCPU	= false;
-	/**
-	 * α～ωに対応,4種
-	 */
-	private int		cpuType	= 0;
-	/**
-	 * 0:弱い; 2:強い
-	 */
-	private int		cpuDiff	= 0;
 
 	private Item item = Item.NONE;
 
@@ -209,14 +201,6 @@ public class PlayPanel extends JPanel implements PlayCallback {
 		lInfoPanel.add(lTurnPanel, BorderLayout.CENTER);
 
 		add(lInfoPanel, BorderLayout.EAST);
-	}
-
-	public void setDifficulty(int pDiff) {
-		cpuDiff = pDiff;
-	}
-
-	public void setType(int pType) {
-		cpuType = pType;
 	}
 
 	@Override
