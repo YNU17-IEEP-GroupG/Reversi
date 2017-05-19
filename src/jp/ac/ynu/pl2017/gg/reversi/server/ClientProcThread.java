@@ -20,9 +20,10 @@ class ClientProcThread extends Thread {
 	private boolean turn=false;//true:先手/false:後手
 	private int myRoom = 0;
 	
+	public static final int MAX_ROOM = 10;
 	static int room=0; //対局が行われている数
-	static boolean[] change;
-	static String[] coordinate;//通信路
+	static boolean[] change = new boolean[MAX_ROOM];
+	static String[] coordinate = new String[MAX_ROOM];//通信路
 	
 	
 	static HashMap<String, Match> MatchMap = new HashMap<String, Match>(); // ユーザ名をキーにする
@@ -40,11 +41,10 @@ class ClientProcThread extends Thread {
 
 	public void run() {
 		try {
-			myOut.println("Hello, client No." + number
-					+ "¥nコマンド一覧¥n"
-					+ "*******************************¥n"
-					+ "END:終了　MATCH:マッチング　CANSEL:キャンセル　BATTLE:座標送信　r:更新¥n"
-					+ "*******************************");// 初回だけ呼ばれる
+			myOut.println("Hello, client No." + number     + "¥nコマンド一覧\n"     + "*******************************\n"
+				      + "END:終了　MATCH:マッチング　CANSEL:キャンセル　WRITE:座標送信　READ:座標読み込み　TURN:ターン確認　r:更新\n"    
+				      + "*******************************");// 初回だけ呼ばれる
+			
 
 			myName = myIn.readLine();
 			pass = myIn.readLine();
@@ -118,13 +118,38 @@ class ClientProcThread extends Thread {
 								myOut.println("キャンセルしました");
 							}
 						}
+					
+						
 						
 					if(cmd.equals("WRITE")){
 						if(battle){
-							
+							System.out.println(myName+": 座標の更新");
+							System.out.println(change[myRoom]);
+							if(change[myRoom]==turn){
+								myOut.println("座標を入力して下さい");
+								coordinate[myRoom] = myIn.readLine();
+								myOut.println(coordinate[myRoom]+" におきました");
+								change[myRoom] = !change[myRoom];//ターンを切り替える
+							}else{
+								myOut.println("相手のターンです");
+							}
 						}else{
-							myOut.println("キャンセルしました");
+							myOut.println("対局が始まってません");
 						}
+					
+					}
+						
+					if(cmd.equals("READ")){//最後に置いた座標をいつでも読み込める
+						System.out.println(myName+": 座標の読み込み");
+						myOut.println("最新の座標:"+coordinate[myRoom]);
+					}
+						
+					if(cmd.equals("TURN")){//自分のターンかどうかを確かめる
+						if(change[myRoom]==turn){
+							myOut.println("あなたのターンです"); 
+						}else{       
+							myOut.println("相手のターンです");
+						}    
 					}
 						
 					//	MyServer.SendAll(str, myName);// サーバに来たメッセージは接続しているクライアント全員に配る
