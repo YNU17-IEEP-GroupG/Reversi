@@ -131,11 +131,12 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 			int r,
 			int c,
 			Stone stone) {
-		removeAllListener();
 		
 		EnumSet<Direction> directions = selectDirections(r, c, stone);
 		if (directions.isEmpty())
 			return;
+
+		removeAllListener();
 
 		hideHint();
 		if (tripleFlag) {
@@ -250,15 +251,19 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	}
 
 	private void removeAllListener() {
+		System.err.println("disabled");
 		for (JButton[] buttons : buttonBoard)
 			for (JButton button : buttons)
 				button.removeActionListener(this);
+		callback.disableItem();
 	}
 
 	private void addAllListener() {
+		System.err.println("enabled");
 		for (JButton[] buttons : buttonBoard)
 			for (JButton button : buttons)
 				button.addActionListener(this);
+		callback.enableItem();
 	}
 
 	private void reverseStone(

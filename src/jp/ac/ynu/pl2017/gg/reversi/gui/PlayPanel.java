@@ -38,7 +38,6 @@ public class PlayPanel extends JPanel implements PlayCallback {
 	 */
 	private int		cpuDiff	= 0;
 
-	// TODO: itemをOthelloクラスのgainItem()からセットできるようにしてください。アイテムの使用はOthelloクラスのuseItem()を利用してください
 	private Item item = Item.NONE;
 
 	public Othello	lOthelloPanel;
@@ -212,11 +211,25 @@ public class PlayPanel extends JPanel implements PlayCallback {
 		playerItemButton.setEnabled(true);
 		playerItemButton.setIcon(new ImageIcon("image/item/"+havingItem.name().toLowerCase()+".png"));
 		playerItemButton.addActionListener(e -> {
-			if(havingItem != null) lOthelloPanel.useItem(havingItem);
-			havingItem = null;
+			if(havingItem != null && !havingItem.equals(Item.NONE)) lOthelloPanel.useItem(havingItem);
+			havingItem = Item.NONE;
 			playerItemButton.setIcon(null);
 			playerItemButton.setEnabled(false);
 		});
+	}
+
+	@Override
+	public void enableItem() {
+		if (playerItemButton != null) {
+			playerItemButton.setEnabled(true);
+		}
+	}
+
+	@Override
+	public void disableItem() {
+		if (playerItemButton != null) {
+			playerItemButton.setEnabled(false);
+		}
 	}
 
 }

@@ -41,8 +41,8 @@ class ClientProcThread extends Thread {
 
 	public void run() {
 		try {
-			myOut.println("Hello, client No." + number     + "¥nコマンド一覧\n"     + "*******************************\n"
-				      + "END:終了　MATCH:マッチング　CANSEL:キャンセル　WRITE:座標送信　READ:座標読み込み　TURN:ターン確認　r:更新\n"    
+			myOut.println("Hello, client No." + number + "¥nコマンド一覧\n" + "*******************************\n"
+				      + "END:終了　MATCH:マッチング　CANSEL:キャンセル　WRITE:座標送信　READ:座標読み込み　TURN:ターン確認　r:更新\n"
 				      + "*******************************");// 初回だけ呼ばれる
 			
 
@@ -147,10 +147,10 @@ class ClientProcThread extends Thread {
 						
 					if(cmd.equals("TURN")){//自分のターンかどうかを確かめる
 						if(change[myRoom]==turn){
-							myOut.println("あなたのターンです"); 
-						}else{       
+							myOut.println("あなたのターンです"); 
+						}else{       
 							myOut.println("相手のターンです");
-						}    
+						}    
 					}
 						
 					if (cmd.equals("REMATCH")) {
@@ -158,9 +158,9 @@ class ClientProcThread extends Thread {
 							myOut.println("再戦:1,終了:2");
 							rematch = Integer.parseInt(myIn.readLine());
 							
-        						if (rematch == 1) { 
+        						if (rematch == 1) { 
 								myOut.println("対戦相手を待っています");
-         							while (true) {// 相手待ち
+         							while (true) {// 相手待ち
 									String cansel = myIn.readLine();
 									if(cansel.equals("CANSEL")){
 										myOut.println("キャンセルしました");
@@ -181,7 +181,7 @@ class ClientProcThread extends Thread {
 								myOut.println("不正な値です");
 								rematch = 0;
 							}
-      						} else {// 相手が応答済
+      						} else {// 相手が応答済
 							if (rematch == 2) {
 								myOut.println("再戦が拒否されました");
 								rematch = 0;

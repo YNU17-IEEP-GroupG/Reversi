@@ -8,6 +8,16 @@ public interface PlayCallback {
 	void onGainItem();
 	
 	/**
+	 * アイテム使用可能
+	 */
+	void enableItem();
+	
+	/**アイテム使用不可
+	 * 
+	 */
+	void disableItem();
+	
+	/**
 	 * 対局終了
 	 */
 	void onGameOver();
