@@ -111,6 +111,7 @@ class ClientProcThread extends Thread {
 								}//マッチング待ち終了
 								
 								room++;//room番号をインクリメント
+								change[myRoom] = true;
 								System.out.println(myName+": マッチング完了");
 								
 							}else{
