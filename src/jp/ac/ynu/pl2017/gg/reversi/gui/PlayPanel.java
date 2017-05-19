@@ -36,6 +36,8 @@ public class PlayPanel extends JPanel implements PlayCallback {
 	public Othello	lOthelloPanel;
 	private JPanel	lCoverPanel;
 	
+	private	int		playerIconNum;
+	private	int		opponentIconNum;
 	private	Item havingItem;
 	
 	private TitlePanel.Transition	callback;
@@ -50,7 +52,11 @@ public class PlayPanel extends JPanel implements PlayCallback {
 	private JLabel	turnIcon[];
 	private JLabel	playerStoneLabel[];
 
-	public PlayPanel(TitlePanel.Transition pCallback, Class<BaseAI> pAi, int pDifficulty) {
+	private JLabel	lOpponentIcon;
+	private JLabel	lPlayerIcon;
+
+	public PlayPanel(TitlePanel.Transition pCallback, Class<BaseAI> pAi, int pDifficulty,
+			int pPIcon, int pOIcon) {
 		callback = pCallback;
 		
 		setPreferredSize(new Dimension(MainFrame.panelW, MainFrame.panelH));
@@ -74,6 +80,16 @@ public class PlayPanel extends JPanel implements PlayCallback {
 			playerStoneLabel[i].setFont(new Font("monospace", Font.BOLD, 16));
 			playerStoneLabel[i].setHorizontalAlignment(SwingConstants.RIGHT);
 		}
+		
+		playerIconNum = pPIcon;
+		opponentIconNum = pOIcon;
+		lOpponentIcon = new JLabel(new ImageIcon("image/icon/icon" + (pOIcon+1) + ".png"));
+		lOpponentIcon.setPreferredSize(new Dimension(80, 80));
+		lOpponentIcon.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+		lPlayerIcon = new JLabel(new ImageIcon("image/icon/icon" + (pPIcon+1) + ".png"));
+		lPlayerIcon.setPreferredSize(new Dimension(80, 80));
+		lPlayerIcon.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
 		lOthelloPanel = new Othello(this, pAi, pDifficulty);
 		lCoverPanel = new JPanel();
@@ -113,9 +129,6 @@ public class PlayPanel extends JPanel implements PlayCallback {
 		lOpponentPanel.setLayout(new BorderLayout());
 
 		// アイコン
-		JLabel lOpponentIcon = new JLabel();
-		lOpponentIcon.setPreferredSize(new Dimension(80, 80));
-		lOpponentIcon.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		lOpponentPanel.add(lOpponentIcon, BorderLayout.EAST);
 
 		// 名前
@@ -147,9 +160,6 @@ public class PlayPanel extends JPanel implements PlayCallback {
 		lPlayerPanel.setLayout(new BorderLayout());
 
 		// アイコン
-		JLabel lPlayerIcon = new JLabel();
-		lPlayerIcon.setPreferredSize(new Dimension(80, 80));
-		lPlayerIcon.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		lPlayerPanel.add(lPlayerIcon, BorderLayout.WEST);
 
 		// 名前
@@ -219,7 +229,8 @@ public class PlayPanel extends JPanel implements PlayCallback {
 		if (lDialogResult == JOptionPane.YES_OPTION) {
 			if (isCPU) {
 				// 対CPU戦は同じ難易度でもう一度
-				callback.changePlayPanel(selectedAI, selectedDifficulty);
+				callback.changePlayPanel(selectedAI, selectedDifficulty,
+						playerIconNum, opponentIconNum);
 			} else {
 				// 対人戦は再戦を申し込む
 			}
