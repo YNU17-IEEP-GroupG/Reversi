@@ -121,13 +121,10 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 			drop(r, c);
 			return;
 		}
-//		 //デバッグに使用
-//		if (r == BOARD_SIZE - 1 && c == BOARD_SIZE -1) {
-//			useTriple();
-//		}
-//		if (r == BOARD_SIZE - 1 && c == BOARD_SIZE - 2) {
-//            useDrop();
-//        }
+		 //デバッグに使用
+		if (r == BOARD_SIZE - 1 && c == BOARD_SIZE -1) {
+			useBan();
+		}
 //		removeAllListener();
         putStone(r, c, myStone);
 	}
@@ -366,6 +363,8 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 			for (JButton button : buttons)
 				if (button.getIcon().equals(canPutIcon))
 					button.setIcon(emptyIcon);
+		        else if (button.getIcon().equals(itemCanPutIcon))
+		            button.setIcon(itemIcon);
 	}
 
 	private void gameOver() {
@@ -467,6 +466,8 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	}
 
 	private void useBan() {
+	    // TODO: 先手で1ターン目に使用するとこのメソッドが２回呼ばれてしまうバグあり
+	    hideHint();
 		Random random = new Random();
 		List<Point> emptyPoints = BoardHelper.getPoints(Stone.Empty, board);
 		int count = Math.min(3, emptyPoints.size());
@@ -476,6 +477,13 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 			buttonBoard[p.getRow()][p.getColumn()].setIcon(cannotPutIcon);
 			buttonBoard[p.getRow()][p.getColumn()].setRolloverIcon(null);
 		}
+
+        // ヒントの再表示とパス処理
+        List<Point> hint = makeHint(myStone);
+		if (hint.isEmpty())
+		    nextTurn();
+		else
+		    displayHint(hint);
 	}
 
 	private void useDrop() {
