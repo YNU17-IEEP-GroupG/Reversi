@@ -149,7 +149,7 @@ public class SettingsPanel extends JPanel {
 		}
 		
 		lIconNamePanel.add(lNamePanel, BorderLayout.CENTER);
-
+		
 		add(lIconNamePanel);
 		add(lOnlineInfoPanel);
 		add(lOfflineInfoPanel);

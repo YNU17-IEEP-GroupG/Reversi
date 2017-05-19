@@ -31,7 +31,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 
 	public static final int			BOARD_SIZE		= 8;
 	public static final int			IMAGE_ICON_SIZE	= 40;
-	public static final int		 ITEM_COUNT	  = 3;
+	public static final int			ITEM_COUNT	  = 3;
 	public static final ImageIcon	emptyIcon		= new ImageIcon("image/board/Empty.png");
 	public static final ImageIcon	blackIcon		= new ImageIcon("image/board/black.png");
 	public static final ImageIcon	whiteIcon		= new ImageIcon("image/board/white.png");
@@ -212,6 +212,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 
 	private void nextTurn() {
 		myTurn = !myTurn;
+		callback.onTurnChange(myTurn);
 		myStone = myStone.getReverse();
 		if (grayTurn < 0) undoGray();
 		hideHint();

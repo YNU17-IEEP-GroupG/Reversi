@@ -26,7 +26,8 @@ public class OnlinePlayPanel extends JPanel {
 	}
 	
 	private void showRoomSearchDialog() {
-		String tResult = JOptionPane.showInputDialog(this, "対戦相手名を入力.空欄でランダムマッチングになります", "対戦相手入力", JOptionPane.PLAIN_MESSAGE);
+		String tResult = JOptionPane.showInputDialog(this,
+				"対戦相手名を入力.空欄でランダムマッチングになります", "対戦相手入力", JOptionPane.PLAIN_MESSAGE);
 		if (tResult == null) {
 			// キャンセル
 			callback.returnTitlePanel();

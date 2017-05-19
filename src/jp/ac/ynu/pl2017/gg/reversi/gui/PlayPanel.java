@@ -50,13 +50,25 @@ public class PlayPanel extends JPanel implements PlayCallback {
 	private	Class<BaseAI>	selectedAI;
 	private	int				selectedDifficulty;
 	private	JButton			playerItemButton;
+	
+	/**
+	 * 0:自分 1:相手
+	 */
+	private JLabel	turnIcon[];
 
 	public PlayPanel(TitlePanel.Transition pCallback, Class<BaseAI> pAi, int pDifficulty) {
 		callback = pCallback;
 		
 		setPreferredSize(new Dimension(MainFrame.panelW, MainFrame.panelH));
 		setLayout(new BorderLayout());
-
+		
+		turnIcon = new JLabel[2];
+		for (int i = 0; i < 2; i++){
+			turnIcon[i] = new JLabel();
+			turnIcon[i].setPreferredSize(new Dimension(60, 60));
+			turnIcon[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		}
+		
 		lOthelloPanel = new Othello(this, pAi, pDifficulty);
 		lCoverPanel = new JPanel();
 		lCoverPanel.setLayout(new FlowLayout());
@@ -167,9 +179,32 @@ public class PlayPanel extends JPanel implements PlayCallback {
 		lPlayerNIPanel.add(lPlayerSIPanel);
 
 		lPlayerPanel.add(lPlayerNIPanel, BorderLayout.CENTER);
-
+		
+		/*
+		 * ターン情報
+		 */
+		JPanel lTurnPanel = new JPanel();
+		lTurnPanel.setLayout(new BorderLayout());
+		
+		JPanel lOpponentTurnWrapPanel = new JPanel();
+		lOpponentTurnWrapPanel.setPreferredSize(new Dimension(lPlayerPanel.getPreferredSize().width, 65));
+		FlowLayout fl1 = new FlowLayout();
+		fl1.setAlignment(FlowLayout.RIGHT);
+		lOpponentTurnWrapPanel.setLayout(fl1);
+		lOpponentTurnWrapPanel.add(turnIcon[1]);
+		JPanel lPlayerTurnWrapPanel = new JPanel();
+		lPlayerTurnWrapPanel.setPreferredSize(new Dimension(lPlayerPanel.getPreferredSize().width, 65));
+		FlowLayout fl2 = new FlowLayout();
+		fl2.setAlignment(FlowLayout.LEFT);
+		lPlayerTurnWrapPanel.setLayout(fl2);
+		lPlayerTurnWrapPanel.add(turnIcon[0]);
+		
+		lTurnPanel.add(lOpponentTurnWrapPanel, BorderLayout.NORTH);
+		lTurnPanel.add(lPlayerTurnWrapPanel, BorderLayout.SOUTH);
+		
 		lInfoPanel.add(lOpponentPanel, BorderLayout.NORTH);
 		lInfoPanel.add(lPlayerPanel, BorderLayout.SOUTH);
+		lInfoPanel.add(lTurnPanel, BorderLayout.CENTER);
 
 		add(lInfoPanel, BorderLayout.EAST);
 	}
@@ -180,6 +215,12 @@ public class PlayPanel extends JPanel implements PlayCallback {
 
 	public void setType(int pType) {
 		cpuType = pType;
+	}
+
+	@Override
+	public void onTurnChange(boolean isMyTurn) {
+		turnIcon[0].setVisible(isMyTurn);
+		turnIcon[1].setVisible(!isMyTurn);
 	}
 
 	@Override

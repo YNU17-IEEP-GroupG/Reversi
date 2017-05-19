@@ -1,6 +1,10 @@
 package jp.ac.ynu.pl2017.gg.reversi.gui;
 
 public interface PlayCallback {
+	/**
+	 * ターン変更
+	 */
+	void onTurnChange(boolean isMyTurn);
 	
 	/**
 	 * アイテム取得
