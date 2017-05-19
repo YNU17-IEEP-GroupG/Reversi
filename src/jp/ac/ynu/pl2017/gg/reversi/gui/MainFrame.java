@@ -38,7 +38,7 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 
 	public MainFrame() {
 		super();
-		setTitle("オセロ対戦ゲーム");
+		setTitle("Reversi × Treasure");
 		/*getContentPane().*/setPreferredSize(new Dimension(panelW, panelH));
 		setResizable(false);
 		pack();
