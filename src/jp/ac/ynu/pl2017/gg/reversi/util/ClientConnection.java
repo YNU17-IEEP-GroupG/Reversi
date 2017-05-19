@@ -76,6 +76,31 @@ public class ClientConnection {
 		return false;
 	}
 	
+	public static boolean match(boolean random, String enemy) { // random,true:ランダムマッチ,false:特定の人と
+		boolean turn=true; //true:先手,false:後手
+		
+		try {
+			
+			OutputStream os = theSocket.getOutputStream();
+			DataOutputStream dos = new DataOutputStream(os);
+			
+			InputStream is = theSocket.getInputStream();
+			DataInputStream dis = new DataInputStream(is);
+			
+			if (random) {
+				dos.writeUTF("RANDOM_MATCH");
+				turn = dis.readBoolean();
+			} else {
+				dos.writeUTF(enemy);
+				turn = dis.readBoolean();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return turn;
+	}
+
 	/**
 	 * 自分の置き石送信
 	 * @param pPlace
@@ -109,31 +134,6 @@ public class ClientConnection {
 	 */
 	public static Object[] receiveItemUse() {
 		return null;
-	}
-
-	public static boolean match(boolean random, String enemy) { // random,true:ランダムマッチ,false:特定の人と
-		boolean turn=true; //true:先手,false:後手
-		
-		try {
-			
-			OutputStream os = theSocket.getOutputStream();
-			DataOutputStream dos = new DataOutputStream(os);
-			
-			InputStream is = theSocket.getInputStream();
-			DataInputStream dis = new DataInputStream(is);
-			
-			if (random) {
-				dos.writeUTF("RANDOM_MATCH");
-				turn = dis.readBoolean();
-			} else {
-				dos.writeUTF(enemy);
-				turn = dis.readBoolean();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return turn;
 	}
 
 	// TODO 座標どう送る?

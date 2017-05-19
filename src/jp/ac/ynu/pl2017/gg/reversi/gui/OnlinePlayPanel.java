@@ -32,6 +32,5 @@ public class OnlinePlayPanel extends JPanel {
 			callback.returnTitlePanel();
 		}
 		ClientConnection.match(tResult.isEmpty(), tResult);
-		System.out.println(tResult);
 	}
 }
