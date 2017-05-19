@@ -67,7 +67,7 @@ class ClientProcThread extends Thread {
 							
 							myOut.println("対戦相手の名前を入力して下さい");
 							String enemyName = myIn.readLine();
-							if(!enemyName.equals("CANSEL")){
+							if(!enemyName.equals("CANSEL") && !enemyName.equals(myName)){//自分の名前をいれたらキャンセルされる
 								
 								myRoom = room;//ルーム番号をセット
 								Match myMatch = new Match(room,myName,enemyName);
@@ -152,6 +152,56 @@ class ClientProcThread extends Thread {
 							myOut.println("相手のターンです");
 						}    
 					}
+						
+					if (cmd.equals("REMATCH")) {
+						if (rematch == 0) {// 相手が未応答
+							myOut.println("再戦:1,終了:2");
+							rematch = Integer.parseInt(myIn.readLine());
+							
+        						if (rematch == 1) { 
+								myOut.println("対戦相手を待っています");
+         							while (true) {// 相手待ち
+									String cansel = myIn.readLine();
+									if(cansel.equals("CANSEL")){
+										myOut.println("キャンセルしました");
+										rematch = 2;
+										break;
+									}
+									if (rematch == 2) {
+										myOut.println("再戦が拒否されました");
+										break;
+									} else if (rematch == 3) {
+										myOut.println("再戦を行います");
+										break;
+									}
+								}
+							} else if (rematch == 2) {
+								myOut.println("終了します");
+							} else {
+								myOut.println("不正な値です");
+								rematch = 0;
+							}
+      						} else {// 相手が応答済
+							if (rematch == 2) {
+								myOut.println("再戦が拒否されました");
+								rematch = 0;
+							} else if (rematch == 1) {
+								myOut.println("再戦:1,終了:2");
+								rematch = Integer.parseInt(myIn.readLine());
+								if (rematch == 1) {
+									myOut.println("再戦を行います");
+									rematch = 3;
+								} else if (rematch == 2) {
+									myOut.println("終了します");
+									rematch = 0;
+								} else {
+									myOut.println("不正な値です");
+								}
+							}
+						}
+					}
+						
+						
 						
 					//	MyServer.SendAll(str, myName);// サーバに来たメッセージは接続しているクライアント全員に配る
 					}
