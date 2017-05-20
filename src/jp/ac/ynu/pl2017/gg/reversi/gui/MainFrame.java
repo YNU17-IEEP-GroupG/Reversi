@@ -5,7 +5,13 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridLayout;
+import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -95,7 +101,17 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 
 	@Override
 	public void changePlayPanel(Class<BaseAI> pAi, int pDifficulty, int pPIcon, int pOIcon) {
-		setContentPane(new PlayPanel(this, pAi, pDifficulty, pPIcon, pOIcon));
+		BufferedImage lBufferedImage;
+		try {
+			InputStream lStream = getClass().getClassLoader().getResourceAsStream("background/back1.png");
+			lBufferedImage = ImageIO.read(lStream);
+		} catch (IOException e) {
+			e.printStackTrace();
+			lBufferedImage = null;
+		}
+		ImageIcon lIcon = new ImageIcon(lBufferedImage);
+//		setContentPane(new BackgroundedPanel(lBufferedImage));
+		setContentPane(new PlayPanel(this, pAi, pDifficulty, pPIcon, pOIcon, lIcon.getImage()));
 		validate();
 	}
 

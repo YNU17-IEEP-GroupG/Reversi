@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
@@ -27,7 +28,7 @@ import jp.ac.ynu.pl2017.gg.reversi.util.Item;
  * ゲーム画面を構築するJPanel. 対人・対CPU問わずここに飛んでくる発想.
  *
  */
-public class PlayPanel extends JPanel implements PlayCallback {
+public class PlayPanel extends BackgroundedPanel implements PlayCallback {
 
 	private boolean	isCPU	= false;
 
@@ -56,7 +57,9 @@ public class PlayPanel extends JPanel implements PlayCallback {
 	private JLabel	lPlayerIcon;
 
 	public PlayPanel(TitlePanel.Transition pCallback, Class<BaseAI> pAi, int pDifficulty,
-			int pPIcon, int pOIcon) {
+			int pPIcon, int pOIcon, Image pImage) {
+		super(pImage);
+		setOpaque(false);
 		callback = pCallback;
 		
 		setPreferredSize(new Dimension(MainFrame.panelW, MainFrame.panelH));
@@ -93,6 +96,7 @@ public class PlayPanel extends JPanel implements PlayCallback {
 
 		lOthelloPanel = new Othello(this, pAi, pDifficulty);
 		lCoverPanel = new JPanel();
+		lCoverPanel.setOpaque(false);
 		lCoverPanel.setLayout(new FlowLayout());
 		
 		selectedAI = pAi;
