@@ -43,6 +43,8 @@ public class SettingsPanel extends JPanel {
 
 	public static int		temp		= 0;
 
+	private	JLabel			iconLabel;
+
 	public SettingsPanel(TitlePanel.Transition callback) {
 		super();
 
@@ -78,10 +80,10 @@ public class SettingsPanel extends JPanel {
 		 * アイコン
 		 */
 		JPanel lIconPanel = new JPanel(new BorderLayout());
-		lIconPanel.setSize(200, 220);
-		JLabel lIconLabel = new JLabel(new ImageIcon("./200.png"));
-		lIconLabel.setSize(new Dimension(200, 200));
-		lIconPanel.add(lIconLabel, BorderLayout.CENTER);
+		lIconPanel.setSize(90, 90);
+		iconLabel = new JLabel(new ImageIcon("image/icon/icon"+(iconIndex+1)+".png"));
+		iconLabel.setSize(new Dimension(90, 90));
+		lIconPanel.add(iconLabel, BorderLayout.CENTER);
 		JButton lIconChanger = new JButton("アイコンの変更");
 		lIconChanger.addActionListener(e -> showImageSelectDialog(0));
 		lIconPanel.add(lIconChanger, BorderLayout.SOUTH);
@@ -245,6 +247,9 @@ public class SettingsPanel extends JPanel {
 				
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
+					if (mode == 0) {
+						iconLabel.setIcon(new ImageIcon("image/icon/icon"+(ii+1)+".png"));
+					}
 					selectButton(lSelectButtons, ii);
 					temp = ii;
 				}
