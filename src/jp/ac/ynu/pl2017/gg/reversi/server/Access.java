@@ -1,5 +1,6 @@
 package jp.ac.ynu.pl2017.gg.reversi.server;
 
+import jp.ac.ynu.pl2017.gg.reversi.util.Offline;
 import jp.ac.ynu.pl2017.gg.reversi.util.User;
 
 import java.sql.Connection;
@@ -43,6 +44,68 @@ public class Access {
     }
 
     /**
+     * ユーザデータを作成する。
+     * 既に新しいユーザ名が使われていた場合にはfalseを返すが、呼び出し側でexists()を用いて呼び出さないようにしてほしい
+     * @param name 作成するユーザネーム
+     * @param pass 作成するパスワード
+     * @return 作成の可否
+     */
+    public static boolean makeNewUser(String name, String pass) {
+        if (exists(name)) return false;
+
+        String sql = "INSERT INTO user (user_name, password, item, icon, background) VALUES ( " + q(name) + ", " + q(pass) + ", 0, 0, 0)";
+        System.out.println("makeNewUser: sql = " + sql);
+
+        Connection con = DBConnectionUtil.getConnection();
+        try (
+                Statement stmt = con.createStatement();
+        ) {
+            int ret = stmt.executeUpdate(sql);
+            System.out.println("ret =" + ret);
+            if (ret != 0) {
+                int id = getUserId(name);
+                for (String type : table)
+                    initUserPlay(type, id);
+                return true;
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * ユーザデータを更新する。変更前と変更後のユーザ名が同じ場合パスワードの更新をする。
+     * 既に新しいユーザ名が使われていた場合にはfalseを返すが、呼び出し側でexists()を用いて呼び出さないようにしてほしい
+     * @param oldName 更新前のユーザネーム
+     * @param newName 更新後のユーザネーム
+     * @param newPass 更新後のパスワード
+     * @return 更新の可否
+     */
+    public static boolean updateUser(String oldName, String newName, String newPass) {
+        int userId = getUserId(oldName);
+        // 古いユーザネームが存在しない または 新しいユーザネームが既に存在する
+        if (userId == -1 || (exists(newName) && !newName.equals(oldName))) return false;
+
+        String sql = "UPDATE user SET user_name = " + q(newName) + ", password = " + q(newPass) + " WHERE id = " + userId;
+        System.out.println("updateUser: sql = " + sql);
+
+        Connection con = DBConnectionUtil.getConnection();
+        try (
+                Statement stmt = con.createStatement();
+        ) {
+            int ret = stmt.executeUpdate(sql);
+            if (ret != 0)
+                return true;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
      * 勝ち負けを更新する
      * @param name ユーザネーム
      * @param type 更新する種類。α:0 β:1 γ:2 ω:3 オンライン:4
@@ -73,38 +136,8 @@ public class Access {
     }
 
     /**
-     * ユーザデータを更新する。変更前と変更後のユーザ名が同じ場合パスワードの更新をする。
-     * 既に新しいユーザ名が使われていた場合にはfalseを返すが、呼び出し側でexists()を用いて呼び出さないようにしてほしい
-     * @param oldName 更新前のユーザネーム
-     * @param newName 更新後のユーザネーム
-     * @param newPass 更新後のパスワード
-     * @return 更新の可否
-     */
-    public static boolean updateUser(String oldName, String newName, String newPass) {
-        int userId = getUserId(oldName);
-        // 古いユーザネームが存在しない または 新しいユーザネームが既に存在する
-        if (userId == -1 || (exists(newName) && !newName.equals(oldName))) return false;
-
-        String sql = "UPDATE user SET user_name = " + q(newName) + ", password = " + q(newPass) + " WHERE id = " + userId;
-        System.out.println("updateUser: sql = " + sql);
-
-        Connection con = DBConnectionUtil.getConnection();
-        try (
-            Statement stmt = con.createStatement();
-        ) {
-            int ret = stmt.executeUpdate(sql);
-            if (ret != 0)
-                return true;
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    /**
      * アイコンを更新する
-     * @param name ユーザ名
+     * @param name ユーザネーム
      * @param icon パスワード
      * @return 更新の可否
      */
@@ -128,7 +161,7 @@ public class Access {
 
     /**
      * 背景を更新する
-     * @param name ユーザ名
+     * @param name ユーザネーム
      * @param back パスワード
      * @return 更新の可否
      */
@@ -153,11 +186,11 @@ public class Access {
 
     /**
      * ユーザデータの一部を取得。オンライン対戦の相手のデータ取得などに利用
-     * @param name ユーザ名
-     * @return userName,icon,onlineWin,onlineLoseのみのUserクラスのインスタンス
+     * @param name ユーザネーム
+     * @return id,userName,item,icon,background,onlineWin,onlineLoseのみのUserクラスのインスタンス
      */
     public static User requestUserData(String name) {
-        String sql = "SELECT * FROM user U, online O WHERE U.user_name = " + name + " AND U.id = O.user_id";
+        String sql = "SELECT * FROM user U, online O WHERE U.user_name = " + q(name) + " AND U.id = O.user_id";
         System.out.println("requestUserData: sql = " + sql);
 
         User user = new User();
@@ -167,8 +200,11 @@ public class Access {
             ResultSet result = stmt.executeQuery(sql);
         ) {
             result.next();
+            user.setId(result.getInt("id"));
             user.setUserName(result.getString("user_name"));
+            user.setItem(result.getInt("item"));
             user.setIcon(result.getInt("icon"));
+            user.setBackground(result.getInt("background"));
             user.setOnlineWin(result.getInt("win"));
             user.setOnlineLose(result.getInt("lose"));
         }
@@ -181,37 +217,22 @@ public class Access {
 
     /**
      * 全てのユーザーデータの取得。設定画面のデータ取得などに利用
-     * @param name ユーザ名
+     * @param name ユーザネーム
      * @return 情報が完全なUserクラスのインスタンス
      */
     public static User requestFullUserData(String name) {
         User user = requestUserData(name);
         int id = user.getId();
-        // TODO: このクエリで何が返ってくるかよくわからないので、テストしてから書き直す
-        String sql = "SELECT * FROM alpha A, beta B, gamma C, omega Z WHERE A.user_id = " + id +
-                " AND B.user_id = " + id +
-                " AND C.user_id = " + id +
-                " AND Z.user_id = " + id;
-        System.out.println("requestFullUserData: sql = " + sql);
-
-        Connection con = DBConnectionUtil.getConnection();
-        try (
-                Statement stmt = con.createStatement();
-                ResultSet result = stmt.executeQuery(sql);
-        ) {
-            result.next();
-            // あとで書く
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-
+        user.setAlpha(getOfflineData(table[0], id));
+        user.setBeta(getOfflineData(table[1], id));
+        user.setGamma(getOfflineData(table[2], id));
+        user.setOmega(getOfflineData(table[3], id));
         return user;
     }
 
     /**
      * ユーザ名が既に登録済みかどうかを確認する
-     * @param name ユーザ名
+     * @param name ユーザネーム
      * @return 登録済みかどうか
      */
     public static boolean exists(String name) {
@@ -234,6 +255,7 @@ public class Access {
         return "\"" + string + "\"";
     }
 
+    // ユーザネームに対応するidをDBから取得
     private static int getUserId(String name) {
         String sql = "SELECT * FROM user WHERE user_name = " + q(name);
 
@@ -250,6 +272,50 @@ public class Access {
         }
 
         return -1;
+    }
+
+    // 対応するテーブルの初期化をする
+    private static void initUserPlay(String type, int userId) {
+        String sql = "";
+        if (type.equals(table[4]))
+            sql = "INSERT INTO online (user_id, win, lose) VALUES (" + userId + ", 0, 0)";
+        else
+            sql = "INSERT INTO " + type + " (user_id, hard_win, hard_lose, normal_win, normal_lose, easy_win, easy_lose) VALUES (" + userId + ", 0, 0, 0, 0, 0, 0)";
+        System.out.println("makeUserOffline: sql = " + sql);
+
+        Connection con = DBConnectionUtil.getConnection();
+        try (
+                Statement stmt = con.createStatement();
+        ) {
+            stmt.executeUpdate(sql);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static Offline getOfflineData(String type, int userId) {
+        String sql = "SELECT * FROM " + type + " WHERE user_id = " + userId;
+        System.out.println("getOfflineData: sql = " + sql);
+
+        Offline offline = new Offline();
+        Connection con = DBConnectionUtil.getConnection();
+        try (
+            Statement stmt = con.createStatement();
+            ResultSet result = stmt.executeQuery(sql);
+        ) {
+            if(!result.next()) return offline;
+            offline.setHardWin(result.getInt("hard_win"));
+            offline.setHardLose(result.getInt("hard_lose"));
+            offline.setNormalWin(result.getInt("normal_win"));
+            offline.setNormalLose(result.getInt("normal_lose"));
+            offline.setEasyWin(result.getInt("easy_win"));
+            offline.setEasyLose(result.getInt("easy_lose"));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return offline;
     }
 
     /*==================== 以下デバッグ用 ====================*/

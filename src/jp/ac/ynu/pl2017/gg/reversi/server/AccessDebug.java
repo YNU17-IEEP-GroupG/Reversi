@@ -1,5 +1,7 @@
 package jp.ac.ynu.pl2017.gg.reversi.server;
 
+import jp.ac.ynu.pl2017.gg.reversi.util.User;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -47,17 +49,10 @@ public class AccessDebug extends JFrame implements ActionListener {
                 text = Access.getAllUserString();
                 break;
             case ALPHA:
-                System.out.println(Access.updateBack("日本", 1));
-                text = Access.getAllOfflineString("alpha");
-                break;
             case BETA:
-                text = Access.getAllOfflineString("beta");
-                break;
             case GAMMA:
-                text = Access.getAllOfflineString("gamma");
-                break;
             case OMEGA:
-                text = Access.getAllOfflineString("omega");
+                text = Access.getAllOfflineString(e.getActionCommand());
                 break;
             case ONLINE:
                 text = Access.getAllOnlineString();
@@ -68,5 +63,7 @@ public class AccessDebug extends JFrame implements ActionListener {
 
     public static void main(String[] args) {
         new AccessDebug();
+        User user = Access.requestFullUserData("name");
+        System.out.println(user.toString());
     }
 }

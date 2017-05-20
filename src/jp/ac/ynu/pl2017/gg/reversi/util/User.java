@@ -2,79 +2,29 @@ package jp.ac.ynu.pl2017.gg.reversi.util;
 
 /**
  * Created by shiita on 2017/05/18.
- * ユーザデータのクラス。無効なデータには-1かnullが格納されている。
+ * ユーザデータのクラス
  */
 public class User {
     private int id = -1;
-    private String userName = null;
+    private String userName = "";
+    private int item = -1;
     private int icon = -1;
+    private int background = -1;
 
     private int onlineWin = -1;
     private int onlineLose = -1;
 
-    private Offline alpha = null;
-    private Offline beta = null;
-    private Offline gamma = null;
-    private Offline omega = null;
-
-    public class Offline {
-        private int hardWin;
-        private int hardLose;
-        private int normalWin;
-        private int normalLose;
-        private int easyWin;
-        private int easyLose;
-
-        public int getHardWin() {
-            return hardWin;
-        }
-
-        public void setHardWin(int hardWin) {
-            this.hardWin = hardWin;
-        }
-
-        public int getHardLose() {
-            return hardLose;
-        }
-
-        public void setHardLose(int hardLose) {
-            this.hardLose = hardLose;
-        }
-
-        public int getNormalWin() {
-            return normalWin;
-        }
-
-        public void setNormalWin(int normalWin) {
-            this.normalWin = normalWin;
-        }
-
-        public int getNormalLose() {
-            return normalLose;
-        }
-
-        public void setNormalLose(int normalLose) {
-            this.normalLose = normalLose;
-        }
-
-        public int getEasyWin() {
-            return easyWin;
-        }
-
-        public void setEasyWin(int easyWin) {
-            this.easyWin = easyWin;
-        }
-
-        public int getEasyLose() {
-            return easyLose;
-        }
-
-        public void setEasyLose(int easyLose) {
-            this.easyLose = easyLose;
-        }
-    }
+    private Offline alpha = new Offline();
+    private Offline beta = new Offline();
+    private Offline gamma = new Offline();
+    private Offline omega = new Offline();
 
     public User() {
+    }
+
+    @Override
+    public String toString() {
+        return "id = " + id + ", userName = " + userName + ", item =" + item + ", icon = " + icon + ", background = " + background + ", onlineWin = " + onlineWin + ", onlineLose = " + onlineLose + "\nalpha:" + alpha.toString() + "\nbeta:" + beta.toString() + "\ngamma:" + gamma.toString() + "\nomega:" + omega.toString();
     }
 
     public int getId() {
@@ -93,12 +43,28 @@ public class User {
         this.userName = userName;
     }
 
+    public int getItem() {
+        return item;
+    }
+
+    public void setItem(int item) {
+        this.item = item;
+    }
+
     public int getIcon() {
         return icon;
     }
 
     public void setIcon(int icon) {
         this.icon = icon;
+    }
+
+    public int getBackground() {
+        return background;
+    }
+
+    public void setBackground(int background) {
+        this.background = background;
     }
 
     public int getOnlineWin() {
