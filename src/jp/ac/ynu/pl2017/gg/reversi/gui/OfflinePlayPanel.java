@@ -66,10 +66,9 @@ public class OfflinePlayPanel extends JPanel {
 					JButton tPlayButton = new JButton("PLAY");
 					
 					final int tAiType = c-1;
-					// TODO 要確認
 					final int tAiDiff = 2-r;
 					tPlayButton.addActionListener(e ->
-							callback.changePlayPanel(aiList[tAiType], tAiDiff, SettingsPanel.iconIndex, 0));
+							callback.changePlayPanel(aiList[tAiType], tAiDiff, SettingsPanel.iconIndex, 0, SettingsPanel.backIndex));
 					lDifficultyPanel.add(tPlayButton);
 				}
 			}

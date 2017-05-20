@@ -7,6 +7,8 @@ import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
 import static jp.ac.ynu.pl2017.gg.reversi.gui.MainFrame.panelH;
 import static jp.ac.ynu.pl2017.gg.reversi.gui.MainFrame.panelW;
 
+import java.awt.Image;
+
 /**
  * Created by shiita on 2017/05/12.
  */
@@ -77,6 +79,9 @@ public class TitlePanel extends JPanel {
 		void showLoginDialog();
 
 		void changePlayPanel(Class<BaseAI> pAi, int pDifficulty,
-				int pPIcon, int pOIcon);
+				int pPIcon, int pOIcon, int pImage);
+		
+		void changePlayPanel(Class<BaseAI> pAi, int pDifficulty,
+				int pPIcon, int pOIcon, Image pImage);
 	}
 }

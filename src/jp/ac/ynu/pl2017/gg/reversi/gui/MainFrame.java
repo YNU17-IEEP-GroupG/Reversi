@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -100,19 +101,23 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 	}
 
 	@Override
-	public void changePlayPanel(Class<BaseAI> pAi, int pDifficulty, int pPIcon, int pOIcon) {
-		BufferedImage lBufferedImage;
+	public void changePlayPanel(Class<BaseAI> pAi, int pDifficulty,
+			int pPIcon, int pOIcon, int pImage) {
+		BufferedImage bufferedImage = null;
 		try {
-			InputStream lStream = getClass().getClassLoader().getResourceAsStream("background/back1.png");
-			lBufferedImage = ImageIO.read(lStream);
+			InputStream lInputStream =
+					getClass().getClassLoader().getResourceAsStream("background/back"+(pImage+1)+".png");
+			bufferedImage = ImageIO.read(lInputStream);
 		} catch (IOException e) {
-			e.printStackTrace();
-			lBufferedImage = null;
 		}
-		ImageIcon lIcon = new ImageIcon(lBufferedImage);
-//		setContentPane(new BackgroundedPanel(lBufferedImage));
-		setContentPane(new PlayPanel(this, pAi, pDifficulty, pPIcon, pOIcon, lIcon.getImage()));
+		setContentPane(new PlayPanel(this, pAi, pDifficulty, pPIcon, pOIcon, bufferedImage));
 		validate();
+	}
+
+	@Override
+	public void changePlayPanel(Class<BaseAI> pAi, int pDifficulty, int pPIcon, int pOIcon, Image pImage) {
+		setContentPane(new PlayPanel(this, pAi, pDifficulty, pPIcon, pOIcon, pImage));
+		validate();		
 	}
 
 	@Override
