@@ -23,7 +23,7 @@ public class Access {
      * @return ログインの可否
      */
     public static boolean login(String name, String pass) {
-        String sql = "SELECT * FROM user WHERE user_name = " + name + ", password = " + pass;
+        String sql = "SELECT * FROM user WHERE user_name = " + q(name) + " AND password = " + q(pass);
         System.out.println("login: sql = " + sql);
 
         Connection con = DBConnectionUtil.getConnection();
@@ -242,5 +242,92 @@ public class Access {
      */
     public static void closeConnection() throws Exception {
         DBConnectionUtil.closeConnection();
+    }
+
+    /**
+     * 文字列を""で囲った文字列に変換。java -> "java"
+     * @param string 加工対象の文字列
+     * @return 加工後の文字列
+     */
+    public static String q(String string) {
+        return "\"" + string + "\"";
+    }
+
+    /*==================== 以下デバッグ用 ====================*/
+
+    public static String getAllUserString() {
+        String sql = "SELECT * FROM user";
+        System.out.println("getAllUserString: sql = " + sql);
+
+        StringBuffer sb = new StringBuffer();
+        sb.append("id, user_name, password, item, icon, background\n");
+        Connection con = DBConnectionUtil.getConnection();
+        try (
+            Statement stmt = con.createStatement();
+            ResultSet result = stmt.executeQuery(sql);
+        ) {
+            while (result.next()) {
+                sb.append(result.getInt("id")); sb.append(", ");
+                sb.append(result.getString("user_name")); sb.append(", ");
+                sb.append(result.getString("password")); sb.append(", ");
+                sb.append(result.getInt("item")); sb.append(", ");
+                sb.append(result.getInt("icon")); sb.append(", ");
+                sb.append(result.getInt("background")); sb.append("\n");
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return sb.toString();
+    }
+
+    public static String getAllOfflineString(String type) {
+        String sql = "SELECT * FROM " + type;
+        System.out.println("getAllOfflineString: sql = " + sql);
+
+        StringBuffer sb = new StringBuffer();
+        sb.append("user_id, hard_win, hard_lose, normal_win, normal_lose, easy_win, easy_lose\n");
+        Connection con = DBConnectionUtil.getConnection();
+        try (
+            Statement stmt = con.createStatement();
+            ResultSet result = stmt.executeQuery(sql);
+        ) {
+            while (result.next()) {
+                sb.append(result.getInt("user_id")); sb.append(", ");
+                sb.append(result.getInt("hard_win")); sb.append(", ");
+                sb.append(result.getInt("hard_lose")); sb.append(", ");
+                sb.append(result.getInt("normal_win")); sb.append(", ");
+                sb.append(result.getInt("normal_lose")); sb.append(", ");
+                sb.append(result.getInt("easy_win")); sb.append(", ");
+                sb.append(result.getInt("easy_lose")); sb.append("\n");
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return sb.toString();
+    }
+
+    public static String getAllOnlineString() {
+        String sql = "SELECT * FROM online";
+        System.out.println("getAllOnlineString: sql = " + sql);
+
+        StringBuffer sb = new StringBuffer();
+        sb.append("user_id, win, lose\n");
+        Connection con = DBConnectionUtil.getConnection();
+        try (
+            Statement stmt = con.createStatement();
+            ResultSet result = stmt.executeQuery(sql);
+        ) {
+            while (result.next()) {
+                sb.append(result.getInt("user_id")); sb.append(", ");
+                sb.append(result.getInt("win")); sb.append(", ");
+                sb.append(result.getInt("lose")); sb.append("\n");
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return sb.toString();
     }
 }
