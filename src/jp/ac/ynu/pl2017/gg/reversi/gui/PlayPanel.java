@@ -39,7 +39,9 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback {
 	
 	private	int		playerIconNum;
 	private	int		opponentIconNum;
-	private	Item havingItem;
+	private	Image	backImage;
+
+	private	Item	havingItem;
 	
 	private TitlePanel.Transition	callback;
 	
@@ -55,10 +57,11 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback {
 
 	private JLabel	lOpponentIcon;
 	private JLabel	lPlayerIcon;
-
+	
 	public PlayPanel(TitlePanel.Transition pCallback, Class<BaseAI> pAi, int pDifficulty,
 			int pPIcon, int pOIcon, Image pImage) {
 		super(pImage);
+		backImage = pImage;
 		setOpaque(false);
 		callback = pCallback;
 		
@@ -234,7 +237,7 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback {
 			if (isCPU) {
 				// 対CPU戦は同じ難易度でもう一度
 				callback.changePlayPanel(selectedAI, selectedDifficulty,
-						playerIconNum, opponentIconNum);
+						playerIconNum, opponentIconNum, backImage);
 			} else {
 				// 対人戦は再戦を申し込む
 			}
