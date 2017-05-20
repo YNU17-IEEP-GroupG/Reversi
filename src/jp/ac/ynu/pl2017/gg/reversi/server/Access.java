@@ -223,10 +223,8 @@ public class Access {
     public static User requestFullUserData(String name) {
         User user = requestUserData(name);
         int id = user.getId();
-        user.setAlpha(getOfflineData(table[0], id));
-        user.setBeta(getOfflineData(table[1], id));
-        user.setGamma(getOfflineData(table[2], id));
-        user.setOmega(getOfflineData(table[3], id));
+        Offline[] offlines = { getOfflineData(table[0], id), getOfflineData(table[1], id), getOfflineData(table[2], id), getOfflineData(table[3], id)};
+        user.setOfflines(offlines);
         return user;
     }
 

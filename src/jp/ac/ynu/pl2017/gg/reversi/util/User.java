@@ -14,17 +14,17 @@ public class User {
     private int onlineWin = -1;
     private int onlineLose = -1;
 
-    private Offline alpha = new Offline();
-    private Offline beta = new Offline();
-    private Offline gamma = new Offline();
-    private Offline omega = new Offline();
+    // indexは0~3が順にalpha,beta,gamma,omegaに対応
+    private Offline[] offlines = new Offline[4];
 
     public User() {
+        for (int i = 0; i < offlines.length; i++)
+            offlines[i] = new Offline();
     }
 
     @Override
     public String toString() {
-        return "id = " + id + ", userName = " + userName + ", item =" + item + ", icon = " + icon + ", background = " + background + ", onlineWin = " + onlineWin + ", onlineLose = " + onlineLose + "\nalpha:" + alpha.toString() + "\nbeta:" + beta.toString() + "\ngamma:" + gamma.toString() + "\nomega:" + omega.toString();
+        return "id = " + id + ", userName = " + userName + ", item =" + item + ", icon = " + icon + ", background = " + background + ", onlineWin = " + onlineWin + ", onlineLose = " + onlineLose + "\nalpha:" + offlines[0].toString() + "\nbeta:" + offlines[1].toString() + "\ngamma:" + offlines[2].toString() + "\nomega:" + offlines[3].toString();
     }
 
     public int getId() {
@@ -83,35 +83,11 @@ public class User {
         this.onlineLose = onlineLose;
     }
 
-    public Offline getAlpha() {
-        return alpha;
+    public Offline[] getOfflines() {
+        return offlines;
     }
 
-    public void setAlpha(Offline alpha) {
-        this.alpha = alpha;
-    }
-
-    public Offline getBeta() {
-        return beta;
-    }
-
-    public void setBeta(Offline beta) {
-        this.beta = beta;
-    }
-
-    public Offline getGamma() {
-        return gamma;
-    }
-
-    public void setGamma(Offline gamma) {
-        this.gamma = gamma;
-    }
-
-    public Offline getOmega() {
-        return omega;
-    }
-
-    public void setOmega(Offline omega) {
-        this.omega = omega;
+    public void setOfflines(Offline[] offlines) {
+        this.offlines = offlines;
     }
 }
