@@ -12,29 +12,15 @@ import java.util.List;
  * GammaAIよりも深く読む
  */
 public class OmegaAI extends BaseAI {
+    private final int[] depth = { 2, 4, 4 };
+    private final int[] countStart = { 6, 8, 10};
 
     @Override
     public void think() {
-        int depth = 4;
-        int countStart = 10;
         Search s = new Search(stone);
-        switch (difficulty) {
-            case 0:
-                depth = 2;
-                countStart = 6;
-                break;
-            case 1:
-                depth = 4;
-                countStart = 8;
-                break;
-            case 2:
-                depth = 4;
-                countStart = 10;
-                break;
-        }
         Point point;
-        if (BoardHelper.countStone(Stone.Empty, board) > countStart)
-            point = s.minMax(depth, Evaluation.EvaluationType.SQUARE, stone, board);
+        if (BoardHelper.countStone(Stone.Empty, board) > countStart[difficulty])
+            point = s.minMax(depth[difficulty], Evaluation.EvaluationType.SQUARE, stone, board);
         else
             point = s.untilEnd(Evaluation.EvaluationType.COUNT, stone, board);
         row = point.getRow();

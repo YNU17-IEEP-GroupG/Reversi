@@ -14,43 +14,34 @@ import java.util.stream.Collectors;
  */
 public class Search {
     private Stone targetStone;
-    // TODO: beamSearchの探索の深さを指定できるように
     // TODO: typeをフィールドに
     public Search(Stone targetStone) {
         this.targetStone = targetStone;
     }
 
-    public Point beamSearch(Evaluation.EvaluationType type, Stone[][] board, int limit) {
+    public Point beamSearch(Evaluation.EvaluationType type, Stone[][] board, int limit, int depth) {
         List<Status> evaluated = new ArrayList<>();
         List<Status> beam;
 
         // beamの初期化
         beam = calcNewStatus(new Status(0, new ArrayList<>(), targetStone.getReverse(), board), type);
         beam = updateBeam(beam, limit);
-        while (!beam.isEmpty()) {
+        while (!beam.isEmpty() && depth >= 0) {
             int size = beam.size();
             for (int j = 0; j < size; j++) {
                 Status s = beam.get(0);
                 beam.remove(0);
-                if (s.stone == targetStone) {
+                if (s.stone == targetStone)
                     evaluated.add(s);
-                }
-                s = new Status(s.value, s.path, s.stone.getReverse(), s.board);
                 List<Status> newS = calcNewStatus(s, type);
                 beam.addAll(newS);
             }
-
             beam = updateBeam(beam, limit);
+            depth--;
         }
-        evaluated.forEach(status -> {
-            System.out.print("value = " + status.value);
-            status.printPath();
-            System.out.println();
-        });
         evaluated = evaluated.stream()
                 .sorted(Comparator.comparing(Status::getValue, Comparator.reverseOrder()))
                 .collect(Collectors.toList());
-        System.out.println("last value =" +  evaluated.get(0).value);
         return evaluated.get(0).path.get(0);
     }
 
@@ -73,16 +64,10 @@ public class Search {
     private List<Status> updateBeam(List<Status> beam, int limit) {
         int l = Math.min(beam.size(), limit);
         if (l == 0) return new ArrayList<>();
-        if (beam.get(0).stone == targetStone)
-            return beam.stream()
-                    .sorted(Comparator.comparing(Status::getValue, Comparator.naturalOrder()))
-                    .limit(l)
-                    .collect(Collectors.toList());
-        else
-            return beam.stream()
-                    .sorted(Comparator.comparing(Status::getValue, Comparator.reverseOrder()))
-                    .limit(l)
-                    .collect(Collectors.toList());
+        return beam.stream()
+                .sorted(Comparator.comparing(Status::getValue, Comparator.reverseOrder()))
+                .limit(l)
+                .collect(Collectors.toList());
     }
 
     public Point untilEnd(Evaluation.EvaluationType type, Stone stone, Stone[][] board) {

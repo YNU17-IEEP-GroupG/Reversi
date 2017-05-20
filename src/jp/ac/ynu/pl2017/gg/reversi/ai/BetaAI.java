@@ -1,5 +1,6 @@
 package jp.ac.ynu.pl2017.gg.reversi.ai;
 
+import jp.ac.ynu.pl2017.gg.reversi.util.BoardHelper;
 import jp.ac.ynu.pl2017.gg.reversi.util.Point;
 import jp.ac.ynu.pl2017.gg.reversi.util.Stone;
 
@@ -11,35 +12,29 @@ import java.util.Random;
  * ビームサーチとMinMax法を両方使う
  */
 public class BetaAI extends BaseAI {
-    Random random;
+    private final int[] beamDepth = { 4, 6, 10 };
+    private final int[] countStart = { 2, 6, 8 };
+    private final int[] limit = { 4, 10, 20 };
+    private final int[] minMaxDepth = { 2, 2, 4 };
 
     @Override
     public void think() {
-        int depth = 2;
         Search s = new Search(stone);
-        switch (difficulty) {
-            case 0:
-                depth = 2;
-                break;
-            case 1:
-                depth = 2;
-                break;
-            case 2:
-                depth = 4;
-                break;
+        Point point;
+        if (BoardHelper.countStone(Stone.Empty, board) > countStart[difficulty]) {
+            if (new Random().nextBoolean())
+                point = s.minMax(minMaxDepth[difficulty], Evaluation.EvaluationType.SQUARE, stone, board);
+            else
+                point = s.beamSearch(Evaluation.EvaluationType.SQUARE, board, limit[difficulty], beamDepth[difficulty]);
         }
-        Point point = hint.get(0);
-        int select = random.nextInt(2);
-        if (select == 0)
-            point = s.minMax(depth, Evaluation.EvaluationType.SQUARE, stone, board);
-        else if (select == 1)
-            point = s.beamSearch(Evaluation.EvaluationType.SQUARE, board, 20);
+        else {
+            point = s.untilEnd(Evaluation.EvaluationType.COUNT, stone, board);
+        }
         row = point.getRow();
         column = point.getColumn();
     }
 
     public BetaAI(List<Point> hint, Stone stone, Stone[][] board, int difficulty) {
         super(hint, stone, board, difficulty);
-        random = new Random();
     }
 }
