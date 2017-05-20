@@ -17,7 +17,9 @@ public class BackgroundedPanel extends JPanel {
 	
 	@Override
 	protected void paintComponent(Graphics g) {
-		g.drawImage(image, 0, 0, this);
+		if (image != null) {
+			g.drawImage(image, 0, 0, this);
+		}
 		super.paintComponent(g);
 	}
 

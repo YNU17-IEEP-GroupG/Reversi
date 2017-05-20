@@ -7,12 +7,10 @@ import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -23,7 +21,6 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
 import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
-import jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection;
 
 public class MainFrame extends JFrame implements TitlePanel.Transition {
 
@@ -33,10 +30,6 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 	private static final long	serialVersionUID	= 248580253941254005L;
 	public static final int		panelW				= 854;
 	public static final int		panelH				= 480;
-	private static final String	TITLE				= "title";
-	private static final String	ONLINE				= "online";
-	private static final String	OFFLINE				= "offline";
-	private static final String	SETTINGS			= "settings";
 	private CardLayout			layout;
 	
 	private TitlePanel			titleCard;
@@ -54,7 +47,16 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 
 		layout = new CardLayout();
 		setLayout(layout);
-		titleCard = new TitlePanel(this);
+		
+		BufferedImage lBufferedImage = null;
+		try {
+			InputStream lInputStream = getClass().getClassLoader().getResourceAsStream("titleBack.png");
+			lBufferedImage = ImageIO.read(lInputStream);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		titleCard = new TitlePanel(this, lBufferedImage);
 		offlineCard = new OfflinePlayPanel(this);
 		settingsCard = new SettingsPanel(this);
 

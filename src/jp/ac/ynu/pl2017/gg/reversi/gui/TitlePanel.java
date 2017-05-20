@@ -12,9 +12,11 @@ import java.awt.Image;
 /**
  * Created by shiita on 2017/05/12.
  */
-public class TitlePanel extends JPanel {
+public class TitlePanel extends BackgroundedPanel {
 
-	public TitlePanel(Transition callback) {
+	public TitlePanel(Transition callback, Image pImage) {
+		super(pImage);
+		setOpaque(false);
 		setSize(panelW, panelH);
 		SpringLayout layout = new SpringLayout();
 		setLayout(layout);
