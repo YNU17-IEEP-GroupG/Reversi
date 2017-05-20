@@ -90,11 +90,11 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback {
 		playerIconNum = pPIcon;
 		opponentIconNum = pOIcon;
 		lOpponentIcon = new JLabel(new ImageIcon("image/icon/icon" + (pOIcon+1) + ".png"));
-		lOpponentIcon.setPreferredSize(new Dimension(80, 80));
+		lOpponentIcon.setPreferredSize(new Dimension(90, 90));
 		lOpponentIcon.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
 		lPlayerIcon = new JLabel(new ImageIcon("image/icon/icon" + (pPIcon+1) + ".png"));
-		lPlayerIcon.setPreferredSize(new Dimension(80, 80));
+		lPlayerIcon.setPreferredSize(new Dimension(90, 90));
 		lPlayerIcon.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
 		lOthelloPanel = new Othello(this, pAi, pDifficulty);
@@ -128,6 +128,7 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback {
 		JPanel lInfoPanel = new JPanel();
 		lInfoPanel.setPreferredSize(new Dimension(MainFrame.panelW - lCoverPanel.getPreferredSize().width, MainFrame.panelH));
 		lInfoPanel.setLayout(new BorderLayout());
+		lInfoPanel.setOpaque(false);
 
 		/*
 		 * 相手情報
@@ -141,7 +142,7 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback {
 		// 名前
 		JPanel lOpponentNIPanel = new JPanel();
 		lOpponentNIPanel.setPreferredSize(new Dimension(MainFrame.panelW - lOthelloPanel.getWidth(), 100));
-		lOpponentPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		lOpponentNIPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		lOpponentNIPanel.setLayout(new BorderLayout());
 		JLabel lOpponentNameLabel = new JLabel("CPU");
 		lOpponentNameLabel.setFont(new Font("Serif", Font.BOLD, 20));
@@ -172,7 +173,7 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback {
 		// 名前
 		JPanel lPlayerNIPanel = new JPanel();
 		lPlayerNIPanel.setPreferredSize(new Dimension(MainFrame.panelW - lOthelloPanel.getWidth(), 100));
-		lPlayerPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		lPlayerNIPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		lPlayerNIPanel.setLayout(new BorderLayout());
 		JLabel lPlayerNameLabel = new JLabel(SettingsPanel.username);
 		lPlayerNameLabel.setFont(new Font("Serif", Font.BOLD, 20));
@@ -196,14 +197,17 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback {
 		 */
 		JPanel lTurnPanel = new JPanel();
 		lTurnPanel.setLayout(new BorderLayout());
+		lTurnPanel.setOpaque(false);
 		
 		JPanel lOpponentTurnWrapPanel = new JPanel();
+		lOpponentTurnWrapPanel.setOpaque(false);
 		lOpponentTurnWrapPanel.setPreferredSize(new Dimension(lPlayerPanel.getPreferredSize().width, 65));
 		FlowLayout fl1 = new FlowLayout();
 		fl1.setAlignment(FlowLayout.RIGHT);
 		lOpponentTurnWrapPanel.setLayout(fl1);
 		lOpponentTurnWrapPanel.add(turnIcon[1]);
 		JPanel lPlayerTurnWrapPanel = new JPanel();
+		lPlayerTurnWrapPanel.setOpaque(false);
 		lPlayerTurnWrapPanel.setPreferredSize(new Dimension(lPlayerPanel.getPreferredSize().width, 65));
 		FlowLayout fl2 = new FlowLayout();
 		fl2.setAlignment(FlowLayout.LEFT);
