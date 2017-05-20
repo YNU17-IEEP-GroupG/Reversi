@@ -47,6 +47,7 @@ public class AccessDebug extends JFrame implements ActionListener {
                 text = Access.getAllUserString();
                 break;
             case ALPHA:
+                System.out.println(Access.updateBack("日本", 1));
                 text = Access.getAllOfflineString("alpha");
                 break;
             case BETA:

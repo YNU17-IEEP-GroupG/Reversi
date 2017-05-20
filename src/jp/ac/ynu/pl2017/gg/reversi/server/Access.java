@@ -2,9 +2,7 @@ package jp.ac.ynu.pl2017.gg.reversi.server;
 
 import jp.ac.ynu.pl2017.gg.reversi.util.User;
 
-import javax.swing.plaf.nimbus.State;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -15,6 +13,10 @@ import java.sql.Statement;
  * 必ずスレッドの終了時にcloseConnection()メソッドでコネクションを切断しなければならない。
  */
 public class Access {
+
+    private static final String[] table = { "alpha", "beta", "gamma", "omega", "online" };
+    private static final String[] difficulties = { "easy_", "normal_", "hard_", "" };
+    private static final String[] judgements = { "win", "lose" };
 
     /**
      * ログイン
@@ -42,52 +44,18 @@ public class Access {
 
     /**
      * 勝ち負けを更新する
-     * @param id ユーザID
+     * @param name ユーザネーム
      * @param type 更新する種類。α:0 β:1 γ:2 ω:3 オンライン:4
-     * @param difficulty 更新する難易度。easy:0 normal:1 hard:2 オンライン:4
-     * @param win 更新する勝敗。負け:0 勝ち:1
+     * @param difficulty 更新する難易度。easy:0 normal:1 hard:2 オンライン:3
+     * @param judgement 更新する勝敗。負け:0 勝ち:1
      * @param difference 更新する差分。
      * @return 更新の可否
      */
-    public static boolean updateResult(int id, int type, int difficulty, int win, int difference) {
-        String table = "online";
-        String diffString = "";
-        String winString = "win";
-        switch (type) {
-            case 0:
-                table = "offline_alpha";
-                break;
-            case 1:
-                table = "offline_beta";
-                break;
-            case 2:
-                table = "offline_gamma";
-                break;
-            case 3:
-                table = "offline_omega";
-                break;
-            case 4:
-                table = "online";
-                break;
-        }
-        switch (difficulty) {
-            case 0:
-                diffString = "easy_";
-                break;
-            case 1:
-                diffString = "normal_";
-                break;
-            case 2:
-                diffString = "hard_";
-                break;
-            case 3:
-                diffString = "";
-                break;
-        }
-        if (win == 1)      winString = "win";
-        else if (win == 0) winString = "lose";
-        String field = diffString + winString;
-        String sql = "UPDATE " + table + "SET " + field + " = " + field + " + " + difference + " WHERE id = " + id;
+    public static boolean updateResult(String name, int type, int difficulty, int judgement, int difference) {
+        String field = difficulties[difficulty] + judgements[judgement];
+        int userId = getUserId(name);
+        if (userId == -1) return false;
+        String sql = "UPDATE " + table[type] + " SET " + field + " = " + field + " + " + difference + " WHERE user_id = " + userId;
         System.out.println("updateResult: sql = " + sql);
 
         Connection con = DBConnectionUtil.getConnection();
@@ -105,14 +73,19 @@ public class Access {
     }
 
     /**
-     * ユーザデータを更新する
+     * ユーザデータを更新する。変更前と変更後のユーザ名が同じ場合パスワードの更新をする。
+     * 既に新しいユーザ名が使われていた場合にはfalseを返すが、呼び出し側でexists()を用いて呼び出さないようにしてほしい
      * @param oldName 更新前のユーザネーム
      * @param newName 更新後のユーザネーム
      * @param newPass 更新後のパスワード
      * @return 更新の可否
      */
     public static boolean updateUser(String oldName, String newName, String newPass) {
-        String sql = "UPDATE user SET user_name = " + newName + ", password = " + newPass + " WHERE user_name = " + oldName;
+        int userId = getUserId(oldName);
+        // 古いユーザネームが存在しない または 新しいユーザネームが既に存在する
+        if (userId == -1 || (exists(newName) && !newName.equals(oldName))) return false;
+
+        String sql = "UPDATE user SET user_name = " + q(newName) + ", password = " + q(newPass) + " WHERE id = " + userId;
         System.out.println("updateUser: sql = " + sql);
 
         Connection con = DBConnectionUtil.getConnection();
@@ -131,12 +104,12 @@ public class Access {
 
     /**
      * アイコンを更新する
-     * @param id ユーザID
+     * @param name ユーザ名
      * @param icon パスワード
      * @return 更新の可否
      */
-    public static boolean updateIcon(int id, int icon) {
-        String sql = "UPDATE user SET icon = " + icon + " WHERE id = " + id;
+    public static boolean updateIcon(String name, int icon) {
+        String sql = "UPDATE user SET icon = " + icon + " WHERE user_name = " + q(name);
         System.out.println("updateIcon: sql = " + sql);
 
         Connection con = DBConnectionUtil.getConnection();
@@ -155,12 +128,12 @@ public class Access {
 
     /**
      * 背景を更新する
-     * @param id ユーザID
+     * @param name ユーザ名
      * @param back パスワード
      * @return 更新の可否
      */
-    public static boolean updateBack(int id, int back) {
-        String sql = "UPDATE user SET background = " + back + " WHERE id = " + id;
+    public static boolean updateBack(String name, int back) {
+        String sql = "UPDATE user SET background = " + back + " WHERE user_name = " + q(name);
         System.out.println("updateBack: sql = " + sql);
 
         Connection con = DBConnectionUtil.getConnection();
@@ -237,6 +210,18 @@ public class Access {
     }
 
     /**
+     * ユーザ名が既に登録済みかどうかを確認する
+     * @param name ユーザ名
+     * @return 登録済みかどうか
+     */
+    public static boolean exists(String name) {
+        if (getUserId(name) == -1)
+            return false;
+        else
+            return true;
+    }
+
+    /**
      * 利用しているスレッドのDBへのコネクションを切断する
      * @throws Exception
      */
@@ -244,13 +229,27 @@ public class Access {
         DBConnectionUtil.closeConnection();
     }
 
-    /**
-     * 文字列を""で囲った文字列に変換。java -> "java"
-     * @param string 加工対象の文字列
-     * @return 加工後の文字列
-     */
-    public static String q(String string) {
+    // 文字列を""で囲った文字列に変換。java -> "java"
+    private static String q(String string) {
         return "\"" + string + "\"";
+    }
+
+    private static int getUserId(String name) {
+        String sql = "SELECT * FROM user WHERE user_name = " + q(name);
+
+        Connection con = DBConnectionUtil.getConnection();
+        try (
+            Statement stmt = con.createStatement();
+            ResultSet result = stmt.executeQuery(sql);
+        ) {
+            if (!result.next()) return -1;
+            return result.getInt("id");
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return -1;
     }
 
     /*==================== 以下デバッグ用 ====================*/
