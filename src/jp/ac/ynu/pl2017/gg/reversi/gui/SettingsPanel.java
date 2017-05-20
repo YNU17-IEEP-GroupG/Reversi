@@ -59,18 +59,14 @@ public class SettingsPanel extends JPanel {
 		 * 戻る
 		 */
 		JPanel lReturnPanel = new JPanel();
-		lReturnPanel.setPreferredSize(new Dimension(MainFrame.panelW, 50));
-		SpringLayout lRLayout = new SpringLayout();
-		lReturnPanel.setLayout(lRLayout);
+		lReturnPanel.setPreferredSize(new Dimension(MainFrame.panelW, 40));
+		lReturnPanel.setLayout(new BorderLayout());
+		lReturnPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 		
 		JButton returnButton = new JButton("タイトルに戻る");
 		returnButton.addActionListener(e -> callback.returnTitlePanel());
-//		lReturnPanel.add(returnButton, BorderLayout.EAST);
-		lRLayout.putConstraint(SpringLayout.NORTH, returnButton, 10,
-				SpringLayout.NORTH, lReturnPanel);
-		lRLayout.putConstraint(SpringLayout.EAST, returnButton, -10, SpringLayout.EAST,
-				lReturnPanel);
-		lReturnPanel.add(returnButton);
+		lReturnPanel.add(returnButton, BorderLayout.EAST);
+//		lReturnPanel.add(returnButton);
 		add(lReturnPanel);
 		
 		JPanel lIconNamePanel = new JPanel(new BorderLayout());

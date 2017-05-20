@@ -7,6 +7,7 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.lang.reflect.Constructor;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -31,10 +32,18 @@ public class OfflinePlayPanel extends JPanel {
 		setSize(panelW, panelH);
 		setLayout(new BorderLayout());
 					
+		JPanel lTopPanel = new JPanel();
+		lTopPanel.setLayout(new BorderLayout());
+		lTopPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 		JLabel lLocalLabel = new JLabel("難易度選択");
 		// lLocalLabel.setPreferredSize(new Dimension(MainFrame.panelW, 60));
 		// lLocalLabel.setHorizontalTextPosition(SwingConstants.CENTER);
-		add(lLocalLabel, BorderLayout.NORTH);
+		lTopPanel.add(lLocalLabel);
+		JButton returnButton = new JButton("タイトルに戻る");
+		returnButton.addActionListener(e -> callback.returnTitlePanel());
+		lTopPanel.add(returnButton, BorderLayout.EAST);
+		
+		add(lTopPanel, BorderLayout.NORTH);
 
 		JPanel lDifficultyPanel = new JPanel();
 		lDifficultyPanel.setLayout(new GridLayout(4, 5));
@@ -82,8 +91,5 @@ public class OfflinePlayPanel extends JPanel {
 		 * lCoverPanel.add(othelloPanel); add(lCoverPanel, BorderLayout.CENTER);
 		 */
 
-		JButton returnButton = new JButton("タイトルに戻る");
-		returnButton.addActionListener(e -> callback.returnTitlePanel());
-		add(returnButton, BorderLayout.SOUTH);
 	}
 }
