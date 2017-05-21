@@ -19,7 +19,9 @@ public class DBConnectionUtil {
         // まだこのThreadに存在しなければ、新しくConnectionをオープンする
         if (con == null) {
             try {
+                System.out.println("new connection");
                 con = DriverManager.getConnection(URL);
+                session.set(con);
             }
             catch (SQLException e) {
                 e.printStackTrace();
@@ -30,6 +32,7 @@ public class DBConnectionUtil {
     }
 
     public static void closeConnection() {
+        System.out.println("close connection");
         Connection con = (Connection) session.get();
         session.set(null);
         if (con != null){

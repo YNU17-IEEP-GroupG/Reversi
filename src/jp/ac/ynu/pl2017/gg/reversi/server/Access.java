@@ -17,7 +17,7 @@ public class Access {
 
     private static final String[] table = { "alpha", "beta", "gamma", "omega", "online" };
     private static final String[] difficulties = { "easy_", "normal_", "hard_", "" };
-    private static final String[] judgements = { "win", "lose" };
+    private static final String[] judgements = { "lose", "win" };
 
     /**
      * ログイン
@@ -25,7 +25,7 @@ public class Access {
      * @param pass パスワード
      * @return ログインの可否
      */
-    public static boolean login(String name, String pass) {
+    public static synchronized boolean login(String name, String pass) {
         String sql = "SELECT * FROM user WHERE user_name = " + q(name) + " AND password = " + q(pass);
         System.out.println("login: sql = " + sql);
 
@@ -50,7 +50,7 @@ public class Access {
      * @param pass 作成するパスワード
      * @return 作成の可否
      */
-    public static boolean makeNewUser(String name, String pass) {
+    public static synchronized boolean makeNewUser(String name, String pass) {
         if (exists(name)) return false;
 
         String sql = "INSERT INTO user (user_name, password, item, icon, background) VALUES ( " + q(name) + ", " + q(pass) + ", 0, 0, 0)";
@@ -83,7 +83,7 @@ public class Access {
      * @param newPass 更新後のパスワード
      * @return 更新の可否
      */
-    public static boolean updateUser(String oldName, String newName, String newPass) {
+    public static synchronized boolean updateUser(String oldName, String newName, String newPass) {
         int userId = getUserId(oldName);
         // 古いユーザネームが存在しない または 新しいユーザネームが既に存在する
         if (userId == -1 || (exists(newName) && !newName.equals(oldName))) return false;
@@ -114,7 +114,7 @@ public class Access {
      * @param difference 更新する差分。
      * @return 更新の可否
      */
-    public static boolean updateResult(String name, int type, int difficulty, int judgement, int difference) {
+    public static synchronized boolean updateResult(String name, int type, int difficulty, int judgement, int difference) {
         String field = difficulties[difficulty] + judgements[judgement];
         int userId = getUserId(name);
         if (userId == -1) return false;
@@ -141,7 +141,7 @@ public class Access {
      * @param icon パスワード
      * @return 更新の可否
      */
-    public static boolean updateIcon(String name, int icon) {
+    public static synchronized boolean updateIcon(String name, int icon) {
         String sql = "UPDATE user SET icon = " + icon + " WHERE user_name = " + q(name);
         System.out.println("updateIcon: sql = " + sql);
 
@@ -165,7 +165,7 @@ public class Access {
      * @param back パスワード
      * @return 更新の可否
      */
-    public static boolean updateBack(String name, int back) {
+    public static synchronized boolean updateBack(String name, int back) {
         String sql = "UPDATE user SET background = " + back + " WHERE user_name = " + q(name);
         System.out.println("updateBack: sql = " + sql);
 
@@ -189,7 +189,7 @@ public class Access {
      * @param name ユーザネーム
      * @return id,userName,item,icon,background,onlineWin,onlineLoseのみのUserクラスのインスタンス
      */
-    public static User requestUserData(String name) {
+    public static synchronized User requestUserData(String name) {
         String sql = "SELECT * FROM user U, online O WHERE U.user_name = " + q(name) + " AND U.id = O.user_id";
         System.out.println("requestUserData: sql = " + sql);
 
@@ -242,9 +242,8 @@ public class Access {
 
     /**
      * 利用しているスレッドのDBへのコネクションを切断する
-     * @throws Exception
      */
-    public static void closeConnection() throws Exception {
+    public static synchronized void closeConnection() {
         DBConnectionUtil.closeConnection();
     }
 
@@ -254,7 +253,7 @@ public class Access {
     }
 
     // ユーザネームに対応するidをDBから取得
-    private static int getUserId(String name) {
+    private static synchronized int getUserId(String name) {
         String sql = "SELECT * FROM user WHERE user_name = " + q(name);
 
         Connection con = DBConnectionUtil.getConnection();
@@ -273,8 +272,8 @@ public class Access {
     }
 
     // 対応するテーブルの初期化をする
-    private static void initUserPlay(String type, int userId) {
-        String sql = "";
+    private static synchronized void initUserPlay(String type, int userId) {
+        String sql;
         if (type.equals(table[4]))
             sql = "INSERT INTO online (user_id, win, lose) VALUES (" + userId + ", 0, 0)";
         else
@@ -292,7 +291,7 @@ public class Access {
         }
     }
 
-    private static Offline getOfflineData(String type, int userId) {
+    private static synchronized Offline getOfflineData(String type, int userId) {
         String sql = "SELECT * FROM " + type + " WHERE user_id = " + userId;
         System.out.println("getOfflineData: sql = " + sql);
 
@@ -318,7 +317,7 @@ public class Access {
 
     /*==================== 以下デバッグ用 ====================*/
 
-    public static String getAllUserString() {
+    public static synchronized String getAllUserString() {
         String sql = "SELECT * FROM user";
         System.out.println("getAllUserString: sql = " + sql);
 
@@ -344,7 +343,7 @@ public class Access {
         return sb.toString();
     }
 
-    public static String getAllOfflineString(String type) {
+    public static synchronized String getAllOfflineString(String type) {
         String sql = "SELECT * FROM " + type;
         System.out.println("getAllOfflineString: sql = " + sql);
 
@@ -371,7 +370,7 @@ public class Access {
         return sb.toString();
     }
 
-    public static String getAllOnlineString() {
+    public static synchronized String getAllOnlineString() {
         String sql = "SELECT * FROM online";
         System.out.println("getAllOnlineString: sql = " + sql);
 
