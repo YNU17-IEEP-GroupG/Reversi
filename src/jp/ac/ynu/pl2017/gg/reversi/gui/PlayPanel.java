@@ -1,31 +1,5 @@
 package jp.ac.ynu.pl2017.gg.reversi.gui;
 
-<<<<<<< HEAD
-import java.awt.*;
-=======
-import java.applet.AudioClip;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.InputStream;
-import java.util.Map;
-import java.util.Random;
-
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-
 import javazoom.jlgui.basicplayer.BasicController;
 import javazoom.jlgui.basicplayer.BasicPlayer;
 import javazoom.jlgui.basicplayer.BasicPlayerEvent;
@@ -34,6 +8,12 @@ import javazoom.jlgui.basicplayer.BasicPlayerListener;
 import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
 import jp.ac.ynu.pl2017.gg.reversi.ai.OnlineDummyAI;
 import jp.ac.ynu.pl2017.gg.reversi.util.Item;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.InputStream;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * ゲーム画面を構築するJPanel. 対人・対CPU問わずここに飛んでくる発想.
@@ -68,13 +48,10 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback, BasicP
 
 	private JLabel	lOpponentIcon;
 	private JLabel	lPlayerIcon;
-<<<<<<< HEAD
 
-=======
 	
 	private	BasicPlayer	player;
-	
->>>>>>> 0a0a6d99b945160cd34df5c19f86bae8b9e3fa2b
+
 	public PlayPanel(TitlePanel.Transition pCallback, Class<BaseAI> pAi, int pDifficulty,
 			int pPIcon, int pOIcon, Image pImage) {
 		super(pImage);
