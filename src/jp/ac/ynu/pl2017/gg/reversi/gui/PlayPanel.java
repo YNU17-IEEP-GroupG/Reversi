@@ -329,9 +329,10 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback, BasicP
 
 	@Override
 	public void stateUpdated(BasicPlayerEvent arg0) {
-		if (arg0.getValue() == BasicPlayerEvent.EOM) {
+		System.err.println("EventCalled" + arg0.getCode());
+		if (arg0.getCode() == BasicPlayerEvent.EOM) {
 			try {
-				player.seek(0);
+				player.open(MainFrame.class.getClassLoader().getResourceAsStream("bgm.mp3"));
 				player.play();
 			} catch (BasicPlayerException e) {
 				e.printStackTrace();
