@@ -72,13 +72,12 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback, BasicP
 			turnIcon[i].setPreferredSize(new Dimension(40, 40));
             turnIcon[i].setIcon(new ImageIcon("image/turn" + (i == 0 ? "" : "Reverse") + ".png"));
 
-			playerStoneLabel[i] = new JLabel("2");
-			playerStoneLabel[i].setPreferredSize(new Dimension(60, 60));
-			playerStoneLabel[i].setSize(new Dimension(60, 60));
-			playerStoneLabel[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+			playerStoneLabel[i] = new JLabel("石の数:2");
+			playerStoneLabel[i].setPreferredSize(new Dimension(100, 60));
+			playerStoneLabel[i].setSize(new Dimension(100, 60));
+//			playerStoneLabel[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
 			playerStoneLabel[i].setHorizontalAlignment(SwingConstants.CENTER);
 			playerStoneLabel[i].setFont(new Font("monospace", Font.BOLD, 16));
-			playerStoneLabel[i].setHorizontalAlignment(SwingConstants.RIGHT);
 		}
 		
 		playerIconNum = pPIcon;
@@ -149,21 +148,21 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback, BasicP
 		lOpponentNIPanel.setLayout(new BorderLayout());
 		JLabel lOpponentNameLabel = new JLabel("CPU");
 		lOpponentNameLabel.setFont(new Font("Serif", Font.BOLD, 20));
-		lOpponentNIPanel.add(lOpponentNameLabel, BorderLayout.NORTH);
+		JPanel lPositioningPanel = new JPanel(new BorderLayout());
+		lPositioningPanel.add(lOpponentNameLabel, BorderLayout.EAST);
+		lOpponentNIPanel.add(lPositioningPanel, BorderLayout.NORTH);
 		// 石数とアイテム
 		JPanel lOpponentSIPanel = new JPanel();
-		FlowLayout lOpponentSILayout = new FlowLayout();
-		lOpponentSILayout.setAlignment(FlowLayout.LEFT);
+		FlowLayout lOpponentSILayout = new FlowLayout(FlowLayout.LEFT, 10, 0);
 		lOpponentSIPanel.setLayout(lOpponentSILayout);
 		JButton lOppponentItemButton = new JButton();
 		lOppponentItemButton.setEnabled(false);
-		lOpponentSIPanel.add(playerStoneLabel[1]);
-		lOpponentSIPanel.add(lOppponentItemButton);
+        lOpponentSIPanel.add(lOppponentItemButton);
+        lOpponentSIPanel.add(playerStoneLabel[1]);
 		lOppponentItemButton.setPreferredSize(new Dimension(60, 60));
 		lOpponentNIPanel.add(lOpponentSIPanel);
 
 		lOpponentPanel.add(lOpponentNIPanel, BorderLayout.CENTER);
-
 		/*
 		 * プレイヤー情報
 		 */
@@ -181,10 +180,10 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback, BasicP
 		JLabel lPlayerNameLabel = new JLabel(SettingsPanel.username);
 		lPlayerNameLabel.setFont(new Font("Serif", Font.BOLD, 20));
 		lPlayerNIPanel.add(lPlayerNameLabel, BorderLayout.SOUTH);
+		lPlayerNIPanel.setOpaque(true);
 		// 石数とアイテム
 		JPanel lPlayerSIPanel = new JPanel();
-		FlowLayout lPlayerSILayout = new FlowLayout();
-		lPlayerSILayout.setAlignment(FlowLayout.RIGHT);
+		FlowLayout lPlayerSILayout = new FlowLayout(FlowLayout.RIGHT, 10, 0);
 		lPlayerSIPanel.setLayout(lPlayerSILayout);
 		playerItemButton = new JButton();
 		playerItemButton.setEnabled(false);
@@ -231,7 +230,7 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback, BasicP
 		turnIcon[1].setVisible(!isMyTurn);
 		
 		for (int i = 0; i < 2; i++)
-			playerStoneLabel[i].setText("" + pCountStones[i]);
+			playerStoneLabel[i].setText("石の数:" + pCountStones[i]);
 	}
 
 	@Override
