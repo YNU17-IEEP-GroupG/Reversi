@@ -392,10 +392,15 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	private void gameOver() {
 		String result = String.format("黒：%d  白：%d", countStone(Stone.Black), countStone(Stone.White));
 		JOptionPane.showMessageDialog(this, new JLabel(result), "ゲームセット", JOptionPane.INFORMATION_MESSAGE);
-		// 全てのボタンを無効化
-		for (JButton[] buttons : buttonBoard)
-			for (JButton button : buttons)
-				button.setEnabled(false);
+		// 灰色の石を元に戻す
+		undoGray();
+		// 全てのボタンを無効化。ImageIconは見えるように
+		for (int i = 0; i < BOARD_SIZE; i++) {
+			for (int j = 0; j < BOARD_SIZE; j++) {
+				buttonBoard[i][j].setDisabledIcon(board[i][j].getImageIcon());
+				buttonBoard[i][j].setEnabled(false);
+			}
+		}
 		// PlayPanelにコールバック
 		callback.onGameOver();
 	}
