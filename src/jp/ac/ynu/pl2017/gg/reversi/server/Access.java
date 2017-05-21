@@ -136,6 +136,30 @@ public class Access {
     }
 
     /**
+     * アイテム使用数を更新する
+     * @param name ユーザネーム
+     * @param difference アイテム使用数の差分
+     * @return 更新の可否
+     */
+    public static synchronized boolean updateItem(String name, int difference) {
+        String sql = "UPDATE user SET item = item + " + difference + " WHERE user_name = " + q(name);
+//        System.out.println("updateItem: sql = " + sql);
+
+        Connection con = DBConnectionUtil.getConnection();
+        try (
+            Statement stmt = con.createStatement();
+        ) {
+            int ret = stmt.executeUpdate(sql);
+            if (ret != 0)
+                return true;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
      * アイコンを更新する
      * @param name ユーザネーム
      * @param icon パスワード
