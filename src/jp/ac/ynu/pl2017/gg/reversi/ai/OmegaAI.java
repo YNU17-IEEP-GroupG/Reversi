@@ -17,14 +17,19 @@ public class OmegaAI extends BaseAI {
 
     @Override
     public void think() {
-        Search s = new Search(stone);
-        Point point;
-        if (BoardHelper.countStone(Stone.Empty, board) > countStart[difficulty])
-            point = s.minMax(depth[difficulty], Evaluation.EvaluationType.SQUARE, stone, board);
-        else
-            point = s.untilEnd(Evaluation.EvaluationType.COUNT, stone, board);
-        row = point.getRow();
-        column = point.getColumn();
+        if (gray) {
+            randomThink();
+        }
+        else {
+            Search s = new Search(stone);
+            Point point;
+            if (BoardHelper.countStone(Stone.Empty, board) > countStart[difficulty])
+                point = s.minMax(depth[difficulty], Evaluation.EvaluationType.SQUARE, stone, board);
+            else
+                point = s.untilEnd(Evaluation.EvaluationType.COUNT, stone, board);
+            row = point.getRow();
+            column = point.getColumn();
+        }
     }
 
     public OmegaAI(List<Point> hint, Stone stone, Stone[][] board, int difficulty) {
