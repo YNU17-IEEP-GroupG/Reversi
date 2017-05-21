@@ -63,13 +63,9 @@ public class AccessDebug extends JFrame implements ActionListener {
 
     public static void main(String[] args) {
         new AccessDebug();
-        // name alpha hard_win 272
-//        for (int i = 0; i < 1000; i++) {
+//        for (int i = 0; i < 10000; i++) {
 //            new Thread(() -> {
-//                for (int j = 0; j < 10; j++) {
-//                    System.out.println(j + ":" + Access.updateResult("name", 0, 2, 1, 1));
-//                }
-//                Access.closeConnection();
+//                System.out.println(Access.login("Name" + (1000), "Pass" + (1000)));
 //            }).start();
 //        }
     }

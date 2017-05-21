@@ -27,7 +27,7 @@ public class Access {
      */
     public static synchronized boolean login(String name, String pass) {
         String sql = "SELECT * FROM user WHERE user_name = " + q(name) + " AND password = " + q(pass);
-        System.out.println("login: sql = " + sql);
+//        System.out.println("login: sql = " + sql);
 
         Connection con = DBConnectionUtil.getConnection();
         try (
@@ -54,7 +54,7 @@ public class Access {
         if (exists(name)) return false;
 
         String sql = "INSERT INTO user (user_name, password, item, icon, background) VALUES ( " + q(name) + ", " + q(pass) + ", 0, 0, 0)";
-        System.out.println("makeNewUser: sql = " + sql);
+//        System.out.println("makeNewUser: sql = " + sql);
 
         Connection con = DBConnectionUtil.getConnection();
         try (
@@ -89,7 +89,7 @@ public class Access {
         if (userId == -1 || (exists(newName) && !newName.equals(oldName))) return false;
 
         String sql = "UPDATE user SET user_name = " + q(newName) + ", password = " + q(newPass) + " WHERE id = " + userId;
-        System.out.println("updateUser: sql = " + sql);
+//        System.out.println("updateUser: sql = " + sql);
 
         Connection con = DBConnectionUtil.getConnection();
         try (
@@ -119,7 +119,7 @@ public class Access {
         int userId = getUserId(name);
         if (userId == -1) return false;
         String sql = "UPDATE " + table[type] + " SET " + field + " = " + field + " + " + difference + " WHERE user_id = " + userId;
-        System.out.println("updateResult: sql = " + sql);
+//        System.out.println("updateResult: sql = " + sql);
 
         Connection con = DBConnectionUtil.getConnection();
         try (
@@ -143,7 +143,7 @@ public class Access {
      */
     public static synchronized boolean updateIcon(String name, int icon) {
         String sql = "UPDATE user SET icon = " + icon + " WHERE user_name = " + q(name);
-        System.out.println("updateIcon: sql = " + sql);
+//        System.out.println("updateIcon: sql = " + sql);
 
         Connection con = DBConnectionUtil.getConnection();
         try (
@@ -167,7 +167,7 @@ public class Access {
      */
     public static synchronized boolean updateBack(String name, int back) {
         String sql = "UPDATE user SET background = " + back + " WHERE user_name = " + q(name);
-        System.out.println("updateBack: sql = " + sql);
+//        System.out.println("updateBack: sql = " + sql);
 
         Connection con = DBConnectionUtil.getConnection();
         try (
@@ -191,7 +191,7 @@ public class Access {
      */
     public static synchronized User requestUserData(String name) {
         String sql = "SELECT * FROM user U, online O WHERE U.user_name = " + q(name) + " AND U.id = O.user_id";
-        System.out.println("requestUserData: sql = " + sql);
+//        System.out.println("requestUserData: sql = " + sql);
 
         User user = new User();
         Connection con = DBConnectionUtil.getConnection();
@@ -278,7 +278,7 @@ public class Access {
             sql = "INSERT INTO online (user_id, win, lose) VALUES (" + userId + ", 0, 0)";
         else
             sql = "INSERT INTO " + type + " (user_id, hard_win, hard_lose, normal_win, normal_lose, easy_win, easy_lose) VALUES (" + userId + ", 0, 0, 0, 0, 0, 0)";
-        System.out.println("makeUserOffline: sql = " + sql);
+//        System.out.println("makeUserOffline: sql = " + sql);
 
         Connection con = DBConnectionUtil.getConnection();
         try (
@@ -293,7 +293,7 @@ public class Access {
 
     private static synchronized Offline getOfflineData(String type, int userId) {
         String sql = "SELECT * FROM " + type + " WHERE user_id = " + userId;
-        System.out.println("getOfflineData: sql = " + sql);
+//        System.out.println("getOfflineData: sql = " + sql);
 
         Offline offline = new Offline();
         Connection con = DBConnectionUtil.getConnection();
@@ -319,7 +319,7 @@ public class Access {
 
     public static synchronized String getAllUserString() {
         String sql = "SELECT * FROM user";
-        System.out.println("getAllUserString: sql = " + sql);
+//        System.out.println("getAllUserString: sql = " + sql);
 
         StringBuffer sb = new StringBuffer();
         sb.append("id, user_name, password, item, icon, background\n");
@@ -345,7 +345,7 @@ public class Access {
 
     public static synchronized String getAllOfflineString(String type) {
         String sql = "SELECT * FROM " + type;
-        System.out.println("getAllOfflineString: sql = " + sql);
+//        System.out.println("getAllOfflineString: sql = " + sql);
 
         StringBuffer sb = new StringBuffer();
         sb.append("user_id, hard_win, hard_lose, normal_win, normal_lose, easy_win, easy_lose\n");
@@ -372,7 +372,7 @@ public class Access {
 
     public static synchronized String getAllOnlineString() {
         String sql = "SELECT * FROM online";
-        System.out.println("getAllOnlineString: sql = " + sql);
+//        System.out.println("getAllOnlineString: sql = " + sql);
 
         StringBuffer sb = new StringBuffer();
         sb.append("user_id, win, lose\n");
