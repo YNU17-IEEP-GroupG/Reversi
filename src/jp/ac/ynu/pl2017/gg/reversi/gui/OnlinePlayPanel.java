@@ -32,6 +32,6 @@ public class OnlinePlayPanel extends JPanel {
 			// キャンセル
 			return;
 		}
-//		ClientConnection.match(tResult.isEmpty(), tResult);
+		ClientConnection.match(tResult);
 	}
 }

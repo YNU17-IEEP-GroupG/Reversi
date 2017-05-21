@@ -49,6 +49,10 @@ public class SettingsPanel extends BackgroundedPanel {
 
 	private	JLabel			iconLabel;
 
+	private	JLabel			onlineWLLabel;
+
+	private JLabel onlineItemLabel;
+
 	public SettingsPanel(TitlePanel.Transition callback) {
 		super();
 
@@ -127,12 +131,15 @@ public class SettingsPanel extends BackgroundedPanel {
 		lOnlineInfoPanel.setPreferredSize(new Dimension(MainFrame.panelW, 40));
 		JLabel lLabel1 = new JLabel("オンライン");
 		
-		JLabel lOnlineWLLabel = new JLabel("0勝0敗");
+		onlineWLLabel = new JLabel("0勝0敗");
 		Font lOnlineWLFont = new Font("Serif", Font.BOLD, 24);
-		lOnlineWLLabel.setFont(lOnlineWLFont);
+		onlineWLLabel.setFont(lOnlineWLFont);
+		
+		onlineItemLabel = new JLabel("アイテム使用回数 0回");
 		
 		lOnlineInfoPanel.add(lLabel1);
-		lOnlineInfoPanel.add(lOnlineWLLabel);
+		lOnlineInfoPanel.add(onlineWLLabel);
+		lOnlineInfoPanel.add(onlineItemLabel);
 		
 		/*
 		 * オフライン情報
