@@ -4,6 +4,8 @@ import jp.ac.ynu.pl2017.gg.reversi.util.BoardHelper;
 import jp.ac.ynu.pl2017.gg.reversi.util.Point;
 import jp.ac.ynu.pl2017.gg.reversi.util.Stone;
 
+import java.util.List;
+
 import static jp.ac.ynu.pl2017.gg.reversi.gui.Othello.BOARD_SIZE;
 
 /**
@@ -49,6 +51,18 @@ public class Evaluation {
         }
 
         return value;
+    }
+
+    public static Point getMaxEvaluatedPoint(List<Point> points) {
+        int maxValue = -15;
+        Point bestPoint = points.get(0);
+        for (Point point : points) {
+            if (square[point.getRow()][point.getColumn()] > maxValue) {
+                maxValue = square[point.getRow()][point.getColumn()];
+                bestPoint = point;
+            }
+        }
+        return bestPoint;
     }
 
     public static int countEvaluation(Stone stone, Stone[][] board) {

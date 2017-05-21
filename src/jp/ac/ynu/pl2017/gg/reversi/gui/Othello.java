@@ -537,6 +537,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		dropFlag = false;
 		
 		showAnimation(buttonBoard[r][c], lbkStone, true);
+		// TODO: 通信相手にドロップ座標を送る
 
 		new FinishListenedThread(new ThreadFinishListener() {
 			@Override
@@ -601,6 +602,9 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 			case 0:
 				reflectBan(makeBanPoints());
 				break;
+			case 1:
+				reflectDrop(Evaluation.getMaxEvaluatedPoint(BoardHelper.getPoints(myStone.getReverse(), board)));
+				break;
 		}
 	}
 
@@ -616,5 +620,9 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 			buttonBoard[p.getRow()][p.getColumn()].setIcon(cannotPutIcon);
 			buttonBoard[p.getRow()][p.getColumn()].setRolloverIcon(null);
 		});
+	}
+
+	public void reflectDrop(Point point) {
+		drop(point.getRow(), point.getColumn());
 	}
 }
