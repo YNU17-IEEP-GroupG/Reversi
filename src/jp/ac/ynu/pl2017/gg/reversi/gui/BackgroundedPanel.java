@@ -10,17 +10,26 @@ public class BackgroundedPanel extends JPanel {
 	
 	private	Image	image;
 	
+	public BackgroundedPanel() {
+		this(null);
+	}
+	
 	public BackgroundedPanel(Image pImage) {
 		super();
-		image = pImage;
+		setBackground(pImage);
+		setOpaque(false);
 	}
 	
 	@Override
 	protected void paintComponent(Graphics g) {
-		if (image != null) {
+		if (g != null && image != null) {
 			g.drawImage(image, 0, 0, this);
+			super.paintComponent(g);
 		}
-		super.paintComponent(g);
+	}
+	
+	public void setBackground(Image pImage) {
+		image = pImage;
 	}
 
 }

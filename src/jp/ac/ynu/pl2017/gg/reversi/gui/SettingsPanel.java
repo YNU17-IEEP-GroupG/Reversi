@@ -9,7 +9,11 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
@@ -23,7 +27,7 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
-public class SettingsPanel extends JPanel {
+public class SettingsPanel extends BackgroundedPanel {
 
 	/**
 	 * 
@@ -59,6 +63,7 @@ public class SettingsPanel extends JPanel {
 		 * 戻る
 		 */
 		JPanel lReturnPanel = new JPanel();
+		lReturnPanel.setOpaque(false);
 		lReturnPanel.setPreferredSize(new Dimension(MainFrame.panelW, 40));
 		lReturnPanel.setLayout(new BorderLayout());
 		lReturnPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
@@ -70,7 +75,8 @@ public class SettingsPanel extends JPanel {
 		add(lReturnPanel);
 		
 		JPanel lIconNamePanel = new JPanel(new BorderLayout());
-		lIconNamePanel.setPreferredSize(new Dimension(840, 220));
+		lIconNamePanel.setPreferredSize(new Dimension(MainFrame.panelW - 20, 220));
+		lIconNamePanel.setOpaque(false);
 
 		/*
 		 * アイコン
@@ -89,12 +95,20 @@ public class SettingsPanel extends JPanel {
 		/*
 		 * 名前
 		 */
-		JPanel lNamePanel = new JPanel(new FlowLayout());
+		FlowLayout fl1 = new FlowLayout();
+		fl1.setAlignment(FlowLayout.LEFT);
 
+		JPanel lNamePanel = new JPanel(new FlowLayout());
+		lNamePanel.setOpaque(false);
+		lNamePanel.setLayout(fl1);
+
+		JPanel lNameWrapperPanel = new JPanel();
+		lNameWrapperPanel.setLayout(fl1);
+		lNameWrapperPanel.setPreferredSize(new Dimension(MainFrame.panelW - 200, 70));
 		JLabel lNameLabel = new JLabel("肋助", SwingConstants.LEFT);
 		Font lNameFont = new Font("Serif", Font.BOLD, 48);
 		lNameLabel.setFont(lNameFont);
-		lNameLabel.setPreferredSize(new Dimension(MainFrame.panelW - 200, 70));
+		lNameWrapperPanel.add(lNameLabel);
 		
 		// 変更ボタン
 		JButton lInfoChangeButton = new JButton("アカウント情報変更");
@@ -102,7 +116,7 @@ public class SettingsPanel extends JPanel {
 		JButton lBackChangeButton = new JButton("背景変更");
 		lBackChangeButton.addActionListener(e -> showImageSelectDialog(1));
 		
-		lNamePanel.add(lNameLabel);
+		lNamePanel.add(lNameWrapperPanel);
 		lNamePanel.add(lInfoChangeButton);
 		lNamePanel.add(lBackChangeButton);
 		
@@ -152,8 +166,17 @@ public class SettingsPanel extends JPanel {
 		add(lOnlineInfoPanel);
 		add(lOfflineInfoPanel);
 
+		BufferedImage lBufferedImage = null;
+		try {
+			InputStream lInputStream =
+					MainFrame.class.getClassLoader().getResourceAsStream("background/back"+(backIndex+1)+".png");
+			lBufferedImage = ImageIO.read(lInputStream);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		setBackground(lBufferedImage);
 	}
-
+	
 	public void showChangeInfoDialog() {
 		JDialog lChangeDialog = new JDialog();
 		lChangeDialog.setTitle("ユーザ情報変更");
@@ -245,6 +268,17 @@ public class SettingsPanel extends JPanel {
 				public void actionPerformed(ActionEvent arg0) {
 					if (mode == 0) {
 						iconLabel.setIcon(new ImageIcon("image/icon/icon"+(ii+1)+".png"));
+					} else {
+						BufferedImage lBufferedImage = null;
+						InputStream lInputStream =
+								MainFrame.class.getClassLoader().getResourceAsStream("background/back"+(ii+1)+".png");
+						try {
+							lBufferedImage = ImageIO.read(lInputStream);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						setBackground(lBufferedImage);
+						SettingsPanel.this.repaint();
 					}
 					selectButton(lSelectButtons, ii);
 					temp = ii;

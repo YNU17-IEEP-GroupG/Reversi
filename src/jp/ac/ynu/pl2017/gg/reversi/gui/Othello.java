@@ -265,7 +265,6 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	}
 
 	private void removeAllListener() {
-		System.err.println("disabled");
 		for (JButton[] buttons : buttonBoard)
 			for (JButton button : buttons)
 				button.removeActionListener(this);
@@ -273,7 +272,6 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	}
 
 	private void addAllListener() {
-		System.err.println("enabled");
 		for (JButton[] buttons : buttonBoard)
 			for (JButton button : buttons)
 				button.addActionListener(this);
