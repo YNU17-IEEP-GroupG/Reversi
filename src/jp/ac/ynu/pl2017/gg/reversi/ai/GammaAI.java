@@ -15,14 +15,19 @@ public class GammaAI extends BaseAI {
 
     @Override
     public void think() {
-        Search s = new Search(stone);
-        Point point;
-        if (difficulty == 0 && new Random().nextBoolean())
-            point = hint.get(new Random().nextInt(hint.size()));
-        else
-            point = s.minMax(depth[difficulty], Evaluation.EvaluationType.SQUARE, stone, board);
-        row = point.getRow();
-        column = point.getColumn();
+        if (gray) {
+            randomThink();
+        }
+        else {
+            Search s = new Search(stone);
+            Point point;
+            if (difficulty == 0 && new Random().nextBoolean())
+                point = hint.get(new Random().nextInt(hint.size()));
+            else
+                point = s.minMax(depth[difficulty], Evaluation.EvaluationType.SQUARE, stone, board);
+            row = point.getRow();
+            column = point.getColumn();
+        }
     }
 
     public GammaAI(List<Point> hint, Stone stone, Stone[][] board, int difficulty) {

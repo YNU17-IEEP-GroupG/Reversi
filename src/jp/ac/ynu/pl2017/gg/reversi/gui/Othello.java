@@ -5,6 +5,7 @@ import javax.swing.border.EmptyBorder;
 
 import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
 import jp.ac.ynu.pl2017.gg.reversi.ai.Evaluation;
+import jp.ac.ynu.pl2017.gg.reversi.ai.OnlineDummyAI;
 import jp.ac.ynu.pl2017.gg.reversi.util.BoardHelper;
 import jp.ac.ynu.pl2017.gg.reversi.util.Item;
 import jp.ac.ynu.pl2017.gg.reversi.util.Stone;
@@ -68,11 +69,13 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	private boolean					passFlag		= false;
 	private boolean				 dropFlag		= false;
 	private int					 grayTurn		= 0;
+	private int					 grayTurnCPU    = 0;
 	private boolean				 tripleFlag	  = false;
 	private List<Point>			 triplePoints	= new ArrayList<>();
 
 	private Class<BaseAI>			selectedAI;
 	private int						selectedDifficulty;
+	private boolean 					isCPU		= false;
 	
 	private PlayCallback			callback;
 
@@ -93,6 +96,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 
 		selectedAI = pAi;
 		selectedDifficulty = pDifficulty;
+		isCPU = !pAi.equals(OnlineDummyAI.class);
 		
 		initBoard();
 
@@ -253,6 +257,10 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 							selectedAI.getConstructor(List.class, Stone.class, Stone[][].class, int.class);
 					Object[] tArgs = {hint, myStone, board, selectedDifficulty};
 					BaseAI ai = (BaseAI) tConstructor.newInstance(tArgs);
+					if (isCPU && grayTurnCPU > 0) {
+						ai.setGray();
+						grayTurnCPU--;
+					}
 					ai.think();
 					putStone(ai.getRow(), ai.getColumn(), myStone);
 				} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException |
@@ -453,7 +461,9 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 				useDrop();
 				break;
 			case GRAY:
-				useGray();
+				if (isCPU) {
+					grayTurnCPU = 3;
+				}
 				break;
 			case TRIPLE:
 				useTriple();
@@ -482,6 +492,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		    nextTurn();
 		else
 		    displayHint(hint);
+
 	}
 
 	private void useDrop() {
@@ -543,6 +554,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		*/
 	}
 
+	// 相手側のクラスで呼び出す
 	private void useGray() {
 		grayTurn = 1;
 		for (JButton[] buttons : buttonBoard)
@@ -551,6 +563,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 					button.setIcon(grayIcon);
 	}
 
+	// 相手側のクラスで呼び出す
 	private void undoGray() {
 		for (int i = 0; i < BOARD_SIZE; i++)
 			for (int j = 0; j < BOARD_SIZE; j++)

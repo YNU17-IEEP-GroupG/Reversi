@@ -19,19 +19,24 @@ public class BetaAI extends BaseAI {
 
     @Override
     public void think() {
-        Search s = new Search(stone);
-        Point point;
-        if (BoardHelper.countStone(Stone.Empty, board) > countStart[difficulty]) {
-            if (new Random().nextBoolean())
-                point = s.minMax(minMaxDepth[difficulty], Evaluation.EvaluationType.SQUARE, stone, board);
-            else
-                point = s.beamSearch(Evaluation.EvaluationType.SQUARE, board, limit[difficulty], beamDepth[difficulty]);
+        if (gray) {
+            randomThink();
         }
         else {
-            point = s.untilEnd(Evaluation.EvaluationType.COUNT, stone, board);
+            Search s = new Search(stone);
+            Point point;
+            if (BoardHelper.countStone(Stone.Empty, board) > countStart[difficulty]) {
+                if (new Random().nextBoolean())
+                    point = s.minMax(minMaxDepth[difficulty], Evaluation.EvaluationType.SQUARE, stone, board);
+                else
+                    point = s.beamSearch(Evaluation.EvaluationType.SQUARE, board, limit[difficulty], beamDepth[difficulty]);
+            }
+            else {
+                point = s.untilEnd(Evaluation.EvaluationType.COUNT, stone, board);
+            }
+            row = point.getRow();
+            column = point.getColumn();
         }
-        row = point.getRow();
-        column = point.getColumn();
     }
 
     public BetaAI(List<Point> hint, Stone stone, Stone[][] board, int difficulty) {

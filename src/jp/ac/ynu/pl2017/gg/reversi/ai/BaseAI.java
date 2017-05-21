@@ -16,6 +16,7 @@ public abstract class BaseAI {
     protected Stone stone;
     protected Stone[][] board = new Stone[BOARD_SIZE][BOARD_SIZE];
     protected int difficulty;
+    protected boolean gray;
     protected int row;
     protected int column;
 
@@ -25,6 +26,7 @@ public abstract class BaseAI {
         this.hint = hint;
         this.stone = stone;
         this.board = board;
+        this.gray = false;
         this.difficulty = difficulty;
         row = hint.get(0).getRow();
         column = hint.get(0).getColumn();
@@ -34,6 +36,10 @@ public abstract class BaseAI {
         Point point = hint.get(new Random().nextInt(hint.size()));
         row = point.getRow();
         column = point.getColumn();
+    }
+
+    public void setGray() {
+        gray = true;
     }
 
     public int getRow() {
