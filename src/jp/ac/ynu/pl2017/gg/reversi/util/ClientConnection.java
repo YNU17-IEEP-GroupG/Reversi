@@ -1,10 +1,13 @@
 package jp.ac.ynu.pl2017.gg.reversi.util;
 
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.Socket;
 
 public class ClientConnection {
@@ -15,6 +18,9 @@ public class ClientConnection {
 	private	static Socket	theSocket;
 	public	static String	SERVER;
 	public	static int		PORT;
+	static PrintWriter out;
+	static InputStreamReader sisr;
+	static BufferedReader br;
 	
 	/**
 	 * 初期化
@@ -22,6 +28,10 @@ public class ClientConnection {
 	public static void init() {
 		try {
 			theSocket = new Socket(SERVER, PORT);
+			out = new PrintWriter(theSocket.getOutputStream(), true);
+			sisr = new InputStreamReader(
+					theSocket.getInputStream());
+			br = new BufferedReader(sisr);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -43,21 +53,18 @@ public class ClientConnection {
 	 * @param pPassword
 	 * @return ログイン可否
 	 */
-	public static boolean login(String name, String pass) {
+	public static boolean login(String myName, String pass) {
 		boolean log = false;// ログインできたかどうか
 
 		try {
 //			theSocket = new Socket(SERVER, PORT);
-			OutputStream os = theSocket.getOutputStream();
-			DataOutputStream dos = new DataOutputStream(os);
 			
-			InputStream is = theSocket.getInputStream();
-			DataInputStream dis = new DataInputStream(is);
+			out.println(myName);// 接続の最初に名前を送る
+			out.println(pass);
 			
-			dos.writeUTF(name);
-			dos.writeUTF(pass);
-
-			log = dis.readBoolean();
+			if((br.readLine()).equals("TRUE")){
+				log = true;
+			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -76,29 +83,38 @@ public class ClientConnection {
 		return false;
 	}
 	
-	public static boolean match(boolean random, String enemy) { // random,true:ランダムマッチ,false:特定の人と
-		boolean turn=true; //true:先手,false:後手
+	public static String match(String enemyName) {
+		String eName=null;
 		
-		try {
+		try{
+			out.println("MATCH");//コマンドの送信
+			out.println(enemyName);
 			
-			OutputStream os = theSocket.getOutputStream();
-			DataOutputStream dos = new DataOutputStream(os);
+			eName = br.readLine();
 			
-			InputStream is = theSocket.getInputStream();
-			DataInputStream dis = new DataInputStream(is);
-			
-			if (random) {
-				dos.writeUTF("RANDOM_MATCH");
-				turn = dis.readBoolean();
-			} else {
-				dos.writeUTF(enemy);
-				turn = dis.readBoolean();
+			if(eName.equals("FALSE")){
+				eName=null;
 			}
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		return turn;
+		return eName;
+	}
+	
+	public static String randomMatch() {
+		String eName=null;
+		
+		try{
+			out.println("RANDOM");//コマンドの送信
+			eName = br.readLine();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return eName;
 	}
 
 	/**
@@ -107,7 +123,24 @@ public class ClientConnection {
 	 * @return 通信可否
 	 */
 	public static boolean sendPutStone(int[] pPlace) {
-		return false;
+		boolean send = false;
+		
+		try{
+			out.println("WRITE");//コマンドの送信
+			
+			if((br.readLine()).equals("TRUE")){
+				send = true;
+				out.println(pPlace[0]);
+				out.println(pPlace[1]);
+			}else{
+				send = false;
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return send;
 	}
 	
 	/**
@@ -115,8 +148,85 @@ public class ClientConnection {
 	 * @return 相手が石を置く座標.nullだと通信失敗
 	 */
 	public static int[] receivePutStone() {
-		return null;
+		int[] coordinate = new int[2];
+		
+		coordinate = null;
+		
+		try{
+			out.println("READ");//コマンドの送信
+			
+			coordinate[0] = Integer.parseInt(br.readLine());
+			coordinate[1] = Integer.parseInt(br.readLine());
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return coordinate;
 	}
+	
+	/**
+	 * 現在,自分のターンか相手のターンかを取得する(先手後手はここで確認
+	 * @return true:自分のターン,false:相手のターン
+	 */
+	public static boolean getTurn(){
+		boolean turn=false;
+		
+		try{
+			out.println("TURN");//コマンドの送信
+			if((br.readLine()).equals("TRUE")){
+				turn = true;
+			}else{
+				turn = false;
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return turn;
+	}
+	
+	/**
+	 * 再戦の処理
+	 * @param request true:再戦申し込み,false:対戦終了
+	 * @return true:再戦開始,false:終了
+	 */
+	public static boolean rematch(boolean request){
+		boolean req = false;
+		try{
+			out.println("REMATCH");//コマンドの送信
+			if(request){
+				out.println("1");
+				if((br.readLine()).equals("TRUE")){
+					req = true;
+				}else{
+					req = false;
+				}
+			}else{
+				out.println("2");
+				if((br.readLine()).equals("TRUE")){
+					req = true;
+				}else{
+					req = false;
+				}
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return req;
+	}
+	
+	public static void cansel(){
+		out.println("CANSEL");
+	}
+	
+	public static void reload(){
+		out.println("r");
+	}
+	
 	
 	/**
 	 * アイテムの使用を送信
@@ -135,8 +245,12 @@ public class ClientConnection {
 	public static Object[] receiveItemUse() {
 		return null;
 	}
+	
+	
 
 	// TODO 座標どう送る?
+	
+	/*
 	public static void send(int coordinate){
 		
 		try {
@@ -173,5 +287,6 @@ public class ClientConnection {
 		
 		return Ecoordinate;
 	}
-
+	
+	*/
 }
