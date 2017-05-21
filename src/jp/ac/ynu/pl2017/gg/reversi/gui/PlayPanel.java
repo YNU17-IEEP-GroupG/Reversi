@@ -269,11 +269,13 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback, BasicP
 		havingItem = Item.values()[tR + 1];
 		playerItemButton.setEnabled(true);
 		playerItemButton.setIcon(new ImageIcon("image/item/"+havingItem.name().toLowerCase()+".png"));
+		playerItemButton.setToolTipText(havingItem.toString());
 		playerItemButton.addActionListener(e -> {
 			if(havingItem != null && !havingItem.equals(Item.NONE)) lOthelloPanel.useItem(havingItem);
 			havingItem = Item.NONE;
 			playerItemButton.setIcon(null);
 			playerItemButton.setEnabled(false);
+			playerItemButton.setToolTipText(havingItem.toString());
 		});
 	}
 
