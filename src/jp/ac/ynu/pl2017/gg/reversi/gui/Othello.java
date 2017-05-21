@@ -248,6 +248,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 				addAllListener();
 				grayTurn--;
 			} else {
+//				// デバッグ用
 //				CPUItemFlag = true;
 				if (CPUItemFlag) {
 					// 確率でアイテムを使用にする
@@ -598,12 +599,23 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	private void useItemCPU() {
 		// controlが無いので今は4
 		int select = new Random().nextInt(4);
+//		System.out.print("use item:");
 		switch (select) {
 			case 0:
+//				System.out.println("ban");
 				reflectBan(makeBanPoints());
 				break;
 			case 1:
+//				System.out.println("drop");
 				reflectDrop(Evaluation.getMaxEvaluatedPoint(BoardHelper.getPoints(myStone.getReverse(), board)));
+				break;
+			case 2:
+//				System.out.println("gray");
+				reflectGray();
+				break;
+			case 3:
+//				System.out.println("triple");
+				reflectTriple();
 				break;
 		}
 	}
@@ -624,5 +636,13 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 
 	public void reflectDrop(Point point) {
 		drop(point.getRow(), point.getColumn());
+	}
+
+	public void reflectGray() {
+		useGray();
+	}
+
+	public void reflectTriple() {
+		tripleFlag = true;
 	}
 }
