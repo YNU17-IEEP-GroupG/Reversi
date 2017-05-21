@@ -1,8 +1,19 @@
 package jp.ac.ynu.pl2017.gg.reversi.gui;
 
+<<<<<<< HEAD
 import java.awt.*;
+=======
+import java.applet.AudioClip;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.InputStream;
+import java.util.Map;
 import java.util.Random;
 
 import javax.swing.BorderFactory;
@@ -15,6 +26,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import javazoom.jlgui.basicplayer.BasicController;
+import javazoom.jlgui.basicplayer.BasicPlayer;
+import javazoom.jlgui.basicplayer.BasicPlayerEvent;
+import javazoom.jlgui.basicplayer.BasicPlayerException;
+import javazoom.jlgui.basicplayer.BasicPlayerListener;
 import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
 import jp.ac.ynu.pl2017.gg.reversi.ai.OnlineDummyAI;
 import jp.ac.ynu.pl2017.gg.reversi.util.Item;
@@ -23,7 +39,7 @@ import jp.ac.ynu.pl2017.gg.reversi.util.Item;
  * ゲーム画面を構築するJPanel. 対人・対CPU問わずここに飛んでくる発想.
  *
  */
-public class PlayPanel extends BackgroundedPanel implements PlayCallback {
+public class PlayPanel extends BackgroundedPanel implements PlayCallback, BasicPlayerListener {
 
 	private boolean	isCPU	= false;
 
@@ -52,7 +68,13 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback {
 
 	private JLabel	lOpponentIcon;
 	private JLabel	lPlayerIcon;
+<<<<<<< HEAD
 
+=======
+	
+	private	BasicPlayer	player;
+	
+>>>>>>> 0a0a6d99b945160cd34df5c19f86bae8b9e3fa2b
 	public PlayPanel(TitlePanel.Transition pCallback, Class<BaseAI> pAi, int pDifficulty,
 			int pPIcon, int pOIcon, Image pImage) {
 		super(pImage);
@@ -113,6 +135,15 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback {
 		showInfo();
 
 		// validate();
+		player = new BasicPlayer();
+		InputStream lInputStream = MainFrame.class.getClassLoader().getResourceAsStream("bgm.mp3");
+		try {
+			player.open(lInputStream);
+			player.play();
+			player.addBasicPlayerListener(this);
+		} catch (BasicPlayerException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void showInfo() {
@@ -230,6 +261,12 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback {
 	public void onGameOver() {
 		int lDialogResult = JOptionPane.showConfirmDialog(null, "再戦しますか？", "Retry?",
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+		try {
+			player.stop();
+		} catch (BasicPlayerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if (lDialogResult == JOptionPane.YES_OPTION) {
 			if (isCPU) {
 				// 対CPU戦は同じ難易度でもう一度
@@ -274,6 +311,36 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback {
 	public void disableItem() {
 		if (playerItemButton != null) {
 			playerItemButton.setEnabled(false);
+		}
+	}
+
+	@Override
+	public void opened(Object arg0, Map arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void progress(int arg0, long arg1, byte[] arg2, Map arg3) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setController(BasicController arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void stateUpdated(BasicPlayerEvent arg0) {
+		if (arg0.getValue() == BasicPlayerEvent.EOM) {
+			try {
+				player.seek(0);
+				player.play();
+			} catch (BasicPlayerException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
