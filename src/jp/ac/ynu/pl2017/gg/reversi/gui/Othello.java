@@ -122,9 +122,9 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 			return;
 		}
 		 //デバッグに使用
-		if (r == BOARD_SIZE - 1 && c == BOARD_SIZE -1) {
-			useDrop();
-		}
+//		if (r == BOARD_SIZE - 1 && c == BOARD_SIZE -1) {
+//			useDrop();
+//		}
 //		removeAllListener();
 		putStone(r, c, myStone);
 	}
