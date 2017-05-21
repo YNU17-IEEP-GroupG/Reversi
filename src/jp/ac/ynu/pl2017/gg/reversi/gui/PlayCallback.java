@@ -9,7 +9,7 @@ public interface PlayCallback {
 	/**
 	 * アイテム取得
 	 */
-	void onGainItem();
+	void onGainItem(boolean playerTurn);
 	
 	/**
 	 * アイテム使用可能
@@ -20,7 +20,12 @@ public interface PlayCallback {
 	 * 
 	 */
 	void disableItem();
-	
+
+	/**
+	 * 対局相手がアイテムを使用した
+	 */
+	void onOpponentUseItem();
+
 	/**
 	 * 対局終了
 	 */

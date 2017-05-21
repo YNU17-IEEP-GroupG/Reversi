@@ -32,12 +32,13 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback, BasicP
 	private	int		opponentIconNum;
 	private	Image	backImage;
 
-	private	Item	havingItem;
+	private	Item	havingItem = Item.NONE;
 	
 	private TitlePanel.Transition	callback;
 	
 	private	Class<BaseAI>	selectedAI;
 	private	int				selectedDifficulty;
+	private JButton			opponentItemButton;
 	private	JButton			playerItemButton;
 	
 	/**
@@ -155,11 +156,11 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback, BasicP
 		JPanel lOpponentSIPanel = new JPanel();
 		FlowLayout lOpponentSILayout = new FlowLayout(FlowLayout.LEFT, 10, 0);
 		lOpponentSIPanel.setLayout(lOpponentSILayout);
-		JButton lOppponentItemButton = new JButton();
-		lOppponentItemButton.setEnabled(false);
-        lOpponentSIPanel.add(lOppponentItemButton);
+		opponentItemButton = new JButton();
+		opponentItemButton.setEnabled(false);
+        lOpponentSIPanel.add(opponentItemButton);
         lOpponentSIPanel.add(playerStoneLabel[1]);
-		lOppponentItemButton.setPreferredSize(new Dimension(60, 60));
+		opponentItemButton.setPreferredSize(new Dimension(60, 60));
 		lOpponentNIPanel.add(lOpponentSIPanel);
 
 		lOpponentPanel.add(lOpponentNIPanel, BorderLayout.CENTER);
@@ -263,19 +264,28 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback, BasicP
 	}
 
 	@Override
-	public void onGainItem() {
-		int tR = new Random().nextInt(Item.values().length - 1);
-		havingItem = Item.values()[tR + 1];
-		playerItemButton.setEnabled(true);
-		playerItemButton.setIcon(new ImageIcon("image/item/"+havingItem.name().toLowerCase()+".png"));
-		playerItemButton.setToolTipText(havingItem.toString());
-		playerItemButton.addActionListener(e -> {
-			if(havingItem != null && !havingItem.equals(Item.NONE)) lOthelloPanel.useItem(havingItem);
-			havingItem = Item.NONE;
-			playerItemButton.setIcon(null);
-			playerItemButton.setEnabled(false);
+	public void onGainItem(boolean playerTurn) {
+		if (playerTurn) {
+			// アイテムを上書きしないように
+			if (havingItem != Item.NONE) return;
+			int tR = new Random().nextInt(Item.values().length - 1);
+			havingItem = Item.values()[tR + 1];
+			playerItemButton.setEnabled(true);
+			playerItemButton.setIcon(new ImageIcon("image/item/"+havingItem.name().toLowerCase()+".png"));
 			playerItemButton.setToolTipText(havingItem.toString());
-		});
+			playerItemButton.addActionListener(e -> {
+				if(havingItem != null && !havingItem.equals(Item.NONE)) lOthelloPanel.useItem(havingItem);
+				havingItem = Item.NONE;
+				playerItemButton.setIcon(null);
+				playerItemButton.setEnabled(false);
+				playerItemButton.setToolTipText(havingItem.toString());
+			});
+		}
+		else {
+			// setIconで通常のアイコンもセットしないと無効化されたアイコンが表示されないみたい
+			opponentItemButton.setIcon(new ImageIcon("image/item/itemSecret.png"));
+			opponentItemButton.setDisabledIcon(new ImageIcon("image/item/itemSecret.png"));
+		}
 	}
 
 	@Override
@@ -290,6 +300,12 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback, BasicP
 		if (playerItemButton != null) {
 			playerItemButton.setEnabled(false);
 		}
+	}
+
+	@Override
+	public void onOpponentUseItem() {
+		opponentItemButton.setIcon(null);
+		opponentItemButton.setIcon(null);
 	}
 
 	@Override

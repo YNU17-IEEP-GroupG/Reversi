@@ -76,7 +76,9 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	private Class<BaseAI>			selectedAI;
 	private int						selectedDifficulty;
 	private boolean 					isCPU		= false;
-	
+	// CPUでの使用
+	private boolean				 CPUItemFlag = false;
+
 	private PlayCallback			callback;
 
 	public Othello(PlayCallback pCallback, Class<BaseAI> pAi, int pDifficulty) {
@@ -246,6 +248,19 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 				addAllListener();
 				grayTurn--;
 			} else {
+//				CPUItemFlag = true;
+				if (CPUItemFlag) {
+					// 確率でアイテムを使用にする
+					useItemCPU();
+					callback.onOpponentUseItem();
+					// アイテム使用で状況が変わる可能性があるため
+					hint = makeHint(myStone);
+					CPUItemFlag = false;
+					if (hint.isEmpty()) {
+						nextTurn();
+						return;
+					}
+				}
 //				removeAllListener();
 //				OmegaAI ai = new OmegaAI(hint, myStone, board, selectedDifficulty);
 //				ai.think();
@@ -447,8 +462,9 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 
 	private void gainItem(Point point) {
 		itemPoints.remove(point);
-		if (myTurn) {
-			callback.onGainItem();
+		callback.onGainItem(myTurn);
+		if (isCPU) {
+			CPUItemFlag = true;
 		}
 	}
 
@@ -474,25 +490,28 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	}
 
 	private void useBan() {
-	    // TODO: 先手で1ターン目に使用するとこのメソッドが２回呼ばれてしまうバグあり
+	    // 先手で1ターン目に使用するとこのメソッドが２回呼ばれてしまうバグあり
+		// 特に重要でも無いので一旦保留
 	    hideHint();
+	    List<Point> banPoints = new ArrayList<>();
+		// TODO: 通信相手にbanPointsを送る
+		reflectBan(makeBanPoints());		// ヒントの再表示とパス処理
+		List<Point> hint = makeHint(myStone);
+		if (hint.isEmpty())
+			nextTurn();
+		else
+			displayHint(hint);
+	}
+
+	private List<Point> makeBanPoints() {
 		Random random = new Random();
 		List<Point> emptyPoints = BoardHelper.getPoints(Stone.Empty, board);
 		int count = Math.min(3, emptyPoints.size());
+		List<Point> banPoints = new ArrayList<>();
 		for (int i = 0; i < count; i++) {
-			Point p = emptyPoints.get(random.nextInt(emptyPoints.size()));
-			board[p.getRow()][p.getColumn()] = Stone.Ban;
-			buttonBoard[p.getRow()][p.getColumn()].setIcon(cannotPutIcon);
-			buttonBoard[p.getRow()][p.getColumn()].setRolloverIcon(null);
+			banPoints.add(emptyPoints.get(random.nextInt(emptyPoints.size())));
 		}
-
-        // ヒントの再表示とパス処理
-        List<Point> hint = makeHint(myStone);
-		if (hint.isEmpty())
-		    nextTurn();
-		else
-		    displayHint(hint);
-
+		return banPoints;
 	}
 
 	private void useDrop() {
@@ -573,5 +592,29 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 
 	private void useTriple() {
 		tripleFlag = true;
+	}
+
+	private void useItemCPU() {
+		// controlが無いので今は4
+		int select = new Random().nextInt(4);
+		switch (select) {
+			case 0:
+				reflectBan(makeBanPoints());
+				break;
+		}
+	}
+
+	/*=============== CPU用に作成したが、オンライン対戦でも使えるように作った ===============*/
+
+	/**
+	 * 石が置けないマスを引数で示された場所に設置
+	 * @param banPoints 石が置けないマスの座標
+	 */
+	public void reflectBan(List<Point> banPoints) {
+		banPoints.forEach(p -> {
+			board[p.getRow()][p.getColumn()] = Stone.Ban;
+			buttonBoard[p.getRow()][p.getColumn()].setIcon(cannotPutIcon);
+			buttonBoard[p.getRow()][p.getColumn()].setRolloverIcon(null);
+		});
 	}
 }
