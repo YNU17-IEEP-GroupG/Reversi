@@ -1,11 +1,6 @@
 package jp.ac.ynu.pl2017.gg.reversi.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
@@ -57,7 +52,7 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback {
 
 	private JLabel	lOpponentIcon;
 	private JLabel	lPlayerIcon;
-	
+
 	public PlayPanel(TitlePanel.Transition pCallback, Class<BaseAI> pAi, int pDifficulty,
 			int pPIcon, int pOIcon, Image pImage) {
 		super(pImage);
@@ -75,8 +70,8 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback {
 		
 		for (int i = 0; i < 2; i++){
 			turnIcon[i] = new JLabel();
-			turnIcon[i].setPreferredSize(new Dimension(60, 60));
-			turnIcon[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+			turnIcon[i].setPreferredSize(new Dimension(40, 40));
+            turnIcon[i].setIcon(new ImageIcon("image/turn" + (i == 0 ? "" : "Reverse") + ".png"));
 
 			playerStoneLabel[i] = new JLabel("2");
 			playerStoneLabel[i].setPreferredSize(new Dimension(60, 60));
@@ -90,11 +85,11 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback {
 		playerIconNum = pPIcon;
 		opponentIconNum = pOIcon;
 		lOpponentIcon = new JLabel(new ImageIcon("image/icon/icon" + (pOIcon+1) + ".png"));
-		lOpponentIcon.setPreferredSize(new Dimension(90, 90));
+		lOpponentIcon.setPreferredSize(new Dimension(100, 100));
 		lOpponentIcon.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
 		lPlayerIcon = new JLabel(new ImageIcon("image/icon/icon" + (pPIcon+1) + ".png"));
-		lPlayerIcon.setPreferredSize(new Dimension(90, 90));
+		lPlayerIcon.setPreferredSize(new Dimension(100, 100));
 		lPlayerIcon.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
 		lOthelloPanel = new Othello(this, pAi, pDifficulty);
@@ -201,16 +196,14 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback {
 		
 		JPanel lOpponentTurnWrapPanel = new JPanel();
 		lOpponentTurnWrapPanel.setOpaque(false);
-		lOpponentTurnWrapPanel.setPreferredSize(new Dimension(lPlayerPanel.getPreferredSize().width, 65));
-		FlowLayout fl1 = new FlowLayout();
-		fl1.setAlignment(FlowLayout.RIGHT);
+		lOpponentTurnWrapPanel.setPreferredSize(new Dimension(lPlayerPanel.getPreferredSize().width, 40));
+		FlowLayout fl1 = new FlowLayout(FlowLayout.RIGHT, 30, 0);
 		lOpponentTurnWrapPanel.setLayout(fl1);
 		lOpponentTurnWrapPanel.add(turnIcon[1]);
 		JPanel lPlayerTurnWrapPanel = new JPanel();
 		lPlayerTurnWrapPanel.setOpaque(false);
-		lPlayerTurnWrapPanel.setPreferredSize(new Dimension(lPlayerPanel.getPreferredSize().width, 65));
-		FlowLayout fl2 = new FlowLayout();
-		fl2.setAlignment(FlowLayout.LEFT);
+		lPlayerTurnWrapPanel.setPreferredSize(new Dimension(lPlayerPanel.getPreferredSize().width, 40));
+		FlowLayout fl2 = new FlowLayout(FlowLayout.LEFT, 30, 0);
 		lPlayerTurnWrapPanel.setLayout(fl2);
 		lPlayerTurnWrapPanel.add(turnIcon[0]);
 		
