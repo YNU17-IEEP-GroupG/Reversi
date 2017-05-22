@@ -14,17 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.GroupLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import javax.swing.SpringLayout;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.border.LineBorder;
 
 import jp.ac.ynu.pl2017.gg.reversi.gui.TitlePanel.Transition;
@@ -45,6 +35,8 @@ public class SettingsPanel extends BackgroundedPanel {
 	private	JLabel			onlineWLLabel;
 
 	private JLabel			onlineItemLabel;
+
+	private JLabel			nameLabel;
 	
 	private	Transition		callback;
 
@@ -106,10 +98,10 @@ public class SettingsPanel extends BackgroundedPanel {
 		JPanel lNameWrapperPanel = new JPanel();
 		lNameWrapperPanel.setLayout(fl1);
 		lNameWrapperPanel.setPreferredSize(new Dimension(MainFrame.panelW - 200, 70));
-		JLabel lNameLabel = new JLabel(callback.getUserData().getUserName(), SwingConstants.LEFT);
+		nameLabel = new JLabel(callback.getUserData().getUserName(), SwingConstants.LEFT);
 		Font lNameFont = new Font("Serif", Font.BOLD, 48);
-		lNameLabel.setFont(lNameFont);
-		lNameWrapperPanel.add(lNameLabel);
+		nameLabel.setFont(lNameFont);
+		lNameWrapperPanel.add(nameLabel);
 		
 		// 変更ボタン
 		JButton lInfoChangeButton = new JButton("アカウント情報変更");
@@ -230,7 +222,26 @@ public class SettingsPanel extends BackgroundedPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				lChangeDialog.dispose();
+				String password = String.valueOf(lPassField1.getPassword());
+				String subPassword = String.valueOf(lPassField2.getPassword());
+				if (!password.equals(subPassword)) {
+					JOptionPane.showMessageDialog(lChangeDialog, "同じパスワードを入力してください", "エラー", JOptionPane.ERROR_MESSAGE);
+				} else {
+					try {
+						Thread.sleep(500);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					String newName = lNameField.getText();
+					if (ClientConnection.updateNamePass(newName, password)) {
+						JOptionPane.showMessageDialog(lChangeDialog, "アカウント情報を変更しました", "変更完了", JOptionPane.INFORMATION_MESSAGE);
+						callback.getUserData().setUserName(newName);
+						nameLabel.setText(newName);
+					}
+					else {
+						JOptionPane.showMessageDialog(lChangeDialog, "アカウント情報を変更できませんでした", "エラー", JOptionPane.ERROR_MESSAGE);
+					}
+				}
 			}
 		});
 		JButton lCancelButton = new JButton("取消");

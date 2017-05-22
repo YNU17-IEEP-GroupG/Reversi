@@ -385,7 +385,7 @@ class ClientProcThread extends Thread implements Serializable{
 						if (cmd.equals("UPDATE")) {
 							String newName = myIn.readLine();
 							String newPass = myIn.readLine();
-							if (Access.exists(newName)) {// 登録済かどうか判定
+							if (!Access.exists(newName)) {// 登録済かどうか判定
 								if (Access.updateUser(myName, newName, newPass)) {
 									myOut.println("TRUE");
 									System.out.println(myName + " >> "
@@ -412,7 +412,6 @@ class ClientProcThread extends Thread implements Serializable{
 							}
 						}
 
-						System.out.println("before ICON");
 						if (cmd.equals("ICON")) {
 							int icon = 0;
 							DataInputStream dis = new DataInputStream(myIs);

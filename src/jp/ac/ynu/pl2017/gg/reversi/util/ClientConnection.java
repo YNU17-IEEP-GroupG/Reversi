@@ -110,7 +110,7 @@ public class ClientConnection implements Serializable {
 	 * @param pNewPassword
 	 * @return 変更可否
 	 */
-	public static boolean changePassword(String pUsername, String pNewPassword) {
+	public static boolean updateNamePass(String pUsername, String pNewPassword) {
 		boolean update = false;
 
 		try {
