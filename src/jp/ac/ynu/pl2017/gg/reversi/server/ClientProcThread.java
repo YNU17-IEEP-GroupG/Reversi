@@ -222,7 +222,12 @@ class ClientProcThread extends Thread implements Serializable{
 							change[myRoom] = true;
 							rematch[myRoom] = 0;
 							System.out.println(myName + ": マッチング完了");
-							myOut.println(enemyName);
+							
+							if(turn){
+								myOut.println(enemyName+"/"+"true");
+							}else{
+								myOut.println(enemyName+"/"+"false");
+							}
 
 						}
 
@@ -435,7 +440,9 @@ class ClientProcThread extends Thread implements Serializable{
 			Server.SetFlag(number, false);// 接続が切れたのでフラグを下げる
 		} finally {
 			Access.closeConnection();
-			System.out.println(myName + " DataBaseのclose");
+			if(MatchMap.containsKey(myName)){
+				MatchMap.remove(myName);
+			}
 		}
 	}
 }
