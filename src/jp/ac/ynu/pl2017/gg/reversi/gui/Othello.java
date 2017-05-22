@@ -98,7 +98,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		Random random = new Random();
 		selectItemPoints();
 		myStone = random.nextBoolean() ? Stone.Black : Stone.White;
-		myTurn = pMyTurn;
+		myTurn = !pMyTurn;
 		
 		callback = pCallback;
 

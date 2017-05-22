@@ -159,7 +159,7 @@ class ClientProcThread extends Thread implements Serializable{
 									
 								}// マッチング待ち終了
 								
-								System.out.println(myName + ": マッチング完了"+"(room:"+myRoom);
+								System.out.println(myName + ": マッチング完了"+"(room:"+myRoom+"%"+turn);
 								
 								room++;// room番号をインクリメント
 								change[myRoom] = true;
@@ -233,7 +233,7 @@ class ClientProcThread extends Thread implements Serializable{
 
 						if (cmd.equals("WRITE")) {
 							if (battle) {
-								System.out.println(myName + ": 座標の更新");
+								System.out.println(myName + ": 座標の更新%" + turn);
 
 								if (change[myRoom] == turn) {
 									// myOut.println("座標を入力して下さい");
