@@ -75,7 +75,10 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 
 	private Class<BaseAI>			selectedAI;
 	private int						selectedDifficulty;
-	private boolean 					isCPU		= false;
+	/**
+	 * CPU戦かどうかの判定
+	 */
+	private boolean 				isCPU		= false;
 	// CPUでの使用
 	private boolean				 CPUItemFlag = false;
 
@@ -298,7 +301,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 					selectedAI.getConstructor(List.class, Stone.class, Stone[][].class, int.class);
 			Object[] tArgs = {hint, myStone, board, selectedDifficulty};
 			BaseAI ai = (BaseAI) tConstructor.newInstance(tArgs);
-			if (isCPU && grayTurnCPU > 0) {
+			if (!myTurn && grayTurnCPU > 0) {
 				ai.setGray();
 				grayTurnCPU--;
 			}
@@ -491,7 +494,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	private void gainItem(Point point) {
 		itemPoints.remove(point);
 		callback.onGainItem(myTurn);
-		if (isCPU) {
+		if (!myTurn) {
 			CPUItemFlag = true;
 		}
 	}
@@ -505,7 +508,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 				useDrop();
 				break;
 			case GRAY:
-				if (isCPU) {
+				if (myTurn) {
 					grayTurnCPU = 3;
 				}
 				break;
@@ -659,9 +662,6 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 			buttonBoard[p.getRow()][p.getColumn()].setIcon(cannotPutIcon);
 			buttonBoard[p.getRow()][p.getColumn()].setRolloverIcon(null);
 		});
-		if (isCPU) {
-			
-		}
 	}
 
 	public void reflectDrop(Point point) {
