@@ -112,7 +112,7 @@ class ClientProcThread extends Thread {
 							// myOut.println("対戦相手の名前を入力して下さい");
 							String enemyName = myIn.readLine();
 							if (!enemyName.equals("CANSEL")
-									&& !enemyName.equals(myName)) {// 自分の名前をいれたらキャンセルされる
+									&& !enemyName.equals(myName) && Access.exists(enemyName)) {// 自分の名前をいれたらキャンセルされる,また,存在しないユーザ名もキャンセル
 
 								myRoom = room;// ルーム番号をセット
 								Match myMatch = new Match(room, myName,
