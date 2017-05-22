@@ -1,16 +1,20 @@
 package jp.ac.ynu.pl2017.gg.reversi.util;
 
+
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.net.Socket;
 
-public class ClientConnection {
+public class ClientConnection implements Serializable{
 	
 	/**
 	 * 通信用.すべての通信はここを通す
@@ -22,6 +26,8 @@ public class ClientConnection {
 	static InputStreamReader sisr;
 	static BufferedReader br;
 	
+	static OutputStream os;
+	static InputStream is;
 	/**
 	 * 初期化
 	 */
@@ -29,9 +35,13 @@ public class ClientConnection {
 		try {
 			theSocket = new Socket(SERVER, PORT);
 			out = new PrintWriter(theSocket.getOutputStream(), true);
-			sisr = new InputStreamReader(
-					theSocket.getInputStream());
+			sisr = new InputStreamReader(theSocket.getInputStream());
 			br = new BufferedReader(sisr);
+			
+			os = theSocket.getOutputStream();
+		//	oos = new ObjectOutputStream(os);
+			
+			is = theSocket.getInputStream();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -122,11 +132,20 @@ public class ClientConnection {
 	 * ユーザ情報取得
 	 * @return User
 	 */
-//	public static User getUserData(){
-//		User user;
-//		
-//		return user;
-//	}
+	public static User getUserData(){
+		User user=null;
+		
+		try{
+			ObjectInputStream ois = new ObjectInputStream(is);
+			
+			out.println("USER");//コマンドの送信
+			user = (User)ois.readObject();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		return user;
+	}
 	
 	
 	public static String match(String enemyName) {
@@ -289,15 +308,45 @@ public class ClientConnection {
 	 * @return　通信可否
 	 */
 	public static boolean sendItemUse(String pItem, Object pItemData) {
-		return false;
+		boolean item = false;
+		
+		try{
+			ObjectOutputStream oos = new ObjectOutputStream(os);
+			
+			out.println("ITEM_SEND");//コマンドの送信
+			out.println(pItem);//アイテム種類の送信
+			oos.writeObject(pItemData);
+			
+			if((br.readLine()).equals("TRUE")){
+				item = true;
+			}else{
+				item = false;
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return item;
 	}
 	
 	/**
 	 * アイテムの使用を受信
 	 * @return {アイテムの種類, アイテムの効果データ}からなる.nullの場合,相手はアイテムを使用していない
 	 */
-	public static Object[] receiveItemUse() {
-		return null;
+	public static Object receiveItemUse() {
+		Object itemData = null;
+		
+		try{
+			ObjectInputStream ois = new ObjectInputStream(is);
+			
+			out.println("ITEM_RECIEVE");//コマンドの送信
+			itemData = ois.readObject();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		return itemData;
 	}
 	
 	
