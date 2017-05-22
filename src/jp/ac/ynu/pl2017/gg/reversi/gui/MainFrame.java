@@ -203,7 +203,7 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 				int icon = ClientConnection.getUserData(data).getIcon();
 				return new Object[]{data, icon};
 			}
-		};
+		}.start();
 		
 	}
 

@@ -19,8 +19,8 @@ public class ClientConnection implements Serializable {
 	 * 通信用.すべての通信はここを通す
 	 */
 	private static Socket theSocket;
-	public static String SERVER;
-	public static int PORT;
+	public static String SERVER = "133.34.236.151";
+	public static int PORT = 50000;
 	static PrintWriter out;
 	static InputStreamReader sisr;
 	static BufferedReader br;
