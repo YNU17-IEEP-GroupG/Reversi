@@ -55,7 +55,11 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 		setResizable(false);
 		pack();
 		
-//		ClientConnection.init();
+		// 仮ユーザデータ作成
+		userData = new User();
+		userData.setUserName("6s");
+		userData.setIcon(0);
+		userData.setBackground(0);
 
 		layout = new CardLayout();
 		setLayout(layout);

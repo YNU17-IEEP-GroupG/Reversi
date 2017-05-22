@@ -67,4 +67,16 @@ public class Offline {
     public void setEasyLose(int easyLose) {
         this.easyLose = easyLose;
     }
+    
+    /**
+     * オフライン成績をまとめて取得
+     * @return １次元は難易度(0:弱～2:強); 2次元は勝敗
+     */
+    public int[][] getWLLists() {
+    	return new int[][]{
+    			{getEasyWin(), getEasyLose()},
+    			{getNormalWin(), getNormalLose()},
+    			{getHardWin(), getHardLose()}
+    			};
+    }
 }

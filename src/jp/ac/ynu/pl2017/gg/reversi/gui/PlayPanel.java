@@ -178,7 +178,7 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback, BasicP
 		lPlayerNIPanel.setPreferredSize(new Dimension(MainFrame.panelW - lOthelloPanel.getWidth(), 100));
 		lPlayerNIPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		lPlayerNIPanel.setLayout(new BorderLayout());
-		JLabel lPlayerNameLabel = new JLabel(SettingsPanel.username);
+		JLabel lPlayerNameLabel = new JLabel(callback.getUserData().getUserName());
 		lPlayerNameLabel.setFont(new Font("Serif", Font.BOLD, 20));
 		lPlayerNIPanel.add(lPlayerNameLabel, BorderLayout.SOUTH);
 		lPlayerNIPanel.setOpaque(true);

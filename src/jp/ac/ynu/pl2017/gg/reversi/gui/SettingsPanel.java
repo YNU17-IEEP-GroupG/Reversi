@@ -27,6 +27,8 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
+import jp.ac.ynu.pl2017.gg.reversi.gui.TitlePanel.Transition;
+
 public class SettingsPanel extends BackgroundedPanel {
 
 	/**
@@ -34,27 +36,19 @@ public class SettingsPanel extends BackgroundedPanel {
 	 */
 	private static final long	serialVersionUID	= 1395349167588587208L;
 	
-	// ユーザーデータ保管場所
-	public static String	username	= "6s";
-	// オンライン勝敗
-	public static int		onlineWL;
-	// CPU勝敗
-	public static int		CPUWL[][][];
-	// アイコン
-	public static int		iconIndex	= 0;
-	// 背景
-	public static int		backIndex	= 0;
-
 	public static int		temp		= 0;
 
 	private	JLabel			iconLabel;
 
 	private	JLabel			onlineWLLabel;
 
-	private JLabel onlineItemLabel;
+	private JLabel			onlineItemLabel;
+	
+	private	Transition		callback;
 
-	public SettingsPanel(TitlePanel.Transition callback) {
+	public SettingsPanel(TitlePanel.Transition pCallback) {
 		super();
+		callback = pCallback;
 
 		setSize(MainFrame.panelW, MainFrame.panelH);
 
@@ -87,7 +81,8 @@ public class SettingsPanel extends BackgroundedPanel {
 		 */
 		JPanel lIconPanel = new JPanel(new BorderLayout());
 		lIconPanel.setSize(90, 90);
-		iconLabel = new JLabel(new ImageIcon("image/icon/icon"+(iconIndex+1)+".png"));
+		iconLabel = new JLabel(new ImageIcon(
+				"image/icon/icon" + (callback.getUserData().getIcon()+1) + ".png"));
 		iconLabel.setSize(new Dimension(90, 90));
 		lIconPanel.add(iconLabel, BorderLayout.CENTER);
 		JButton lIconChanger = new JButton("アイコンの変更");
@@ -176,7 +171,8 @@ public class SettingsPanel extends BackgroundedPanel {
 		BufferedImage lBufferedImage = null;
 		try {
 			InputStream lInputStream =
-					MainFrame.class.getClassLoader().getResourceAsStream("background/back"+(backIndex+1)+".png");
+					MainFrame.class.getClassLoader().getResourceAsStream(
+							"background/back" + (callback.getUserData().getBackground() + 1) + ".png");
 			lBufferedImage = ImageIO.read(lInputStream);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -196,7 +192,7 @@ public class SettingsPanel extends BackgroundedPanel {
 		JLabel lPassLabel1 = new JLabel("パスワード");
 		JLabel lPassLabel2 = new JLabel("パスワード（確認）");
 		
-		JTextField lNameField = new JTextField(username);
+		JTextField lNameField = new JTextField(callback.getUserData().getUserName());
 		JPasswordField lPassField1 = new JPasswordField();
 		JPasswordField lPassField2 = new JPasswordField();
 		
@@ -259,7 +255,7 @@ public class SettingsPanel extends BackgroundedPanel {
 		lChangeDialog.setResizable(false);
 		lChangeDialog.getContentPane().setLayout(new FlowLayout());
 		
-		temp = mode == 0 ? iconIndex : backIndex;
+		temp = mode == 0 ? callback.getUserData().getIcon() : callback.getUserData().getBackground();
 		
 		JPanel lImagePanel = new JPanel(new GridLayout(1, 4));
 		lImagePanel.setPreferredSize(new Dimension(360, 90));
@@ -301,7 +297,11 @@ public class SettingsPanel extends BackgroundedPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if (mode == 0) iconIndex = temp; else backIndex = temp;
+				if (mode == 0) {
+					callback.getUserData().setIcon(temp);
+				} else {
+					callback.getUserData().setBackground(temp);
+				}
 				lChangeDialog.dispose();
 			}
 		});

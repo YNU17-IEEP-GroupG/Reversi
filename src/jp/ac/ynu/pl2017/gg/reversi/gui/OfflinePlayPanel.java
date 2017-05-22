@@ -15,6 +15,7 @@ import jp.ac.ynu.pl2017.gg.reversi.ai.AlphaAI;
 import jp.ac.ynu.pl2017.gg.reversi.ai.BetaAI;
 import jp.ac.ynu.pl2017.gg.reversi.ai.GammaAI;
 import jp.ac.ynu.pl2017.gg.reversi.ai.OmegaAI;
+import jp.ac.ynu.pl2017.gg.reversi.gui.TitlePanel.Transition;
 
 /**
  * 難易度選択からのプレイ画面遷移.
@@ -25,8 +26,11 @@ public class OfflinePlayPanel extends JPanel {
 	
 	private	static final Class[]	aiList = {AlphaAI.class, BetaAI.class, GammaAI.class, OmegaAI.class};
 	
-	public OfflinePlayPanel(
-			TitlePanel.Transition callback) {
+	private	Transition	callback;
+	
+	public OfflinePlayPanel(TitlePanel.Transition pCallback) {
+		callback = pCallback;
+
 		setSize(panelW, panelH);
 		setLayout(new BorderLayout());
 					
@@ -38,7 +42,7 @@ public class OfflinePlayPanel extends JPanel {
 		// lLocalLabel.setHorizontalTextPosition(SwingConstants.CENTER);
 		lTopPanel.add(lLocalLabel);
 		JButton returnButton = new JButton("タイトルに戻る");
-		returnButton.addActionListener(e -> callback.returnTitlePanel());
+		returnButton.addActionListener(e -> pCallback.returnTitlePanel());
 		lTopPanel.add(returnButton, BorderLayout.EAST);
 		
 		add(lTopPanel, BorderLayout.NORTH);
@@ -75,7 +79,9 @@ public class OfflinePlayPanel extends JPanel {
 					final int tAiType = c-1;
 					final int tAiDiff = 2-r;
 					tPlayButton.addActionListener(e ->
-							callback.changePlayPanel(aiList[tAiType], tAiDiff, SettingsPanel.iconIndex, 0, SettingsPanel.backIndex));
+							callback.changePlayPanel(
+									aiList[tAiType], tAiDiff,
+									callback.getUserData().getIcon(), 0, callback.getUserData().getBackground()));
 					lDifficultyPanel.add(tPlayButton);
 				}
 			}
