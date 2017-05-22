@@ -188,7 +188,7 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 			public void onThreadFinish(Object pCallbackParam) {
 //				rthread.interrupt();
 				lDialog.dispose();
-				Object eData = pCallbackParam.toString();
+				Object eData = pCallbackParam;
 				if (eData instanceof Object[]) {
 					System.err.println("MATCH FOUND");
 					changePlayPanel(OnlineDummyAI.class, 0, (String)((Object[])eData)[0],
