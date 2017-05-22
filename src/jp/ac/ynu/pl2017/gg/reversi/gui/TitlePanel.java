@@ -3,6 +3,7 @@ package jp.ac.ynu.pl2017.gg.reversi.gui;
 import javax.swing.*;
 
 import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
+import jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection;
 import jp.ac.ynu.pl2017.gg.reversi.util.User;
 import static jp.ac.ynu.pl2017.gg.reversi.gui.MainFrame.panelH;
 import static jp.ac.ynu.pl2017.gg.reversi.gui.MainFrame.panelW;
@@ -92,5 +93,7 @@ public class TitlePanel extends BackgroundedPanel {
 		User getUserData();
 		
 		boolean isLogin();
+
+		void showRoomSearchDialog(); 
 	}
 }

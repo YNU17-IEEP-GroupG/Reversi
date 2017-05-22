@@ -14,6 +14,8 @@ import java.io.InputStream;
 
 
 
+
+
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -24,6 +26,8 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
+
+
 
 
 
@@ -99,8 +103,24 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 
 	@Override
 	public void changeOnlinePlayPanel() {
-		setContentPane(new OnlinePlayPanel(this));
-		validate();
+		if (!isLogin()) {
+			showLoginDialog();
+			if (!isLogin()) {
+				return;
+			}
+		}
+		showRoomSearchDialog();
+	}
+
+	@Override
+	public void showRoomSearchDialog() {
+		String tResult = JOptionPane.showInputDialog(this,
+				"対戦相手名を入力.空欄でランダムマッチングになります", "対戦相手入力", JOptionPane.PLAIN_MESSAGE);
+		if (tResult == null) {
+			// キャンセル
+			return;
+		}
+		ClientConnection.match(tResult);
 	}
 
 	@Override
