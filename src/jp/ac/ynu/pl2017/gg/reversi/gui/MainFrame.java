@@ -76,7 +76,7 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 	private CardLayout			layout;
 	
 	private TitlePanel			titleCard;
-	private OfflinePlayPanel	offlineCard;
+//	private OfflinePlayPanel	offlineCard;
 	
 	private	User				userData;
 
@@ -107,7 +107,6 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 		}
 		
 		titleCard = new TitlePanel(this, lBufferedImage);
-		offlineCard = new OfflinePlayPanel(this);
 
 		/*
 		add(titleCard, TITLE);
@@ -125,7 +124,7 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 
 	@Override
 	public void changeOfflinePlayPanel() {
-		setContentPane(offlineCard);
+		setContentPane(new OfflinePlayPanel(this));
 		validate();
 	}
 
