@@ -407,10 +407,12 @@ class ClientProcThread extends Thread implements Serializable{
 							}
 						}
 
+						System.out.println("before ICON");
 						if (cmd.equals("ICON")) {
 							int icon = 0;
-							DataInputStream dis = new DataInputStream(myIs);
-							icon = dis.readInt();
+							try (DataInputStream dis = new DataInputStream(myIs)) {
+								icon = dis.readInt();
+							}
 							if (Access.updateIcon(myName, icon)) {
 								myOut.println("TRUE");
 							} else {

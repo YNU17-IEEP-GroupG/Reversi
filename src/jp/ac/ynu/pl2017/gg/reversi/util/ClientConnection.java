@@ -388,7 +388,7 @@ public class ClientConnection implements Serializable {
 	 * @return 通信可否
 	 */
 	public static boolean updateBack(int back) {
-		boolean updateback = false;
+		boolean updateBack = false;
 
 		try {
 			DataOutputStream dos = new DataOutputStream(os);
@@ -396,17 +396,40 @@ public class ClientConnection implements Serializable {
 			dos.writeInt(back);
 
 			if ((br.readLine()).equals("TRUE")) {
-				updateback = true;
+				updateBack = true;
 			} else {
-				updateback = false;
+				updateBack = false;
 			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		return updateback;
+		return updateBack;
 	}
+
+	/**
+	 * アイコンの更新
+	 * @param icon アイコンのID
+	 * @return 通信可否
+	 */
+	public static boolean updateIcon(int icon) {
+		boolean updateIcon = false;
+		try (DataOutputStream dos = new DataOutputStream(os)){
+			out.println("ICON");// コマンドの送信
+			dos.writeInt(icon);
+			if ((br.readLine()).equals("TRUE")) {
+				updateIcon = true;
+			} else {
+				updateIcon = false;
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return updateIcon;
+	}
+
 
 	// TODO 座標どう送る?
 

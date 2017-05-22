@@ -28,6 +28,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
 import jp.ac.ynu.pl2017.gg.reversi.gui.TitlePanel.Transition;
+import jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection;
 import jp.ac.ynu.pl2017.gg.reversi.util.Offline;
 
 public class SettingsPanel extends BackgroundedPanel {
@@ -303,8 +304,10 @@ public class SettingsPanel extends BackgroundedPanel {
 			public void actionPerformed(ActionEvent arg0) {
 				if (mode == 0) {
 					callback.getUserData().setIcon(temp);
+					ClientConnection.updateIcon(temp);
 				} else {
 					callback.getUserData().setBackground(temp);
+					ClientConnection.updateBack(temp);
 				}
 				lChangeDialog.dispose();
 			}
