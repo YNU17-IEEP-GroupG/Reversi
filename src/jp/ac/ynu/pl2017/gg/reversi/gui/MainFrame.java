@@ -193,7 +193,7 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 					String ePData[] = ((String) eData).split("/");
 					System.err.println("MATCH FOUND");
 					changePlayPanel(OnlineDummyAI.class, 0, ePData[0],
-							userData.getIcon(), (int)((Object[])eData)[1], userData.getBackground(), Boolean.parseBoolean(ePData[1]));
+							userData.getIcon(), 0, userData.getBackground(), Boolean.parseBoolean(ePData[1]));
 				} else {
 					JOptionPane.showMessageDialog(MainFrame.this, "マッチングできませんでした", "エラー", JOptionPane.ERROR_MESSAGE);
 				}
