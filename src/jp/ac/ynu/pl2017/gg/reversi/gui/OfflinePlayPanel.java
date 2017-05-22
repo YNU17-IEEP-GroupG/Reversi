@@ -7,6 +7,7 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -16,6 +17,7 @@ import jp.ac.ynu.pl2017.gg.reversi.ai.BetaAI;
 import jp.ac.ynu.pl2017.gg.reversi.ai.GammaAI;
 import jp.ac.ynu.pl2017.gg.reversi.ai.OmegaAI;
 import jp.ac.ynu.pl2017.gg.reversi.gui.TitlePanel.Transition;
+import jp.ac.ynu.pl2017.gg.reversi.util.Offline;
 
 /**
  * 難易度選択からのプレイ画面遷移.
@@ -74,10 +76,17 @@ public class OfflinePlayPanel extends JPanel {
 					JLabel tLvLabel = new JLabel(ROW[tLevel]);
 					lDifficultyPanel.add(tLvLabel);
 				} else {
-					JButton tPlayButton = new JButton("PLAY");
-					
-					final int tAiType = tCPUType-1;
+					JButton tPlayButton = new JButton(new ImageIcon("image/unlock.png"));
+					final int tAiType = tCPUType;
 					final int tAiDiff = tLevel;
+					// 戦績条件を満たさない場合は無効化する
+					if (tAiDiff > 0) {
+						Offline tOffline = callback.getUserData().getOfflines()[tAiType];
+						if (tOffline.getWLLists()[tAiDiff - 1][0] <= 0) {
+							tPlayButton.setIcon(new ImageIcon("image/lock.png"));
+							tPlayButton.setEnabled(false);
+						}
+					}
 					tPlayButton.addActionListener(e ->
 							callback.changePlayPanel(
 									aiList[tAiType], tAiDiff,
