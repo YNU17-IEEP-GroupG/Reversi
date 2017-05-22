@@ -5,7 +5,6 @@ import static jp.ac.ynu.pl2017.gg.reversi.gui.MainFrame.panelW;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.lang.reflect.Constructor;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -13,7 +12,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import jp.ac.ynu.pl2017.gg.reversi.ai.AlphaAI;
-import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
 import jp.ac.ynu.pl2017.gg.reversi.ai.BetaAI;
 import jp.ac.ynu.pl2017.gg.reversi.ai.GammaAI;
 import jp.ac.ynu.pl2017.gg.reversi.ai.OmegaAI;

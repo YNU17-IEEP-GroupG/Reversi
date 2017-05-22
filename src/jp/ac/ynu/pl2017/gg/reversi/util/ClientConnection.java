@@ -57,7 +57,7 @@ public class ClientConnection {
 				create = false;
 			}
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
@@ -84,7 +84,7 @@ public class ClientConnection {
 				log = true;
 			}
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
