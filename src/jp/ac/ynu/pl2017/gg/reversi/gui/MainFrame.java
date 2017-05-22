@@ -233,7 +233,7 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 	}
 
 	public static void main(String[] args) {
-		ClientConnection.init();
+		ClientConnection.init(args[0]);
 		new MainFrame();
 	}
 

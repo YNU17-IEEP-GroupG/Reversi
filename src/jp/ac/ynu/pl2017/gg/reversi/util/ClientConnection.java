@@ -19,7 +19,7 @@ public class ClientConnection implements Serializable {
 	 * 通信用.すべての通信はここを通す
 	 */
 	private static Socket theSocket;
-	public static String SERVER = "133.34.236.151";
+//	public static String SERVER = "133.34.236.151";
 	public static int PORT = 50000;
 	static PrintWriter out;
 	static InputStreamReader sisr;
@@ -31,9 +31,9 @@ public class ClientConnection implements Serializable {
 	/**
 	 * 初期化
 	 */
-	public static void init() {
+	public static void init(String serverIP) {
 		try {
-			theSocket = new Socket(SERVER, PORT);
+			theSocket = new Socket(serverIP, PORT);
 			out = new PrintWriter(theSocket.getOutputStream(), true);
 			sisr = new InputStreamReader(theSocket.getInputStream());
 			br = new BufferedReader(sisr);

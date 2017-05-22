@@ -73,7 +73,7 @@ class ClientProcThread extends Thread implements Serializable{
 			} else if (firstCmd.equals("CREATE")) {
 				String newMyName = myIn.readLine();
 				String newPass = myIn.readLine();
-				if (Access.exists(newMyName)) {// 登録済かどうか調べる
+				if (!Access.exists(newMyName)) {// 登録済かどうか調べる
 					if (Access.makeNewUser(newMyName, newPass)) {
 						System.out.println("アカウント作成:" + newMyName);
 						myOut.println("TRUE");
