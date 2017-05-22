@@ -13,6 +13,8 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.net.Socket;
 
+import static
+
 public class ClientConnection implements Serializable {
 
 	/**
@@ -27,6 +29,30 @@ public class ClientConnection implements Serializable {
 
 	static OutputStream os;
 	static InputStream is;
+
+	// コマンド
+	public static final String TRUE = "true";
+	public static final String FALSE = "false";
+	public static final String LOGIN = "login";
+	public static final String CREATE = "create";
+	public static final String END = "end";
+	public static final String MATCH = "match";
+	public static final String CANCEL = "cancel";
+	public static final String RANDOM = "random";
+	public static final String WRITE = "write";
+	public static final String READ = "read";
+	public static final String TURN = "turn";
+	public static final String ITEM_SEND = "itemSend";
+	public static final String ITEM_RECEIVE = "itemReceive";
+	public static final String REMATCH = "rematch";
+	public static final String FULL_USER = "fullUser";
+	public static final String USER = "user";
+	public static final String UPDATE_USER = "updateUser";
+	public static final String EXISTS = "exists";
+	public static final String BACK = "back";
+	public static final String ICON = "icon";
+	public static final String UPDATE_RESULT_CPU = "updateResultCPU";
+	public static final String UPDATE_RESULT_ONLINE = "updateResultOnline";
 
 	/**
 	 * 初期化
@@ -58,12 +84,12 @@ public class ClientConnection implements Serializable {
 		boolean create = false;
 
 		try {
-			out.println("CREATE");// コマンドの送信
+			out.println(CREATE);// コマンドの送信
 			out.println(pUsername);
 			out.println(pPassword);
 
 			// 作成後にログイン処理を行うため、2回受信する必要がある
-			if ((br.readLine()).equals("TRUE") && (br.readLine()).equals("TRUE")) {
+			if ((br.readLine()).equals(TRUE) && (br.readLine()).equals(TRUE)) {
 				create = true;
 			} else {
 				create = false;
@@ -88,11 +114,11 @@ public class ClientConnection implements Serializable {
 
 		try {
 
-			out.println("LOGIN");// コマンドの送信
+			out.println(LOGIN);// コマンドの送信
 			out.println(myName);
 			out.println(pass);
 
-			if ((br.readLine()).equals("TRUE")) {
+			if ((br.readLine()).equals(TRUE)) {
 				log = true;
 			}
 
@@ -114,11 +140,11 @@ public class ClientConnection implements Serializable {
 		boolean update = false;
 
 		try {
-			out.println("UPDATE");// コマンドの送信
+			out.println(UPDATE_USER);// コマンドの送信
 			out.println(pUsername);
 			out.println(pNewPassword);
 
-			if ((br.readLine()).equals("TRUE")) {
+			if ((br.readLine()).equals(TRUE)) {
 				update = true;
 			} else {
 				update = false;
@@ -140,7 +166,7 @@ public class ClientConnection implements Serializable {
 		User user = null;
 
 		try {
-			out.println("FULLUSER");// コマンドの送信
+			out.println(FULL_USER);// コマンドの送信
 
 			ObjectInputStream ois = new ObjectInputStream(is);
 
@@ -163,7 +189,7 @@ public class ClientConnection implements Serializable {
 		try {
 			ObjectInputStream ois = new ObjectInputStream(is);
 
-			out.println("USER");// コマンドの送信
+			out.println(USER);// コマンドの送信
 			out.println(enemyName);// 情報の欲しいユーザ名を送信
 			user = (User) ois.readObject();//受け取り
 		} catch (IOException | ClassNotFoundException e) {
@@ -182,7 +208,7 @@ public class ClientConnection implements Serializable {
 		String info=null;
 		
 		try {
-			out.println("MATCH");// コマンドの送信
+			out.println(MATCH);// コマンドの送信
 			out.println(enemyName);
 
 			info = br.readLine();
@@ -204,7 +230,7 @@ public class ClientConnection implements Serializable {
 		String info = null;
 
 		try {
-			out.println("RANDOM");// コマンドの送信
+			out.println(RANDOM);// コマンドの送信
 			info = br.readLine();
 
 		} catch (IOException e) {
@@ -224,9 +250,9 @@ public class ClientConnection implements Serializable {
 		boolean send = false;
 
 		try {
-			out.println("WRITE");// コマンドの送信
+			out.println(WRITE);// コマンドの送信
 
-			if ((br.readLine()).equals("TRUE")) {
+			if ((br.readLine()).equals(TRUE)) {
 				send = true;
 				out.println(pPlace[0]);
 				out.println(pPlace[1]);
@@ -250,7 +276,7 @@ public class ClientConnection implements Serializable {
 		int[] coordinate = new int[2];
 
 		try {
-			out.println("READ");// コマンドの送信
+			out.println(READ);// コマンドの送信
 
 			coordinate[0] = Integer.parseInt(br.readLine());
 			coordinate[1] = Integer.parseInt(br.readLine());
@@ -272,8 +298,8 @@ public class ClientConnection implements Serializable {
 		boolean turn = false;
 
 		try {
-			out.println("TURN");// コマンドの送信
-			if ((br.readLine()).equals("TRUE")) {
+			out.println(TURN);// コマンドの送信
+			if ((br.readLine()).equals(TRUE)) {
 				turn = true;
 			} else {
 				turn = false;
@@ -296,17 +322,17 @@ public class ClientConnection implements Serializable {
 	public static boolean rematch(boolean request) {
 		boolean req = false;
 		try {
-			out.println("REMATCH");// コマンドの送信
+			out.println(REMATCH);// コマンドの送信
 			if (request) {
 				out.println("1");
-				if ((br.readLine()).equals("TRUE")) {
+				if ((br.readLine()).equals(TRUE)) {
 					req = true;
 				} else {
 					req = false;
 				}
 			} else {
 				out.println("2");
-				if ((br.readLine()).equals("TRUE")) {
+				if ((br.readLine()).equals(TRUE)) {
 					req = true;
 				} else {
 					req = false;
@@ -324,7 +350,7 @@ public class ClientConnection implements Serializable {
 	 * キャンセル マッチング中や再戦処理中にキャンセルできる
 	 */
 	public static void cansel() {
-		out.println("CANSEL");
+		out.println(CANCEL);
 	}
 
 	/**
@@ -349,11 +375,11 @@ public class ClientConnection implements Serializable {
 		try {
 			ObjectOutputStream oos = new ObjectOutputStream(os);
 
-			out.println("ITEM_SEND");// コマンドの送信
+			out.println(ITEM_SEND);// コマンドの送信
 			out.println(pItem);// アイテム種類の送信
 			oos.writeObject(pItemData);
 
-			if ((br.readLine()).equals("TRUE")) {
+			if ((br.readLine()).equals(TRUE)) {
 				item = true;
 			} else {
 				item = false;
@@ -377,7 +403,7 @@ public class ClientConnection implements Serializable {
 		try {
 			ObjectInputStream ois = new ObjectInputStream(is);
 
-			out.println("ITEM_RECIEVE");// コマンドの送信
+			out.println(ITEM_RECEIVE);// コマンドの送信
 			itemData = ois.readObject();
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
@@ -389,7 +415,7 @@ public class ClientConnection implements Serializable {
 	public static boolean updateResultCPU(int type, int difficulty, int judgement) {
 		boolean result = false;
 		try {
-			out.println("UPDATE_RESULT_CPU");// コマンドの送信
+			out.println(UPDATE_RESULT_CPU);// コマンドの送信
 			// インターバルは絶対に必要
 			try {
 				Thread.sleep(500);
@@ -402,7 +428,7 @@ public class ClientConnection implements Serializable {
 			dos.writeInt(difficulty);
 			dos.writeInt(judgement);
 
-			if ((br.readLine()).equals("TRUE")) {
+			if ((br.readLine()).equals(TRUE)) {
 				result = true;
 			} else {
 				result = false;
@@ -418,7 +444,7 @@ public class ClientConnection implements Serializable {
 	public static boolean updateResultOnline(int judgement, int difference) {
 		boolean result = false;
 		try {
-			out.println("UPDATE_RESULT_ONLINE");// コマンドの送信
+			out.println(UPDATE_RESULT_ONLINE);// コマンドの送信
 			// インターバルは絶対に必要
 			try {
 				Thread.sleep(500);
@@ -430,7 +456,7 @@ public class ClientConnection implements Serializable {
 			dos.writeInt(judgement);
 			dos.writeInt(difference);
 
-			if ((br.readLine()).equals("TRUE")) {
+			if ((br.readLine()).equals(TRUE)) {
 				result = true;
 			} else {
 				result = false;
@@ -453,7 +479,7 @@ public class ClientConnection implements Serializable {
 		boolean updateBack = false;
 
 		try {
-			out.println("BACK");// コマンドの送信
+			out.println(BACK);// コマンドの送信
 			// インターバルは絶対に必要
 			try {
 				Thread.sleep(500);
@@ -464,7 +490,7 @@ public class ClientConnection implements Serializable {
 			DataOutputStream dos = new DataOutputStream(os);
 			dos.writeInt(back);
 
-			if ((br.readLine()).equals("TRUE")) {
+			if ((br.readLine()).equals(TRUE)) {
 				updateBack = true;
 			} else {
 				updateBack = false;
@@ -485,7 +511,7 @@ public class ClientConnection implements Serializable {
 	public static boolean updateIcon(int icon) {
 		boolean updateIcon = false;
 		try {
-			out.println("ICON");// コマンドの送信
+			out.println(ICON);// コマンドの送信
 			try {
 				Thread.sleep(500);
 			}
@@ -494,7 +520,7 @@ public class ClientConnection implements Serializable {
 			}
 			DataOutputStream dos = new DataOutputStream(os);
 			dos.writeInt(icon);
-			if ((br.readLine()).equals("TRUE")) {
+			if ((br.readLine()).equals(TRUE)) {
 				updateIcon = true;
 			} else {
 				updateIcon = false;
@@ -509,7 +535,7 @@ public class ClientConnection implements Serializable {
 	public static boolean exists(String userName) {
 		boolean exist = false;
 		try {
-			out.println("EXISTS");// コマンドの送信
+			out.println(EXISTS);// コマンドの送信
 			try {
 				Thread.sleep(500);
 			}
@@ -517,7 +543,7 @@ public class ClientConnection implements Serializable {
 				e.printStackTrace();
 			}
 			out.println(userName);
-			if ((br.readLine()).equals("TRUE")) {
+			if ((br.readLine()).equals(TRUE)) {
 				exist = true;
 			} else {
 				exist = false;
