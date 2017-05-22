@@ -187,9 +187,10 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 			@Override
 			public void onThreadFinish(Object pCallbackParam) {
 				lDialog.dispose();
-				String eName = pCallbackParam.toString();
-				if (eName != null) {
-					changePlayPanel(OnlineDummyAI.class, 0, eName, userData.getIcon(), 0, userData.getBackground());
+				Object eData = pCallbackParam.toString();
+				if (eData instanceof Object[]) {
+					changePlayPanel(OnlineDummyAI.class, 0, (String)((Object[])eData)[0],
+							userData.getIcon(), (int)((Object[])eData)[1], userData.getBackground());
 				} else {
 					JOptionPane.showMessageDialog(MainFrame.this, "マッチングできませんでした", "エラー", JOptionPane.ERROR_MESSAGE);
 				}
@@ -198,7 +199,9 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 			
 			@Override
 			public Object doRun() {
-				return ClientConnection.match(pON);
+				String data = ClientConnection.match(pON);
+				int icon = ClientConnection.getUserData(data).getIcon();
+				return new Object[]{data, icon};
 			}
 		};
 		
