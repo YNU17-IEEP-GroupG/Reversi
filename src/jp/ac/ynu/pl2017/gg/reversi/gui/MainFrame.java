@@ -309,7 +309,7 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
-					ClientConnection.getFullUserData();
+					userData = ClientConnection.getFullUserData();
 				}
 				dispose();
 			});
@@ -324,7 +324,7 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
-					ClientConnection.getFullUserData();
+					userData = ClientConnection.getFullUserData();
 				}
 				dispose();
 			});
