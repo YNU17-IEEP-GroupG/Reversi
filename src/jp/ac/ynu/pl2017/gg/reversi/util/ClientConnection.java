@@ -170,25 +170,27 @@ public class ClientConnection implements Serializable {
 
 		return user;
 	}
-
+	
+	/**
+	 * マッチング
+	 * 
+	 * @return "ユーザ名/TURN"
+	 */
 	public static String match(String enemyName) {
-		String eName = null;
-
+		String info=null;
+		
 		try {
 			out.println("MATCH");// コマンドの送信
 			out.println(enemyName);
 
-			eName = br.readLine();
-
-			if (eName.equals("FALSE")) {
-				eName = null;
-			}
+			info = br.readLine();
+				
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		return eName;
+		return info;
 	}
 
 	public static String randomMatch() {
@@ -240,8 +242,6 @@ public class ClientConnection implements Serializable {
 	public static int[] receivePutStone() {
 		int[] coordinate = new int[2];
 
-		coordinate = null;
-
 		try {
 			out.println("READ");// コマンドの送信
 
@@ -250,6 +250,7 @@ public class ClientConnection implements Serializable {
 
 		} catch (IOException e) {
 			e.printStackTrace();
+			return null;
 		}
 
 		return coordinate;
