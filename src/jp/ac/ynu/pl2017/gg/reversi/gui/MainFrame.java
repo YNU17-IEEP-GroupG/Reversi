@@ -29,6 +29,7 @@ import java.io.InputStream;
 
 
 
+
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -39,6 +40,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
+
 
 
 
@@ -302,7 +304,12 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 					JOptionPane.showMessageDialog(this, "ログインに失敗しました", "エラー", JOptionPane.ERROR_MESSAGE);
 				} else {
 					// TODO 本実装待ち
-//					ClientConnection.getUserData();
+					try {
+						Thread.sleep(500);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+					ClientConnection.getFullUserData();
 				}
 				dispose();
 			});
@@ -312,7 +319,12 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 					JOptionPane.showMessageDialog(this, "ユーザ作成に失敗しました", "エラー", JOptionPane.ERROR_MESSAGE);
 				} else {
 					// TODO 本実装待ち
-//					ClientConnection.getUserData();
+					try {
+						Thread.sleep(500);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+					ClientConnection.getFullUserData();
 				}
 				dispose();
 			});

@@ -139,9 +139,10 @@ public class ClientConnection implements Serializable {
 		User user = null;
 
 		try {
+			out.println("FULLUSER");// コマンドの送信
+
 			ObjectInputStream ois = new ObjectInputStream(is);
 
-			out.println("FULLUSER");// コマンドの送信
 			user = (User) ois.readObject();
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();

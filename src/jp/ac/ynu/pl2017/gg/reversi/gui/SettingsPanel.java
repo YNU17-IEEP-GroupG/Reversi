@@ -105,7 +105,7 @@ public class SettingsPanel extends BackgroundedPanel {
 		JPanel lNameWrapperPanel = new JPanel();
 		lNameWrapperPanel.setLayout(fl1);
 		lNameWrapperPanel.setPreferredSize(new Dimension(MainFrame.panelW - 200, 70));
-		JLabel lNameLabel = new JLabel("肋助", SwingConstants.LEFT);
+		JLabel lNameLabel = new JLabel(callback.getUserData().getUserName(), SwingConstants.LEFT);
 		Font lNameFont = new Font("Serif", Font.BOLD, 48);
 		lNameLabel.setFont(lNameFont);
 		lNameWrapperPanel.add(lNameLabel);
@@ -127,7 +127,7 @@ public class SettingsPanel extends BackgroundedPanel {
 		lOnlineInfoPanel.setPreferredSize(new Dimension(MainFrame.panelW, 40));
 		JLabel lLabel1 = new JLabel("オンライン");
 		
-		onlineWLLabel = new JLabel("0勝0敗");
+		onlineWLLabel = new JLabel(""+callback.getUserData().getOnlineWin()+"勝"+callback.getUserData().getOnlineLose()+"敗");
 		Font lOnlineWLFont = new Font("Serif", Font.BOLD, 24);
 		onlineWLLabel.setFont(lOnlineWLFont);
 		

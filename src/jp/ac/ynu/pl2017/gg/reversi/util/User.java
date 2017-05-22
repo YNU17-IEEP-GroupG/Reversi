@@ -1,10 +1,12 @@
 package jp.ac.ynu.pl2017.gg.reversi.util;
 
+import java.io.Serializable;
+
 /**
  * Created by shiita on 2017/05/18.
  * ユーザデータのクラス
  */
-public class User {
+public class User implements Serializable {
     private int id = -1;
     private String userName = "";
     private int item = -1;
