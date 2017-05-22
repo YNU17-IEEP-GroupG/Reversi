@@ -11,11 +11,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-class ClientProcThread extends Thread {
+class ClientProcThread extends Thread implements Serializable{
 	private int number;// 自分の番号
 	private Socket incoming;// 自分のソケット
 	private Socket Eincoming; // 対戦相手のソケット
@@ -86,9 +87,6 @@ class ClientProcThread extends Thread {
 				}
 			}
 
-			myName = myIn.readLine();
-			pass = myIn.readLine();
-
 			if (Access.login(myName, pass)) {
 				System.out.println(myName + ": ログイン完了");
 				myOut.println("TRUE");// ログイン成功のコマンド送信
@@ -144,7 +142,8 @@ class ClientProcThread extends Thread {
 									} else {// 先に接続しているので先手にする
 										turn = true;
 									}
-
+									
+									/*
 									String matching = myIn.readLine();
 
 									if (matching != null) { // マッチングキャンセル
@@ -156,13 +155,21 @@ class ClientProcThread extends Thread {
 											break;
 										}
 									}
+									*/
+									
 								}// マッチング待ち終了
-
+								
+								System.out.println(myName + ": マッチング完了"+"(room:"+myRoom);
+								
 								room++;// room番号をインクリメント
 								change[myRoom] = true;
 								rematch[myRoom] = 0;
-								System.out.println(myName + ": マッチング完了");
-								myOut.println(enemyName);
+								
+								if(turn){
+									myOut.println(enemyName+"/"+"true");
+								}else{
+									myOut.println(enemyName+"/"+"false");
+								}
 
 							} else {
 								System.out.println(myName + ": マッチングキャンセル");
@@ -180,7 +187,6 @@ class ClientProcThread extends Thread {
 								randomList.add(myName);
 								turn = true;
 								while (true) {
-									String matching = myIn.readLine();
 
 									if (randomList.size() == 2) {
 										enemyName = randomList.get(1);
@@ -191,7 +197,9 @@ class ClientProcThread extends Thread {
 										room++;// room番号をインクリメント
 										break;
 									}
-
+									
+									/*
+									String matching = myIn.readLine();
 									if (matching != null) { // マッチングキャンセル
 										if (matching.equals("CANSEL")) {
 											randomList.remove(0);
@@ -201,6 +209,7 @@ class ClientProcThread extends Thread {
 											break;
 										}
 									}
+									*/
 								}
 
 							} else {
@@ -408,6 +417,7 @@ class ClientProcThread extends Thread {
 								myOut.println("FALSE");
 							}
 						}
+						
 
 						// MyServer.SendAll(str, myName);//
 						// サーバに来たメッセージは接続しているクライアント全員に配る
