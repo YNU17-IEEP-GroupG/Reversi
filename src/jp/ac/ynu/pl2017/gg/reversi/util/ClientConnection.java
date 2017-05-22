@@ -152,17 +152,18 @@ public class ClientConnection implements Serializable {
 
 	/**
 	 * ユーザ情報取得(一部:オンラインの相手のアイコンを読み込むときなど
-	 * 
+	 * @param　enemyName情報の欲しいユーザ名
 	 * @return User
 	 */
-	public static User getUserData() {
+	public static User getUserData(String enemyName) {
 		User user = null;
 
 		try {
 			ObjectInputStream ois = new ObjectInputStream(is);
 
 			out.println("USER");// コマンドの送信
-			user = (User) ois.readObject();
+			out.println(enemyName);// 情報の欲しいユーザ名を送信
+			user = (User) ois.readObject();//受け取り
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
