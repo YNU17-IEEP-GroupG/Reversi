@@ -432,6 +432,29 @@ class ClientProcThread extends Thread implements Serializable{
 								myOut.println("FALSE");
 							}
 						}
+
+						if (cmd.equals("UPDATE_RESULT_CPU")) {
+							DataInputStream dis = new DataInputStream(myIs);
+							int type = dis.readInt();
+							int difficulty = dis.readInt();
+							int judgement = dis.readInt();
+							if (Access.updateResult(myName, type, difficulty, judgement, 1)) {
+								myOut.println("TRUE");
+							} else {
+								myOut.println("FALSE");
+							}
+						}
+
+						if (cmd.equals("UPDATE_RESULT_ONLINE")) {
+							DataInputStream dis = new DataInputStream(myIs);
+							int judgement = dis.readInt();
+							int difference = dis.readInt();
+							if (Access.updateResult(myName, 4, 3, judgement, difference)) {
+								myOut.println("TRUE");
+							} else {
+								myOut.println("FALSE");
+							}
+						}
 						
 
 						// MyServer.SendAll(str, myName);//

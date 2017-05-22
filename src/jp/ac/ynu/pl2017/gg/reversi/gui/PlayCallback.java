@@ -28,8 +28,9 @@ public interface PlayCallback {
 
 	/**
 	 * 対局終了
+	 * @param result 勝ちなら1負けなら0
 	 */
-	void onGameOver();
+	void onGameOver(int result);
 	
 	/**
 	 * 対局が途中で終了した

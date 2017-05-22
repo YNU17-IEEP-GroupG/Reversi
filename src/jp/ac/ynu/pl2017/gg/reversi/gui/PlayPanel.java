@@ -5,9 +5,16 @@ import javazoom.jlgui.basicplayer.BasicPlayer;
 import javazoom.jlgui.basicplayer.BasicPlayerEvent;
 import javazoom.jlgui.basicplayer.BasicPlayerException;
 import javazoom.jlgui.basicplayer.BasicPlayerListener;
+import jp.ac.ynu.pl2017.gg.reversi.ai.AlphaAI;
 import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
+import jp.ac.ynu.pl2017.gg.reversi.ai.BetaAI;
+import jp.ac.ynu.pl2017.gg.reversi.ai.GammaAI;
+import jp.ac.ynu.pl2017.gg.reversi.ai.OmegaAI;
 import jp.ac.ynu.pl2017.gg.reversi.ai.OnlineDummyAI;
+import jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection;
 import jp.ac.ynu.pl2017.gg.reversi.util.Item;
+import jp.ac.ynu.pl2017.gg.reversi.util.Offline;
+import jp.ac.ynu.pl2017.gg.reversi.util.User;
 
 import javax.swing.*;
 
@@ -68,7 +75,14 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback, BasicP
 		setLayout(new BorderLayout());
 		
 		isCPU = !pAi.equals(OnlineDummyAI.class);
-		
+
+		// オンライン戦での切断に対応した通信処理。負け数を1増やす
+		if (!isCPU) {
+			ClientConnection.updateResultOnline(0, 1);
+			User user = callback.getUserData();
+			user.setOnlineLose(user.getOnlineLose() + 1);
+		}
+
 		turnIcon = new JLabel[2];
 		playerStoneLabel = new JLabel[2];
 		
@@ -239,7 +253,39 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback, BasicP
 	}
 
 	@Override
-	public void onGameOver() {
+	public void onGameOver(int result) {
+		if (isCPU) {
+			int cpuID = 0;
+			if 		(selectedAI.equals(AlphaAI.class)) cpuID = 0;
+			else if (selectedAI.equals(BetaAI.class))  cpuID = 1;
+			else if (selectedAI.equals(GammaAI.class)) cpuID = 2;
+			else if (selectedAI.equals(OmegaAI.class)) cpuID = 3;
+			ClientConnection.updateResultCPU(cpuID, selectedDifficulty, result);
+			Offline[] offlines = callback.getUserData().getOfflines();
+			// 手抜きですごめんなさい
+			if (selectedDifficulty == 0) {
+				if (result == 1) offlines[cpuID].easyWinInc();
+				else			 offlines[cpuID].easyLoseInc();
+			}
+			else if (selectedDifficulty == 1) {
+				if (result == 1) offlines[cpuID].normalWinInc();
+				else			 offlines[cpuID].normalLoseInc();
+			}
+			else if (selectedDifficulty == 2) {
+				if (result == 1) offlines[cpuID].hardWinInc();
+				else			 offlines[cpuID].hardLoseInc();
+			}
+		}
+		else {
+			// オンライン戦は事前に負け数を増やしているので、勝ちの処理だけでいい
+			if (result == 1) {
+				ClientConnection.updateResultOnline(1, 1);
+				ClientConnection.updateResultOnline(0, -1);
+				User user = callback.getUserData();
+				user.setOnlineWin(user.getOnlineWin() + 1);
+				user.setOnlineLose(user.getOnlineLose() - 1);
+			}
+		}
 		int lDialogResult = JOptionPane.showConfirmDialog(null, "再戦しますか？", "Retry?",
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 		try {

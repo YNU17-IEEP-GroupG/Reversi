@@ -434,7 +434,8 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	}
 
 	private void gameOver() {
-		String result = String.format("黒：%d  白：%d", countStone(Stone.Black), countStone(Stone.White));
+		int black = countStone(Stone.Black); int white = countStone(Stone.White);
+		String result = String.format("黒：%d  白：%d", black, white);
 		JOptionPane.showMessageDialog(this, new JLabel(result), "ゲームセット", JOptionPane.INFORMATION_MESSAGE);
 		// 灰色の石を元に戻す
 		undoGray();
@@ -445,8 +446,18 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 				buttonBoard[i][j].setEnabled(false);
 			}
 		}
+
+		int ret = 0;
+		Stone myResultStone = myTurn ? myStone : myStone.getReverse();
+		if (myResultStone == Stone.Black) {
+			ret = black > white ? 1 : 0;
+		}
+		else {
+			ret = white > black ? 1 : 0;
+		}
+		System.out.println(ret);
 		// PlayPanelにコールバック
-		callback.onGameOver();
+		callback.onGameOver(ret);
 	}
 
 	private int countStone(

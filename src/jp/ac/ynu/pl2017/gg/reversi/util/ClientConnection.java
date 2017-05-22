@@ -386,6 +386,63 @@ public class ClientConnection implements Serializable {
 		return itemData;
 	}
 
+	public static boolean updateResultCPU(int type, int difficulty, int judgement) {
+		boolean result = false;
+		try {
+			out.println("UPDATE_RESULT_CPU");// コマンドの送信
+			// インターバルは絶対に必要
+			try {
+				Thread.sleep(500);
+			}
+			catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			DataOutputStream dos = new DataOutputStream(os);
+			dos.writeInt(type);
+			dos.writeInt(difficulty);
+			dos.writeInt(judgement);
+
+			if ((br.readLine()).equals("TRUE")) {
+				result = true;
+			} else {
+				result = false;
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+
+	public static boolean updateResultOnline(int judgement, int difference) {
+		boolean result = false;
+		try {
+			out.println("UPDATE_RESULT_ONLINE");// コマンドの送信
+			// インターバルは絶対に必要
+			try {
+				Thread.sleep(500);
+			}
+			catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			DataOutputStream dos = new DataOutputStream(os);
+			dos.writeInt(judgement);
+			dos.writeInt(difference);
+
+			if ((br.readLine()).equals("TRUE")) {
+				result = true;
+			} else {
+				result = false;
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+
 	/**
 	 * 背景の更新
 	 * 

@@ -71,7 +71,31 @@ public class Offline implements Serializable {
 	public void setEasyLose(int easyLose) {
 		this.easyLose = easyLose;
 	}
-	
+
+	public void hardWinInc() {
+		hardWin++;
+	}
+
+	public void hardLoseInc() {
+		hardLose++;
+	}
+
+	public void normalWinInc() {
+		normalWin++;
+	}
+
+	public void normalLoseInc() {
+		normalLose++;
+	}
+
+	public void easyWinInc() {
+		easyWin++;
+	}
+
+	public void easyLoseInc() {
+		easyLose++;
+	}
+
 	/**
 	 * オフライン成績をまとめて取得
 	 * @return １次元は難易度(0:弱～2:強); 2次元は勝敗
