@@ -1,9 +1,11 @@
 package jp.ac.ynu.pl2017.gg.reversi.util;
 
+import java.io.Serializable;
+
 /**
  * Created by shiita on 2017/05/18.
  */
-public enum Item {
+public enum Item implements Serializable{
     NONE { @Override public String toString() { return ""; } },
     BAN { @Override public String toString() { return "盤面にランダムに石を置けないマスを3つ生成する"; } },
 //    CONTROLER { @Override public String toString() { return "相手のターンを1度だけ自分が操作できるようになる"; } },

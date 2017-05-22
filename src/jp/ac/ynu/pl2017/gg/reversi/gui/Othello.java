@@ -1,10 +1,8 @@
 package jp.ac.ynu.pl2017.gg.reversi.gui;
 
-import javax.management.RuntimeErrorException;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-import net.ucanaccess.commands.IFeedbackAction;
 import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
 import jp.ac.ynu.pl2017.gg.reversi.ai.Evaluation;
 import jp.ac.ynu.pl2017.gg.reversi.ai.OnlineDummyAI;
@@ -31,7 +29,7 @@ import java.util.Random;
 /**
  * Created by shiita on 2017/04/29.
  */
-public class Othello extends JPanel implements ActionListener, ThreadFinishListener {
+public class Othello extends JPanel implements ActionListener, ThreadFinishListener, OnlineDummyAI.OnlineItem {
 
 	public static final int			BOARD_SIZE		= 8;
 	public static final int			IMAGE_ICON_SIZE	= 40;
@@ -75,6 +73,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	private int					 grayTurnCPU    = 0;
 	private boolean				 tripleFlag	  = false;
 	private List<Point>			 triplePoints	= new ArrayList<>();
+	private boolean				 useItemTurn = false;
 
 	private Class<? extends BaseAI>			selectedAI;
 	private int						selectedDifficulty;
@@ -133,6 +132,11 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		int c = Integer.parseInt(position[1]);
 		if (dropFlag) {
 			drop(r, c);
+			int[] pos = {-1, -1, -1, -1, -1, -1};
+			pos[0] = r; pos[1] = c;
+			if (!isCPU) {
+				ClientConnection.sendItemUse(Item.DROP, pos);
+			}
 			return;
 		}
 		 //デバッグに使用
@@ -175,6 +179,12 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		}
 		buttonBoard[r][c].setRolloverIcon(null);
 		board[r][c] = stone;
+
+		// アイテムを使用しないときでの空の情報を送る必要がある。
+		if (!isCPU && useItemTurn) {
+			int[] pos = {-1, -1, -1, -1, -1, -1};
+			ClientConnection.sendItemUse(Item.NONE, pos);
+		}
 		
 		// 置き石送信
 		if (!isCPU && myTurn) {
@@ -323,6 +333,9 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 			if (!myTurn && grayTurnCPU > 0) {
 				ai.setGray();
 				grayTurnCPU--;
+			}
+			if (!isCPU) {
+				((OnlineDummyAI)ai).setCallback(this);
 			}
 			ai.think();
 			putStone(ai.getRow(), ai.getColumn(), myStone);
@@ -530,6 +543,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	}
 
 	public void useItem(Item item) {
+		int[] pos = {-1, -1, -1, -1, -1, -1};
 		switch (item) {
 			case BAN:
 				useBan();
@@ -538,8 +552,10 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 				useDrop();
 				break;
 			case GRAY:
-				if (myTurn) {
-					grayTurnCPU = 3;
+				grayTurnCPU = 3;
+				if (!isCPU) {
+					// これだけメソッドがないので、ここでアイテム情報送信
+					ClientConnection.sendItemUse(Item.GRAY, pos);
 				}
 				break;
 			case TRIPLE:
@@ -548,6 +564,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 //			case CONTROLER:
 //				break;
 		}
+		useItemTurn = true;
 	}
 
 	private void useBan() {
@@ -555,7 +572,15 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		// 特に重要でも無いので一旦保留
 	    hideHint();
 	    List<Point> banPoints = new ArrayList<>();
-		// TODO: 通信相手にbanPointsを送る
+	    if (!isCPU) {
+			int[] pos = new int[6];
+			for (int i = 0; i < 3; i++) {
+				pos[i]     = banPoints.get(i).getRow();
+				pos[i + 1] = banPoints.get(i).getColumn();
+			}
+			// アイテム使用データ送信
+			ClientConnection.sendItemUse(Item.BAN, pos);
+		}
 		reflectBan(makeBanPoints());		// ヒントの再表示とパス処理
 		List<Point> hint = makeHint(myStone);
 		if (hint.isEmpty())
@@ -586,6 +611,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 				}
 			}
 		}
+		// アイテム使用情報はアクションが起こった場所で送信する
 	}
 
 	private void drop(int r, int c) {
@@ -598,7 +624,6 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		dropFlag = false;
 		
 		showAnimation(buttonBoard[r][c], lbkStone, true);
-		// TODO: 通信相手にドロップ座標を送る
 
 		new FinishListenedThread(new ThreadFinishListener() {
 			@Override
@@ -655,6 +680,10 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 
 	private void useTriple() {
 		tripleFlag = true;
+		if (!isCPU) {
+			int[] pos = {-1, -1, -1, -1, -1, -1};
+			ClientConnection.sendItemUse(Item.TRIPLE, pos);
+		}
 	}
 
 	private void useItemCPU() {
@@ -687,6 +716,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	 * 石が置けないマスを引数で示された場所に設置
 	 * @param banPoints 石が置けないマスの座標
 	 */
+	@Override
 	public void reflectBan(List<Point> banPoints) {
 		banPoints.forEach(p -> {
 			board[p.getRow()][p.getColumn()] = Stone.Ban;
@@ -695,14 +725,17 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		});
 	}
 
+	@Override
 	public void reflectDrop(Point point) {
 		drop(point.getRow(), point.getColumn());
 	}
 
+	@Override
 	public void reflectGray() {
 		useGray();
 	}
 
+	@Override
 	public void reflectTriple() {
 		tripleFlag = true;
 	}
