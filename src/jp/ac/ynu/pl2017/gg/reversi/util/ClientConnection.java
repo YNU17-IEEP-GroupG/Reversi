@@ -194,19 +194,24 @@ public class ClientConnection implements Serializable {
 
 		return info;
 	}
-
+	
+	/**
+	 * ランダムマッチング
+	 * 
+	 * @return "ユーザ名/TURN"
+	 */
 	public static String randomMatch() {
-		String eName = null;
+		String info = null;
 
 		try {
 			out.println("RANDOM");// コマンドの送信
-			eName = br.readLine();
+			info = br.readLine();
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		return eName;
+		return info;
 	}
 
 	/**
