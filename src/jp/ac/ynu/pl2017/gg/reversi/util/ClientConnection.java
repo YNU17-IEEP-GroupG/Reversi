@@ -359,23 +359,28 @@ public class ClientConnection implements Serializable {
 	}
 
 	/**
-	 * アイテムの使用を送信
-	 * 
-	 * @param pItem
-	 *            アイテム種類
+	 * アイテムの使用を送信。使用しなかったら空のデータを送信する。
+	 *
 	 * @param pItemData
 	 *            アイテムの効果データ
+	 * @param pos
+	 * 			  アイテムが効果を発揮した座標。最大数の3に合わせて必ず長さ6の配列にする
+	 * 			  値が必要ないときには-1でも入れておく
 	 * @return　通信可否
 	 */
-	public static boolean sendItemUse(String pItem, Object pItemData) {
+	public static boolean sendItemUse(Item pItemData, int[] pos) {
 		boolean item = false;
 
 		try {
 			out.println(ITEM_SEND);// コマンドの送信
-			out.println(pItem);// アイテム種類の送信
 			ObjectOutputStream oos = new ObjectOutputStream(os);
+			oos.writeObject(pItemData);// アイテムの送信
+			DataOutputStream dos = new DataOutputStream(os);
+			// 必ずposの長さは6にする
+			for (int i = 0; i < 6; i++) {
+				dos.writeInt(pos[i]);// 座標の送信
+			}
 
-			oos.writeObject(pItemData);
 
 			if ((br.readLine()).equals(TRUE)) {
 				item = true;
@@ -393,16 +398,22 @@ public class ClientConnection implements Serializable {
 	/**
 	 * アイテムの使用を受信
 	 * 
-	 * @return {アイテムの種類, アイテムの効果データ}からなる.nullの場合,相手はアイテムを使用していない
+	 * @return {アイテムの種類(アイテムが影響を及ぼした座標を含む)}からなる.Item.NONEの場合,相手はアイテムを使用していない
 	 */
-	public static Object receiveItemUse() {
-		Object itemData = null;
+	public static Item receiveItemUse() {
+		Item itemData = null;
+		int[] pos = new int[6];
 
 		try {
 			out.println(ITEM_RECEIVE);// コマンドの送信
 			ObjectInputStream ois = new ObjectInputStream(is);
-
-			itemData = ois.readObject();
+			itemData = (Item) ois.readObject();// アイテムの受信
+			DataInputStream dis = new DataInputStream(is);
+			// 読み込む長さは必ず6
+			for (int i = 0; i < 6; i++) {
+				pos[i] = dis.readInt();// 座標の受信
+			}
+			itemData.setPos(pos);
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}

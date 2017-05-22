@@ -1,9 +1,11 @@
 package jp.ac.ynu.pl2017.gg.reversi.server;
 
+import jp.ac.ynu.pl2017.gg.reversi.util.Item;
 import jp.ac.ynu.pl2017.gg.reversi.util.User;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
@@ -58,8 +60,9 @@ class ClientProcThread extends Thread implements Serializable{
 	static int room = 0; // 対局が行われている数
 	static boolean[] change = new boolean[MAX_ROOM];
 	static String[][] coordinate = new String[MAX_ROOM][2];// 通信路
-	static Object item[] = new Object[MAX_ROOM];// アイテムオブジェクトを格納
-	static String itemName[] = new String[MAX_ROOM];
+	static Item[] item = new Item[MAX_ROOM];// アイテムオブジェクトを格納
+	static int[][] itemPos = new int[6][MAX_ROOM];
+//	static String itemName[] = new String[MAX_ROOM];
 	static int[] rematch = new int[MAX_ROOM];// 再戦用0:default,1:再戦,2:拒否,3:再戦受付
 
 	static HashMap<String, Match> MatchMap = new HashMap<String, Match>(); // ユーザ名をキーにする
@@ -300,10 +303,15 @@ class ClientProcThread extends Thread implements Serializable{
 						}
 
 						if (cmd.equals(ITEM_SEND)) {// アイテム送信
-							itemName[myRoom] = myIn.readLine();// アイテム名を受信
+//							itemName[myRoom] = myIn.readLine();// アイテム名を受信
 							ObjectInputStream myOis = new ObjectInputStream(
 									myIs);
-							item[myRoom] = myOis.readObject();// アイテムオブジェクトを受信
+							item[myRoom] = (Item) myOis.readObject();// アイテムオブジェクトを受信
+							DataInputStream myDis = new DataInputStream(myIs);
+							// アイテムの影響を及ぼした座標は必ず長さ6で扱う
+							for (int i = 0; i < 6; i++) {
+								itemPos[i][myRoom] = myDis.readInt();
+							}
 							if (item[myRoom] != null) {
 								myOut.println(TRUE);
 
@@ -319,7 +327,12 @@ class ClientProcThread extends Thread implements Serializable{
 							ObjectOutputStream myOos = new ObjectOutputStream(
 									myOs);
 							myOos.writeObject(item[myRoom]);// クライアントへ送信
-							item[myRoom] = null;// オブジェクトを初期化
+							DataOutputStream myDos = new DataOutputStream(myOs);
+							// アイテムの影響を及ぼした座標は必ず長さ6で扱う
+							for (int i = 0; i < 6; i++) {
+								myDos.writeInt(itemPos[i][myRoom]);
+							}
+							item[myRoom] = Item.NONE;// オブジェクトを初期化
 						}
 
 						if (cmd.equals(REMATCH)) {
