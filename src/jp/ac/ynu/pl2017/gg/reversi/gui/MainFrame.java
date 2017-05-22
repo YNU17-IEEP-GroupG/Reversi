@@ -189,10 +189,11 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 //				rthread.interrupt();
 				lDialog.dispose();
 				Object eData = pCallbackParam;
-				if (eData instanceof Object[]) {
+				if (eData instanceof String) {
+					String ePData[] = ((String) eData).split("/");
 					System.err.println("MATCH FOUND");
-					changePlayPanel(OnlineDummyAI.class, 0, (String)((Object[])eData)[0],
-							userData.getIcon(), (int)((Object[])eData)[1], userData.getBackground());
+					changePlayPanel(OnlineDummyAI.class, 0, ePData[0],
+							userData.getIcon(), (int)((Object[])eData)[1], userData.getBackground(), Boolean.parseBoolean(ePData[1]));
 				} else {
 					JOptionPane.showMessageDialog(MainFrame.this, "マッチングできませんでした", "エラー", JOptionPane.ERROR_MESSAGE);
 				}
@@ -210,7 +211,7 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 					data = ClientConnection.match(pON);
 				}
 //				int icon = ClientConnection.getUserData(data).getIcon();
-				return new Object[]{data, 0};
+				return data;
 			}
 		}.start();
 
@@ -236,7 +237,7 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 
 	@Override
 	public void changePlayPanel(Class<? extends BaseAI> pAi, int pDifficulty, String pOpponentName,
-			int pPIcon, int pOIcon, int pImage) {
+			int pPIcon, int pOIcon, int pImage, boolean pMyTurn) {
 		BufferedImage bufferedImage = null;
 		try {
 			InputStream lInputStream =
@@ -244,14 +245,14 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 			bufferedImage = ImageIO.read(lInputStream);
 		} catch (IOException e) {
 		}
-		setContentPane(new PlayPanel(this, pAi, pDifficulty, pOpponentName, pPIcon, pOIcon, bufferedImage));
+		setContentPane(new PlayPanel(this, pAi, pDifficulty, pOpponentName, pPIcon, pOIcon, bufferedImage, pMyTurn));
 		validate();
 	}
 
 	@Override
 	public void changePlayPanel(Class<? extends BaseAI> pAi, int pDifficulty, String pOpponentName,
-			int pPIcon, int pOIcon, Image pImage) {
-		setContentPane(new PlayPanel(this, pAi, pDifficulty, pOpponentName, pPIcon, pOIcon, pImage));
+			int pPIcon, int pOIcon, Image pImage, boolean pMyTurn) {
+		setContentPane(new PlayPanel(this, pAi, pDifficulty, pOpponentName, pPIcon, pOIcon, pImage, pMyTurn));
 		validate();		
 	}
 

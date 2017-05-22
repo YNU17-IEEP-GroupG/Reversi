@@ -57,7 +57,7 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback, BasicP
 	private	BasicPlayer	player;
 
 	public PlayPanel(TitlePanel.Transition pCallback, Class<? extends BaseAI> pAi, int pDifficulty, String pOpponentName,
-			int pPIcon, int pOIcon, Image pImage) {
+			int pPIcon, int pOIcon, Image pImage, boolean pMyTurn) {
 		super(pImage);
 		opponentName = pOpponentName;
 		backImage = pImage;
@@ -95,7 +95,7 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback, BasicP
 		lPlayerIcon.setPreferredSize(new Dimension(100, 100));
 		lPlayerIcon.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-		lOthelloPanel = new Othello(this, pAi, pDifficulty);
+		lOthelloPanel = new Othello(this, pAi, pDifficulty, pMyTurn);
 		lCoverPanel = new JPanel();
 		lCoverPanel.setOpaque(false);
 		lCoverPanel.setLayout(new FlowLayout());
@@ -252,7 +252,7 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback, BasicP
 			if (isCPU) {
 				// 対CPU戦は同じ難易度でもう一度
 				callback.changePlayPanel(selectedAI, selectedDifficulty, opponentName,
-						playerIconNum, opponentIconNum, backImage);
+						playerIconNum, opponentIconNum, backImage, new Random().nextBoolean());
 			} else {
 				// 対人戦は再戦を申し込む
 			}
