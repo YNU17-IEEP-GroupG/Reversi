@@ -1,10 +1,12 @@
 package jp.ac.ynu.pl2017.gg.reversi.util;
 
+import java.io.Serializable;
+
 /**
  * Created by shiita on 2017/05/20.
  * オフラインでの戦績データのクラス
  */
-public class Offline {
+public class Offline implements Serializable {
 	private	int	hardWin		= 0;
 	private	int	hardLose	= 0;
 	private	int	normalWin	= 0;
