@@ -350,18 +350,21 @@ class ClientProcThread extends Thread {
 							ObjectOutputStream myOos = new ObjectOutputStream(
 									myOs);
 
-							System.out.println(myName + ": ユーザ情報読み込み");
+							System.out.println(myName + ": ユーザ情報読み込み(すべて");
 							user = Access.requestFullUserData(myName);
 							myOos.writeObject(user);
 						}
 
 						if (cmd.equals("USER")) {
 							User user;
+							String eneName;
+							
+							eneName = myIn.readLine();//相手の名前を読み込み
 							ObjectOutputStream myOos = new ObjectOutputStream(
 									myOs);
 
 							System.out.println(myName + ": ユーザ情報読み込み");
-							user = Access.requestUserData(myName);
+							user = Access.requestUserData(eneName);
 							myOos.writeObject(user);
 						}
 
