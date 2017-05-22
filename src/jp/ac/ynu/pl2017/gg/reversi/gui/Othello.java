@@ -261,30 +261,52 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 						nextTurn();
 						return;
 					}
+
+					final List<Point> tHint = hint;
+					new FinishListenedThread(new ThreadFinishListener() {
+						@Override
+						public void onThreadFinish() {
+							cpuAction(tHint);
+						}
+					}) {
+						
+						@Override
+						public void doRun() {
+							try {
+								Thread.sleep(1000);
+							} catch (InterruptedException e) {
+							}
+						}
+					}.start();
+				} else {
+					cpuAction(hint);
 				}
 //				removeAllListener();
 //				OmegaAI ai = new OmegaAI(hint, myStone, board, selectedDifficulty);
 //				ai.think();
 //				putStone(ai.getRow(), ai.getColumn(), myStone);
 				
-				// Create AI Instance
-				try {
-					Constructor<BaseAI> tConstructor =
-							selectedAI.getConstructor(List.class, Stone.class, Stone[][].class, int.class);
-					Object[] tArgs = {hint, myStone, board, selectedDifficulty};
-					BaseAI ai = (BaseAI) tConstructor.newInstance(tArgs);
-					if (isCPU && grayTurnCPU > 0) {
-						ai.setGray();
-						grayTurnCPU--;
-					}
-					ai.think();
-					putStone(ai.getRow(), ai.getColumn(), myStone);
-				} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException |
-						IllegalArgumentException | InvocationTargetException e) {
-					throw new RuntimeException(e);
-				}
 //				addAllListener();
 			}
+		}
+	}
+	
+	private void cpuAction(List<Point> hint) {
+		try {
+			// AI restrict
+			Constructor<BaseAI> tConstructor =
+					selectedAI.getConstructor(List.class, Stone.class, Stone[][].class, int.class);
+			Object[] tArgs = {hint, myStone, board, selectedDifficulty};
+			BaseAI ai = (BaseAI) tConstructor.newInstance(tArgs);
+			if (isCPU && grayTurnCPU > 0) {
+				ai.setGray();
+				grayTurnCPU--;
+			}
+			ai.think();
+			putStone(ai.getRow(), ai.getColumn(), myStone);
+		} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException |
+				IllegalArgumentException | InvocationTargetException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -637,6 +659,9 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 			buttonBoard[p.getRow()][p.getColumn()].setIcon(cannotPutIcon);
 			buttonBoard[p.getRow()][p.getColumn()].setRolloverIcon(null);
 		});
+		if (isCPU) {
+			
+		}
 	}
 
 	public void reflectDrop(Point point) {
