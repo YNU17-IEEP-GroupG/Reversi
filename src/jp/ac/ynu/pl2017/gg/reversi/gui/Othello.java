@@ -545,8 +545,8 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 			case TRIPLE:
 				useTriple();
 				break;
-			case CONTROLER:
-				break;
+//			case CONTROLER:
+//				break;
 		}
 	}
 
