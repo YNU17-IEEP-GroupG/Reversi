@@ -65,19 +65,19 @@ public class OfflinePlayPanel extends JPanel {
 
 		// 各難易度選択
 		String ROW[] = {
-				"強い",
+				"弱い",
 				"普通",
-				"弱い" };
-		for (int r = 0; r < 3; r++) {
-			for (int c = 0; c < 5; c++) {
-				if (c == 0) {
-					JLabel tLvLabel = new JLabel(ROW[r]);
+				"強い" };
+		for (int tLevel = 2; tLevel >= 0; tLevel--) {
+			for (int tCPUType = -1; tCPUType < 4; tCPUType++) {
+				if (tCPUType == -1) {
+					JLabel tLvLabel = new JLabel(ROW[tLevel]);
 					lDifficultyPanel.add(tLvLabel);
 				} else {
 					JButton tPlayButton = new JButton("PLAY");
 					
-					final int tAiType = c-1;
-					final int tAiDiff = 2-r;
+					final int tAiType = tCPUType-1;
+					final int tAiDiff = tLevel;
 					tPlayButton.addActionListener(e ->
 							callback.changePlayPanel(
 									aiList[tAiType], tAiDiff,

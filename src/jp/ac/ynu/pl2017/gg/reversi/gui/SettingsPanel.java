@@ -28,6 +28,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
 import jp.ac.ynu.pl2017.gg.reversi.gui.TitlePanel.Transition;
+import jp.ac.ynu.pl2017.gg.reversi.util.Offline;
 
 public class SettingsPanel extends BackgroundedPanel {
 
@@ -143,19 +144,22 @@ public class SettingsPanel extends BackgroundedPanel {
 		lOfflineInfoPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		lOfflineInfoPanel.setPreferredSize(new Dimension(MainFrame.panelW, 120));
 		String CAP[] = {"オフライン", "vs α", "vs β", "vs γ", "vs ω"};
-		String ROW[] = {"強い", "普通", "弱い"};
+		String ROW[] = {"弱い", "普通", "強い"};
 		
-		for (int r = 0; r < 4; r++) {
-			for (int c = 0; c < 5; c ++) {
-				if (r == 0) {
-					JLabel tLabel = new JLabel(CAP[c]);
+		for (int tLevel = 3; tLevel >= 0; tLevel--) {
+			for (int tCPUType = -1; tCPUType < 4; tCPUType ++) {
+				if (tLevel == 3) {
+					JLabel tLabel = new JLabel(CAP[tCPUType + 1]);
 					lOfflineInfoPanel.add(tLabel);
 				} else {
-					if (c == 0) {
-						JLabel tLabel = new JLabel(ROW[r-1]);
+					if (tCPUType == -1) {
+						JLabel tLabel = new JLabel(ROW[tLevel]);
 						lOfflineInfoPanel.add(tLabel);
 					} else {
-						JLabel tLabel = new JLabel("0勝0敗");
+						// オフライン戦績
+						Offline tOffline = callback.getUserData().getOfflines()[tCPUType];
+						int tWL[] = tOffline.getWLLists()[tLevel];
+						JLabel tLabel = new JLabel("" + tWL[0] + "勝" + tWL[1] + "敗");
 						lOfflineInfoPanel.add(tLabel);
 					}
 				}
