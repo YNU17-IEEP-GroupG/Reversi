@@ -209,8 +209,8 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 				} else {
 					data = ClientConnection.match(pON);
 				}
-				int icon = ClientConnection.getUserData(data).getIcon();
-				return new Object[]{data, icon};
+//				int icon = ClientConnection.getUserData(data).getIcon();
+				return new Object[]{data, 0};
 			}
 		}.start();
 
