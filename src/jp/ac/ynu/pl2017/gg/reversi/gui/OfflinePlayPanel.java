@@ -89,7 +89,7 @@ public class OfflinePlayPanel extends JPanel {
 					}
 					tPlayButton.addActionListener(e ->
 							callback.changePlayPanel(
-									aiList[tAiType], tAiDiff,
+									aiList[tAiType], tAiDiff, "CPU",
 									callback.getUserData().getIcon(), 0, callback.getUserData().getBackground()));
 					lDifficultyPanel.add(tPlayButton);
 				}

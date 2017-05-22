@@ -1,14 +1,26 @@
 package jp.ac.ynu.pl2017.gg.reversi.gui;
 
 import java.awt.CardLayout;
+import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+
+
+
+
+
+
+
+
+
 
 
 
@@ -33,8 +45,20 @@ import javax.swing.WindowConstants;
 
 
 
+
+
+
+
+
+
+
+
+
+import javazoom.jl.player.advanced.jlap;
 import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
+import jp.ac.ynu.pl2017.gg.reversi.ai.OnlineDummyAI;
 import jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection;
+import jp.ac.ynu.pl2017.gg.reversi.util.FinishListenedThread;
 import jp.ac.ynu.pl2017.gg.reversi.util.User;
 
 public class MainFrame extends JFrame implements TitlePanel.Transition {
@@ -114,13 +138,70 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 
 	@Override
 	public void showRoomSearchDialog() {
-		String tResult = JOptionPane.showInputDialog(this,
-				"対戦相手名を入力.空欄でランダムマッチングになります", "対戦相手入力", JOptionPane.PLAIN_MESSAGE);
-		if (tResult == null) {
-			// キャンセル
-			return;
-		}
-		ClientConnection.match(tResult);
+		JDialog lDialog = new JDialog();
+		lDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		lDialog.setSize(400, 150);
+		lDialog.setModalityType(ModalityType.APPLICATION_MODAL);
+		lDialog.setResizable(false);
+		JPanel lDPanel = (JPanel) lDialog.getContentPane();
+		lDPanel.setLayout(new FlowLayout());
+		
+		JLabel lLabel = new JLabel("対戦相手のIDを入力してください.");
+		lDPanel.add(lLabel);
+		
+		JTextField lOpponentNameField = new JTextField(30);
+		lDPanel.add(lOpponentNameField);
+		
+		JButton lOKButton = new JButton("OK");
+		lOKButton.addActionListener(e -> {lDialog.dispose(); makeMatch(lOpponentNameField.getText());});
+		lDPanel.add(lOKButton);
+		
+		JButton lRMButton = new JButton("ランダムマッチ");
+		lRMButton.addActionListener(e -> {lDialog.dispose(); makeMatch(lOpponentNameField.getText()); lDialog.dispose();});
+		lDPanel.add(lRMButton);
+		
+		lDialog.setVisible(true);
+	}
+	
+	private void makeMatch(String pON) {
+		JDialog lDialog = new JDialog();
+		lDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		lDialog.setModalityType(ModalityType.APPLICATION_MODAL);
+		lDialog.setResizable(false);
+		lDialog.setSize(400, 100);
+		JPanel lDPanel = (JPanel) lDialog.getContentPane();
+		lDPanel.setLayout(new FlowLayout());
+		
+		JLabel lLabel = new JLabel("マッチング中");
+		lDPanel.add(lLabel);
+		
+		JButton lOKButton = new JButton("キャンセル");
+		lOKButton.addActionListener(e -> {ClientConnection.cansel(); lDialog.dispose();});
+		lDPanel.add(lOKButton);
+		
+		lDialog.setVisible(true);
+		
+		// マッチング開始
+		new FinishListenedThread(new FinishListenedThread.ThreadFinishListener() {
+			
+			@Override
+			public void onThreadFinish(Object pCallbackParam) {
+				lDialog.dispose();
+				String eName = pCallbackParam.toString();
+				if (eName != null) {
+					changePlayPanel(OnlineDummyAI.class, 0, eName, userData.getIcon(), 0, userData.getBackground());
+				} else {
+					JOptionPane.showMessageDialog(MainFrame.this, "マッチングできませんでした", "エラー", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		}) {
+			
+			@Override
+			public Object doRun() {
+				return ClientConnection.match(pON);
+			}
+		};
+		
 	}
 
 	@Override
@@ -141,7 +222,7 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 	}
 
 	@Override
-	public void changePlayPanel(Class<BaseAI> pAi, int pDifficulty,
+	public void changePlayPanel(Class<? extends BaseAI> pAi, int pDifficulty, String pOpponentName,
 			int pPIcon, int pOIcon, int pImage) {
 		BufferedImage bufferedImage = null;
 		try {
@@ -150,13 +231,14 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 			bufferedImage = ImageIO.read(lInputStream);
 		} catch (IOException e) {
 		}
-		setContentPane(new PlayPanel(this, pAi, pDifficulty, pPIcon, pOIcon, bufferedImage));
+		setContentPane(new PlayPanel(this, pAi, pDifficulty, pOpponentName, pPIcon, pOIcon, bufferedImage));
 		validate();
 	}
 
 	@Override
-	public void changePlayPanel(Class<BaseAI> pAi, int pDifficulty, int pPIcon, int pOIcon, Image pImage) {
-		setContentPane(new PlayPanel(this, pAi, pDifficulty, pPIcon, pOIcon, pImage));
+	public void changePlayPanel(Class<? extends BaseAI> pAi, int pDifficulty, String pOpponentName,
+			int pPIcon, int pOIcon, Image pImage) {
+		setContentPane(new PlayPanel(this, pAi, pDifficulty, pOpponentName, pPIcon, pOIcon, pImage));
 		validate();		
 	}
 
