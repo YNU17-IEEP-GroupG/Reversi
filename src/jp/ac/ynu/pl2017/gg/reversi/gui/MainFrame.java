@@ -179,8 +179,6 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 		lOKButton.addActionListener(e -> {ClientConnection.cansel(); lDialog.dispose();});
 		lDPanel.add(lOKButton);
 		
-		lDialog.setVisible(true);
-		
 		// マッチング開始
 		new FinishListenedThread(new FinishListenedThread.ThreadFinishListener() {
 			
@@ -204,7 +202,8 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 				return new Object[]{data, icon};
 			}
 		}.start();
-		
+
+		lDialog.setVisible(true);
 	}
 
 	@Override
