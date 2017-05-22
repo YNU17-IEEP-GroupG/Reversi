@@ -44,7 +44,25 @@ public class ClientConnection {
 	 * @return 作成可否
 	 */
 	public static boolean createUser(String pUsername, String pPassword) {
-		return false;
+		boolean create = false;
+		
+		try {
+			out.println("CREATE");//コマンドの送信
+			out.println(pUsername);
+			out.println(pPassword);
+			
+			if((br.readLine()).equals("TRUE")){
+				create = true;
+			}else{
+				create = false;
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+		return create;
 	}
 	
 	/**
@@ -57,9 +75,9 @@ public class ClientConnection {
 		boolean log = false;// ログインできたかどうか
 
 		try {
-//			theSocket = new Socket(SERVER, PORT);
 			
-			out.println(myName);// 接続の最初に名前を送る
+			out.println("LOGIN");//コマンドの送信
+			out.println(myName);
 			out.println(pass);
 			
 			if((br.readLine()).equals("TRUE")){
@@ -80,8 +98,36 @@ public class ClientConnection {
 	 * @return 変更可否
 	 */
 	public static boolean changePassword(String pUsername, String pNewPassword) {
-		return false;
+		boolean update = false;
+		
+		try{
+			out.println("UPDATE");//コマンドの送信
+			out.println(pUsername);
+			out.println(pNewPassword);
+			
+			if((br.readLine()).equals("TRUE")){
+				update = true;
+			}else{
+				update = false;
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return update;
 	}
+	
+	/**
+	 * ユーザ情報取得
+	 * @return User
+	 */
+//	public static User getUserData(){
+//		User user;
+//		
+//		return user;
+//	}
+	
 	
 	public static String match(String enemyName) {
 		String eName=null;
@@ -120,7 +166,7 @@ public class ClientConnection {
 	/**
 	 * 自分の置き石送信
 	 * @param pPlace
-	 * @return 通信可否
+	 * @return 通信可否(相手のターンに送信するとfalseを返す
 	 */
 	public static boolean sendPutStone(int[] pPlace) {
 		boolean send = false;
@@ -219,10 +265,18 @@ public class ClientConnection {
 		return req;
 	}
 	
+	/**
+	 * キャンセル
+	 * マッチング中や再戦処理中にキャンセルできる
+	 */
 	public static void cansel(){
 		out.println("CANSEL");
 	}
 	
+	/**
+	 * 更新ボタン
+	 * マッチング中や再戦処理中に更新するとキャンセル処理をスキップして先に進める
+	 */
 	public static void reload(){
 		out.println("r");
 	}
