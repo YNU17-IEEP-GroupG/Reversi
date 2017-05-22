@@ -10,6 +10,7 @@ import jp.ac.ynu.pl2017.gg.reversi.ai.OnlineDummyAI;
 import jp.ac.ynu.pl2017.gg.reversi.util.Item;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.io.InputStream;
 import java.util.Map;
@@ -36,8 +37,10 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback, BasicP
 	
 	private TitlePanel.Transition	callback;
 	
-	private	Class<BaseAI>	selectedAI;
+	private	Class<? extends BaseAI>	selectedAI;
 	private	int				selectedDifficulty;
+	private	String			opponentName;
+
 	private JButton			opponentItemButton;
 	private	JButton			playerItemButton;
 	
@@ -53,9 +56,10 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback, BasicP
 	
 	private	BasicPlayer	player;
 
-	public PlayPanel(TitlePanel.Transition pCallback, Class<BaseAI> pAi, int pDifficulty,
+	public PlayPanel(TitlePanel.Transition pCallback, Class<? extends BaseAI> pAi, int pDifficulty, String pOpponentName,
 			int pPIcon, int pOIcon, Image pImage) {
 		super(pImage);
+		opponentName = pOpponentName;
 		backImage = pImage;
 		setOpaque(false);
 		callback = pCallback;
@@ -147,7 +151,7 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback, BasicP
 		lOpponentNIPanel.setPreferredSize(new Dimension(MainFrame.panelW - lOthelloPanel.getWidth(), 100));
 		lOpponentNIPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		lOpponentNIPanel.setLayout(new BorderLayout());
-		JLabel lOpponentNameLabel = new JLabel("CPU");
+		JLabel lOpponentNameLabel = new JLabel(opponentName);
 		lOpponentNameLabel.setFont(new Font("Serif", Font.BOLD, 20));
 		JPanel lPositioningPanel = new JPanel(new BorderLayout());
 		lPositioningPanel.add(lOpponentNameLabel, BorderLayout.EAST);
@@ -247,7 +251,7 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback, BasicP
 		if (lDialogResult == JOptionPane.YES_OPTION) {
 			if (isCPU) {
 				// 対CPU戦は同じ難易度でもう一度
-				callback.changePlayPanel(selectedAI, selectedDifficulty,
+				callback.changePlayPanel(selectedAI, selectedDifficulty, opponentName,
 						playerIconNum, opponentIconNum, backImage);
 			} else {
 				// 対人戦は再戦を申し込む

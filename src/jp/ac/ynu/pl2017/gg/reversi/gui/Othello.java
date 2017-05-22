@@ -73,7 +73,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	private boolean				 tripleFlag	  = false;
 	private List<Point>			 triplePoints	= new ArrayList<>();
 
-	private Class<BaseAI>			selectedAI;
+	private Class<? extends BaseAI>			selectedAI;
 	private int						selectedDifficulty;
 	/**
 	 * CPU戦かどうかの判定
@@ -84,7 +84,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 
 	private PlayCallback			callback;
 
-	public Othello(PlayCallback pCallback, Class<BaseAI> pAi, int pDifficulty) {
+	public Othello(PlayCallback pCallback, Class<? extends BaseAI> pAi, int pDifficulty) {
 		Dimension lDimension = new Dimension(BOARD_SIZE * IMAGE_ICON_SIZE, BOARD_SIZE * IMAGE_ICON_SIZE);
 		setSize(lDimension);
 		setPreferredSize(lDimension);
@@ -111,11 +111,12 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		new FinishListenedThread(this) {
 			
 			@Override
-			public void doRun() {
+			public Object doRun() {
 				try {
 					Thread.sleep(1500);
 				} catch (InterruptedException e) {
 				}
+				return null;
 			}
 		}.start();
 	}
@@ -179,17 +180,18 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		new FinishListenedThread(this) {
 			
 			@Override
-			public void doRun() {
+			public Object doRun() {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 				}
+				return null;
 			}
 		}.start();
 	}
 
 	@Override
-	public void onThreadFinish() {
+	public void onThreadFinish(Object pCallback) {
 		nextTurn();
 	}
 
@@ -268,17 +270,18 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 					final List<Point> tHint = hint;
 					new FinishListenedThread(new ThreadFinishListener() {
 						@Override
-						public void onThreadFinish() {
+						public void onThreadFinish(Object pCB) {
 							cpuAction(tHint);
 						}
 					}) {
 						
 						@Override
-						public void doRun() {
+						public Object doRun() {
 							try {
 								Thread.sleep(1000);
 							} catch (InterruptedException e) {
 							}
+							return null;
 						}
 					}.start();
 				} else {
@@ -297,7 +300,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	private void cpuAction(List<Point> hint) {
 		try {
 			// AI restrict
-			Constructor<BaseAI> tConstructor =
+			Constructor<? extends BaseAI> tConstructor =
 					selectedAI.getConstructor(List.class, Stone.class, Stone[][].class, int.class);
 			Object[] tArgs = {hint, myStone, board, selectedDifficulty};
 			BaseAI ai = (BaseAI) tConstructor.newInstance(tArgs);
@@ -572,7 +575,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 
 		new FinishListenedThread(new ThreadFinishListener() {
 			@Override
-			public void onThreadFinish() {
+			public void onThreadFinish(Object pCB) {
 				addAllListener();
 				List<Point> hint = makeHint(myStone);
 				displayHint(hint);
@@ -580,13 +583,14 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		}) {
 			
 			@Override
-			public void doRun() {
+			public Object doRun() {
 				// TODO Auto-generated method stub
 				try {
 					Thread.sleep(1000);
 				}
 				catch (InterruptedException e) {
 				}
+				return null;
 			}
 		}.start();
 		

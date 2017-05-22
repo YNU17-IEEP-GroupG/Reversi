@@ -84,10 +84,10 @@ public class TitlePanel extends BackgroundedPanel {
 
 		void showLoginDialog();
 
-		void changePlayPanel(Class<BaseAI> pAi, int pDifficulty,
+		void changePlayPanel(Class<? extends BaseAI> pAi, int pDifficulty, String pOpponentName,
 				int pPIcon, int pOIcon, int pImage);
 		
-		void changePlayPanel(Class<BaseAI> pAi, int pDifficulty,
+		void changePlayPanel(Class<? extends BaseAI> pAi, int pDifficulty, String pOpponentName,
 				int pPIcon, int pOIcon, Image pImage);
 		
 		User getUserData();

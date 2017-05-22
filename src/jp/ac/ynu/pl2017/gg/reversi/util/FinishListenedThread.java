@@ -3,7 +3,7 @@ package jp.ac.ynu.pl2017.gg.reversi.util;
 public abstract class FinishListenedThread extends Thread {
 	
 	public interface ThreadFinishListener {
-		public void onThreadFinish();
+		public void onThreadFinish(Object pCallbackParam);
 	}
 	
 	private ThreadFinishListener listener;
@@ -14,10 +14,9 @@ public abstract class FinishListenedThread extends Thread {
 	
 	@Override
 	public final void run() {
-		doRun();
-		listener.onThreadFinish();
+		listener.onThreadFinish(doRun());
 	}
 	
-	public abstract void doRun();
+	public abstract Object doRun();
 
 }
