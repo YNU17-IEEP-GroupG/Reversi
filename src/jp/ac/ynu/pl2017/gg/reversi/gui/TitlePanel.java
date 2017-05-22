@@ -3,7 +3,7 @@ package jp.ac.ynu.pl2017.gg.reversi.gui;
 import javax.swing.*;
 
 import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
-
+import jp.ac.ynu.pl2017.gg.reversi.util.User;
 import static jp.ac.ynu.pl2017.gg.reversi.gui.MainFrame.panelH;
 import static jp.ac.ynu.pl2017.gg.reversi.gui.MainFrame.panelW;
 
@@ -60,11 +60,14 @@ public class TitlePanel extends BackgroundedPanel {
 		add(option);
 
 		offline.addActionListener(e -> {
-		    // TODO: ログインできているかどうかを必ず確認してから画面遷移をするようにする
-		    // if () ログイン出来ていなかったら
-            // showLoginDialog();
-            callback.changeOfflinePlayPanel();
-        });
+			if (!callback.isLogin()) {
+				callback.showLoginDialog();
+				if (!callback.isLogin()) {
+					return;
+				}
+			}
+			callback.changeOfflinePlayPanel();
+		});
 		online.addActionListener(e -> callback.changeOnlinePlayPanel());
 		option.addActionListener(e -> callback.changeSettingsPanel());
 	}
@@ -85,5 +88,9 @@ public class TitlePanel extends BackgroundedPanel {
 		
 		void changePlayPanel(Class<BaseAI> pAi, int pDifficulty,
 				int pPIcon, int pOIcon, Image pImage);
+		
+		User getUserData();
+		
+		boolean isLogin();
 	}
 }

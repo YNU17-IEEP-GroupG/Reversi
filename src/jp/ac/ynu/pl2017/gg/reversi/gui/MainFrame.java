@@ -10,17 +10,28 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
+
+
+
+
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
+
+
+
+
 import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
+import jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection;
+import jp.ac.ynu.pl2017.gg.reversi.util.User;
 
 public class MainFrame extends JFrame implements TitlePanel.Transition {
 
@@ -34,6 +45,10 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 	
 	private TitlePanel			titleCard;
 	private OfflinePlayPanel	offlineCard;
+	
+	private	User				userData;
+
+	private	boolean login = false;
 
 	public MainFrame() {
 		super();
@@ -42,7 +57,11 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 		setResizable(false);
 		pack();
 		
-//		ClientConnection.init();
+		// 仮ユーザデータ作成
+		userData = new User();
+		userData.setUserName("6s");
+		userData.setIcon(0);
+		userData.setBackground(0);
 
 		layout = new CardLayout();
 		setLayout(layout);
@@ -97,6 +116,7 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 	}
 
 	public static void main(String[] args) {
+		ClientConnection.init();
 		new MainFrame();
 	}
 
@@ -124,11 +144,16 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 	public void showLoginDialog() {
 		new LoginDialog(this);
 	}
+	
+	@Override
+	public boolean isLogin() {
+		// TODO Debug
+		return true;
+//		return login;
+	}
 
 	private class LoginDialog extends JDialog {
 		MainFrame mainFrame;
-		boolean login = false;
-
 		private LoginDialog(Frame owner) {
 			super(owner);
 			mainFrame = (MainFrame) owner;
@@ -156,14 +181,24 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 			JButton loginButton = new JButton("OK");
 			JButton createButton = new JButton("新規作成");
 			loginButton.addActionListener(e -> {
-				// TODO: ログインの通信処理を書いてください
-				// 通信クラスのメソッド呼び出しなど
-				// 今はOKを押したらダイアログが消えるようにします
-				login = true;
+				login = ClientConnection.login(userInput.getText(), new String(passInput.getPassword()));
+				if (!login) {
+					JOptionPane.showMessageDialog(this, "ログインに失敗しました", "エラー", JOptionPane.ERROR_MESSAGE);
+				} else {
+					// TODO 本実装待ち
+//					ClientConnection.getUserData();
+				}
 				dispose();
 			});
 			createButton.addActionListener(e -> {
-				// TODO: アカウント新規作成の処理を書いてください
+				login = ClientConnection.createUser(userInput.getText(), new String(passInput.getPassword()));
+				if (!login) {
+					JOptionPane.showMessageDialog(this, "ユーザ作成に失敗しました", "エラー", JOptionPane.ERROR_MESSAGE);
+				} else {
+					// TODO 本実装待ち
+//					ClientConnection.getUserData();
+				}
+				dispose();
 			});
 
 			setLayout(new FlowLayout());
@@ -174,5 +209,10 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 			setVisible(true);
 			setDefaultCloseOperation(WindowConstants	.DISPOSE_ON_CLOSE);
 		}
+	}
+
+	@Override
+	public User getUserData() {
+		return userData;
 	}
 }

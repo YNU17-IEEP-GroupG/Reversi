@@ -75,7 +75,10 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 
 	private Class<BaseAI>			selectedAI;
 	private int						selectedDifficulty;
-	private boolean 					isCPU		= false;
+	/**
+	 * CPU戦かどうかの判定
+	 */
+	private boolean 				isCPU		= false;
 	// CPUでの使用
 	private boolean				 CPUItemFlag = false;
 
@@ -261,30 +264,52 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 						nextTurn();
 						return;
 					}
+
+					final List<Point> tHint = hint;
+					new FinishListenedThread(new ThreadFinishListener() {
+						@Override
+						public void onThreadFinish() {
+							cpuAction(tHint);
+						}
+					}) {
+						
+						@Override
+						public void doRun() {
+							try {
+								Thread.sleep(1000);
+							} catch (InterruptedException e) {
+							}
+						}
+					}.start();
+				} else {
+					cpuAction(hint);
 				}
 //				removeAllListener();
 //				OmegaAI ai = new OmegaAI(hint, myStone, board, selectedDifficulty);
 //				ai.think();
 //				putStone(ai.getRow(), ai.getColumn(), myStone);
 				
-				// Create AI Instance
-				try {
-					Constructor<BaseAI> tConstructor =
-							selectedAI.getConstructor(List.class, Stone.class, Stone[][].class, int.class);
-					Object[] tArgs = {hint, myStone, board, selectedDifficulty};
-					BaseAI ai = (BaseAI) tConstructor.newInstance(tArgs);
-					if (isCPU && grayTurnCPU > 0) {
-						ai.setGray();
-						grayTurnCPU--;
-					}
-					ai.think();
-					putStone(ai.getRow(), ai.getColumn(), myStone);
-				} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException |
-						IllegalArgumentException | InvocationTargetException e) {
-					throw new RuntimeException(e);
-				}
 //				addAllListener();
 			}
+		}
+	}
+	
+	private void cpuAction(List<Point> hint) {
+		try {
+			// AI restrict
+			Constructor<BaseAI> tConstructor =
+					selectedAI.getConstructor(List.class, Stone.class, Stone[][].class, int.class);
+			Object[] tArgs = {hint, myStone, board, selectedDifficulty};
+			BaseAI ai = (BaseAI) tConstructor.newInstance(tArgs);
+			if (!myTurn && grayTurnCPU > 0) {
+				ai.setGray();
+				grayTurnCPU--;
+			}
+			ai.think();
+			putStone(ai.getRow(), ai.getColumn(), myStone);
+		} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException |
+				IllegalArgumentException | InvocationTargetException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -469,7 +494,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	private void gainItem(Point point) {
 		itemPoints.remove(point);
 		callback.onGainItem(myTurn);
-		if (isCPU) {
+		if (!myTurn) {
 			CPUItemFlag = true;
 		}
 	}
@@ -483,7 +508,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 				useDrop();
 				break;
 			case GRAY:
-				if (isCPU) {
+				if (myTurn) {
 					grayTurnCPU = 3;
 				}
 				break;

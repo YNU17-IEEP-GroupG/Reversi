@@ -67,7 +67,7 @@ public class ClientConnection implements Serializable{
 				create = false;
 			}
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
@@ -94,7 +94,7 @@ public class ClientConnection implements Serializable{
 				log = true;
 			}
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
