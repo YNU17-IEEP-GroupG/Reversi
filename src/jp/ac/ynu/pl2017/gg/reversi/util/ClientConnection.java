@@ -396,8 +396,15 @@ public class ClientConnection implements Serializable {
 		boolean updateBack = false;
 
 		try {
-			DataOutputStream dos = new DataOutputStream(os);
 			out.println("BACK");// コマンドの送信
+			// インターバルは絶対に必要
+			try {
+				Thread.sleep(500);
+			}
+			catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			DataOutputStream dos = new DataOutputStream(os);
 			dos.writeInt(back);
 
 			if ((br.readLine()).equals("TRUE")) {
@@ -420,8 +427,15 @@ public class ClientConnection implements Serializable {
 	 */
 	public static boolean updateIcon(int icon) {
 		boolean updateIcon = false;
-		try (DataOutputStream dos = new DataOutputStream(os)){
+		try {
 			out.println("ICON");// コマンドの送信
+			try {
+				Thread.sleep(500);
+			}
+			catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			DataOutputStream dos = new DataOutputStream(os);
 			dos.writeInt(icon);
 			if ((br.readLine()).equals("TRUE")) {
 				updateIcon = true;
