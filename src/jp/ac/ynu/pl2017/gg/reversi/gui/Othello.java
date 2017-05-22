@@ -105,6 +105,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		selectedAI = pAi;
 		selectedDifficulty = pDifficulty;
 		isCPU = !pAi.equals(OnlineDummyAI.class);
+		System.err.println("CPU?"+isCPU);
 		
 		initBoard();
 

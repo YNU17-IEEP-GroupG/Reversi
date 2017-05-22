@@ -27,5 +27,8 @@ public class OnlineDummyAI extends BaseAI {
 			}
 		}.start();
 	}
+	@Override
+	public void randomThink() {
+	}
 
 }
