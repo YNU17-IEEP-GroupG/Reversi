@@ -60,9 +60,12 @@ public class TitlePanel extends BackgroundedPanel {
 		add(option);
 
 		offline.addActionListener(e -> {
-			// TODO: ログインできているかどうかを必ず確認してから画面遷移をするようにする
-			// if () ログイン出来ていなかったら
-			// showLoginDialog();
+			if (!callback.isLogin()) {
+				callback.showLoginDialog();
+				if (!callback.isLogin()) {
+					return;
+				}
+			}
 			callback.changeOfflinePlayPanel();
 		});
 		online.addActionListener(e -> callback.changeOnlinePlayPanel());
@@ -87,5 +90,7 @@ public class TitlePanel extends BackgroundedPanel {
 				int pPIcon, int pOIcon, Image pImage);
 		
 		User getUserData();
+		
+		boolean isLogin();
 	}
 }

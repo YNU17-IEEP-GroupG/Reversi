@@ -48,6 +48,8 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 	
 	private	User				userData;
 
+	private	boolean login = false;
+
 	public MainFrame() {
 		super();
 		setTitle("Reversi × Treasure");
@@ -142,11 +144,16 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 	public void showLoginDialog() {
 		new LoginDialog(this);
 	}
+	
+	@Override
+	public boolean isLogin() {
+		// TODO Debug
+		return true;
+//		return login;
+	}
 
 	private class LoginDialog extends JDialog {
 		MainFrame mainFrame;
-		boolean login = false;
-
 		private LoginDialog(Frame owner) {
 			super(owner);
 			mainFrame = (MainFrame) owner;
