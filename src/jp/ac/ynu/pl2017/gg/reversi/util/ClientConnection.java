@@ -13,8 +13,6 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.net.Socket;
 
-import static
-
 public class ClientConnection implements Serializable {
 
 	/**
@@ -187,9 +185,9 @@ public class ClientConnection implements Serializable {
 		User user = null;
 
 		try {
+			out.println(USER);// コマンドの送信
 			ObjectInputStream ois = new ObjectInputStream(is);
 
-			out.println(USER);// コマンドの送信
 			out.println(enemyName);// 情報の欲しいユーザ名を送信
 			user = (User) ois.readObject();//受け取り
 		} catch (IOException | ClassNotFoundException e) {
@@ -373,10 +371,10 @@ public class ClientConnection implements Serializable {
 		boolean item = false;
 
 		try {
-			ObjectOutputStream oos = new ObjectOutputStream(os);
-
 			out.println(ITEM_SEND);// コマンドの送信
 			out.println(pItem);// アイテム種類の送信
+			ObjectOutputStream oos = new ObjectOutputStream(os);
+
 			oos.writeObject(pItemData);
 
 			if ((br.readLine()).equals(TRUE)) {
@@ -401,9 +399,9 @@ public class ClientConnection implements Serializable {
 		Object itemData = null;
 
 		try {
+			out.println(ITEM_RECEIVE);// コマンドの送信
 			ObjectInputStream ois = new ObjectInputStream(is);
 
-			out.println(ITEM_RECEIVE);// コマンドの送信
 			itemData = ois.readObject();
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();

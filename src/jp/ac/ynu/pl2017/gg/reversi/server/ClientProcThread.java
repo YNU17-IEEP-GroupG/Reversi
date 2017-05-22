@@ -300,9 +300,9 @@ class ClientProcThread extends Thread implements Serializable{
 						}
 
 						if (cmd.equals(ITEM_SEND)) {// アイテム送信
+							itemName[myRoom] = myIn.readLine();// アイテム名を受信
 							ObjectInputStream myOis = new ObjectInputStream(
 									myIs);
-							itemName[myRoom] = myIn.readLine();// アイテム名を受信
 							item[myRoom] = myOis.readObject();// アイテムオブジェクトを受信
 							if (item[myRoom] != null) {
 								myOut.println(TRUE);
