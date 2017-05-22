@@ -62,7 +62,8 @@ public class ClientConnection implements Serializable {
 			out.println(pUsername);
 			out.println(pPassword);
 
-			if ((br.readLine()).equals("TRUE")) {
+			// 作成後にログイン処理を行うため、2回受信する必要がある
+			if ((br.readLine()).equals("TRUE") && (br.readLine()).equals("TRUE")) {
 				create = true;
 			} else {
 				create = false;
@@ -78,8 +79,8 @@ public class ClientConnection implements Serializable {
 	/**
 	 * ログイン
 	 * 
-	 * @param pUsername
-	 * @param pPassword
+	 * @param myName
+	 * @param pass
 	 * @return ログイン可否
 	 */
 	public static boolean login(String myName, String pass) {

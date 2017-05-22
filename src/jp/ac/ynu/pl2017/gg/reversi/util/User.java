@@ -7,6 +7,8 @@ import java.io.Serializable;
  * ユーザデータのクラス
  */
 public class User implements Serializable {
+    private static final long	serialVersionUID	= 435627674234524525L;
+
     private int id = -1;
     private String userName = "";
     private int item = -1;

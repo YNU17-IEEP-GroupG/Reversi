@@ -7,6 +7,8 @@ import java.io.Serializable;
  * オフラインでの戦績データのクラス
  */
 public class Offline implements Serializable {
+	private static final long	serialVersionUID	= 30474520392481L;
+
 	private	int	hardWin		= 0;
 	private	int	hardLose	= 0;
 	private	int	normalWin	= 0;
