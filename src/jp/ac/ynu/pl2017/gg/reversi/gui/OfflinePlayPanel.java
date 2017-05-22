@@ -5,6 +5,7 @@ import static jp.ac.ynu.pl2017.gg.reversi.gui.MainFrame.panelW;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -90,7 +91,9 @@ public class OfflinePlayPanel extends JPanel {
 					tPlayButton.addActionListener(e ->
 							callback.changePlayPanel(
 									aiList[tAiType], tAiDiff, "CPU",
-									callback.getUserData().getIcon(), 0, callback.getUserData().getBackground()));
+									callback.getUserData().getIcon(), 0, callback.getUserData().getBackground(),
+									new Random().nextBoolean()
+									));
 					lDifficultyPanel.add(tPlayButton);
 				}
 			}

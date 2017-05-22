@@ -28,6 +28,7 @@ import java.io.InputStream;
 
 
 
+
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -38,6 +39,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
+
 
 
 
@@ -157,7 +159,7 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 		lDPanel.add(lOKButton);
 		
 		JButton lRMButton = new JButton("ランダムマッチ");
-		lRMButton.addActionListener(e -> {lDialog.dispose(); makeMatch(lOpponentNameField.getText()); lDialog.dispose();});
+		lRMButton.addActionListener(e -> {lDialog.dispose(); makeMatch(""); lDialog.dispose();});
 		lDPanel.add(lRMButton);
 		
 		lDialog.setVisible(true);
@@ -166,7 +168,7 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 	private void makeMatch(String pON) {
 		JDialog lDialog = new JDialog();
 		lDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		lDialog.setModalityType(ModalityType.APPLICATION_MODAL);
+//		lDialog.setModalityType(ModalityType.APPLICATION_MODAL);
 		lDialog.setResizable(false);
 		lDialog.setSize(400, 100);
 		JPanel lDPanel = (JPanel) lDialog.getContentPane();
@@ -184,11 +186,14 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 			
 			@Override
 			public void onThreadFinish(Object pCallbackParam) {
+//				rthread.interrupt();
 				lDialog.dispose();
-				Object eData = pCallbackParam.toString();
-				if (eData instanceof Object[]) {
-					changePlayPanel(OnlineDummyAI.class, 0, (String)((Object[])eData)[0],
-							userData.getIcon(), (int)((Object[])eData)[1], userData.getBackground());
+				Object eData = pCallbackParam;
+				if (eData instanceof String) {
+					String ePData[] = ((String) eData).split("/");
+					System.err.println("MATCH FOUND");
+					changePlayPanel(OnlineDummyAI.class, 0, ePData[0],
+							userData.getIcon(), (int)((Object[])eData)[1], userData.getBackground(), Boolean.parseBoolean(ePData[1]));
 				} else {
 					JOptionPane.showMessageDialog(MainFrame.this, "マッチングできませんでした", "エラー", JOptionPane.ERROR_MESSAGE);
 				}
@@ -197,9 +202,16 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 			
 			@Override
 			public Object doRun() {
-				String data = ClientConnection.match(pON);
-				int icon = ClientConnection.getUserData(data).getIcon();
-				return new Object[]{data, icon};
+//				rthread.start();
+				System.err.println("MATCH START");
+				String data;
+				if (pON.isEmpty()) {
+					data = ClientConnection.randomMatch();
+				} else {
+					data = ClientConnection.match(pON);
+				}
+//				int icon = ClientConnection.getUserData(data).getIcon();
+				return data;
 			}
 		}.start();
 
@@ -225,7 +237,7 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 
 	@Override
 	public void changePlayPanel(Class<? extends BaseAI> pAi, int pDifficulty, String pOpponentName,
-			int pPIcon, int pOIcon, int pImage) {
+			int pPIcon, int pOIcon, int pImage, boolean pMyTurn) {
 		BufferedImage bufferedImage = null;
 		try {
 			InputStream lInputStream =
@@ -233,14 +245,14 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 			bufferedImage = ImageIO.read(lInputStream);
 		} catch (IOException e) {
 		}
-		setContentPane(new PlayPanel(this, pAi, pDifficulty, pOpponentName, pPIcon, pOIcon, bufferedImage));
+		setContentPane(new PlayPanel(this, pAi, pDifficulty, pOpponentName, pPIcon, pOIcon, bufferedImage, pMyTurn));
 		validate();
 	}
 
 	@Override
 	public void changePlayPanel(Class<? extends BaseAI> pAi, int pDifficulty, String pOpponentName,
-			int pPIcon, int pOIcon, Image pImage) {
-		setContentPane(new PlayPanel(this, pAi, pDifficulty, pOpponentName, pPIcon, pOIcon, pImage));
+			int pPIcon, int pOIcon, Image pImage, boolean pMyTurn) {
+		setContentPane(new PlayPanel(this, pAi, pDifficulty, pOpponentName, pPIcon, pOIcon, pImage, pMyTurn));
 		validate();		
 	}
 

@@ -87,7 +87,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 
 	private PlayCallback			callback;
 
-	public Othello(PlayCallback pCallback, Class<? extends BaseAI> pAi, int pDifficulty) {
+	public Othello(PlayCallback pCallback, Class<? extends BaseAI> pAi, int pDifficulty, boolean pMyTurn) {
 		Dimension lDimension = new Dimension(BOARD_SIZE * IMAGE_ICON_SIZE, BOARD_SIZE * IMAGE_ICON_SIZE);
 		setSize(lDimension);
 		setPreferredSize(lDimension);
@@ -98,7 +98,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		Random random = new Random();
 		selectItemPoints();
 		myStone = random.nextBoolean() ? Stone.Black : Stone.White;
-		myTurn = random.nextBoolean();
+		myTurn = pMyTurn;
 		
 		callback = pCallback;
 
