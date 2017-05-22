@@ -51,10 +51,25 @@ class ClientProcThread extends Thread {
 					+ "*******************************");// 初回だけ呼ばれる
 			*/
 			
-			myName = myIn.readLine();
-			pass = myIn.readLine();
-
-			if (pass.equals(PASS)) {
+			String firstCmd = myIn.readLine();
+			
+			if(firstCmd.equals("LOGIN")){
+				myName = myIn.readLine();
+				pass = myIn.readLine();
+			}else if(firstCmd.equals("CREATE")){
+				String newMyName = myIn.readLine();
+				String newPass = myIn.readLine();
+				if(Access.makeNewUser(newMyName, newPass)){
+					System.out.println("アカウント作成:"+newMyName);
+					myOut.println("TRUE");
+					myName = newMyName;
+					pass = newPass;
+				}else{
+					myOut.println("FALSE");
+				}
+			}
+			
+			if (Access.login(myName, pass)) {
 				System.out.println(myName + ": ログイン完了");
 				myOut.println("TRUE");//ログイン成功のコマンド送信
 
@@ -228,7 +243,7 @@ class ClientProcThread extends Thread {
 								rematch[myRoom] = Integer.parseInt(myIn.readLine());
 
 								if (rematch[myRoom] == 1) {
-									myOut.println("対戦相手を待っています");
+								//	myOut.println("対戦相手を待っています");
 									while (true) {// 相手待ち
 										
 										
@@ -280,7 +295,22 @@ class ClientProcThread extends Thread {
 								}
 							}
 						}
-
+						
+						if (cmd.equals("UPDATE")) {
+							String newName = myIn.readLine();
+							String newPass = myIn.readLine();
+							if(Access.updateUser(myName, newName, newPass)){
+								myOut.println("TRUE");
+								System.out.println(myName+" >> "+newName+"   "+pass+" >> "+"newPass");
+								myName = newName;
+								pass = newPass;
+							}else{
+								myOut.println("FALSE");
+							}	
+						}
+						
+						
+						
 						// MyServer.SendAll(str, myName);//
 						// サーバに来たメッセージは接続しているクライアント全員に配る
 					}
@@ -295,6 +325,9 @@ class ClientProcThread extends Thread {
 			System.out.println("Disconnect from client No." + number + "("
 					+ myName + ")");
 			Server.SetFlag(number, false);// 接続が切れたのでフラグを下げる
+		} finally{
+			Access.closeConnection();
+			System.out.println(myName+" DataBaseのclose");
 		}
 	}
 }
