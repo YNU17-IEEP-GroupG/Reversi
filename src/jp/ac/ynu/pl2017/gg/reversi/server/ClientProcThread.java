@@ -3,6 +3,7 @@ package jp.ac.ynu.pl2017.gg.reversi.server;
 import jp.ac.ynu.pl2017.gg.reversi.util.User;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -63,17 +64,27 @@ class ClientProcThread extends Thread {
 			 * + "*******************************");// 初回だけ呼ばれる
 			 */
 
-			/*
-			 * String firstCmd = myIn.readLine();
-			 * 
-			 * if(firstCmd.equals("LOGIN")){ myName = myIn.readLine(); pass =
-			 * myIn.readLine(); }else if(firstCmd.equals("CREATE")){ String
-			 * newMyName = myIn.readLine(); String newPass = myIn.readLine();
-			 * if(Access.makeNewUser(newMyName, newPass)){
-			 * System.out.println("アカウント作成:"+newMyName); myOut.println("TRUE");
-			 * myName = newMyName; pass = newPass; }else{
-			 * myOut.println("FALSE"); } }
-			 */
+			String firstCmd = myIn.readLine();
+
+			if (firstCmd.equals("LOGIN")) {
+				myName = myIn.readLine();
+				pass = myIn.readLine();
+			} else if (firstCmd.equals("CREATE")) {
+				String newMyName = myIn.readLine();
+				String newPass = myIn.readLine();
+				if (Access.exists(newMyName)) {// 登録済かどうか調べる
+					if (Access.makeNewUser(newMyName, newPass)) {
+						System.out.println("アカウント作成:" + newMyName);
+						myOut.println("TRUE");
+						myName = newMyName;
+						pass = newPass;
+					} else {
+						myOut.println("FALSE");
+					}
+				} else {
+					myOut.println("FALSE");
+				}
+			}
 
 			myName = myIn.readLine();
 			pass = myIn.readLine();
@@ -258,6 +269,10 @@ class ClientProcThread extends Thread {
 							item[myRoom] = myOis.readObject();// アイテムオブジェクトを受信
 							if (item[myRoom] != null) {
 								myOut.println("TRUE");
+
+								/* アイテム使用数をDBに記録 */
+								Access.updateItem(myName, 1);
+
 							} else {
 								myOut.println("FALSE");
 							}
@@ -330,7 +345,7 @@ class ClientProcThread extends Thread {
 							}
 						}
 
-						if (cmd.equals("USER")) {
+						if (cmd.equals("FULLUSER")) {
 							User user;
 							ObjectOutputStream myOos = new ObjectOutputStream(
 									myOs);
@@ -340,15 +355,52 @@ class ClientProcThread extends Thread {
 							myOos.writeObject(user);
 						}
 
+						if (cmd.equals("USER")) {
+							User user;
+							ObjectOutputStream myOos = new ObjectOutputStream(
+									myOs);
+
+							System.out.println(myName + ": ユーザ情報読み込み");
+							user = Access.requestUserData(myName);
+							myOos.writeObject(user);
+						}
+
 						if (cmd.equals("UPDATE")) {
 							String newName = myIn.readLine();
 							String newPass = myIn.readLine();
-							if (Access.updateUser(myName, newName, newPass)) {
+							if (Access.exists(newName)) {// 登録済かどうか判定
+								if (Access.updateUser(myName, newName, newPass)) {
+									myOut.println("TRUE");
+									System.out.println(myName + " >> "
+											+ newName + "   " + pass + " >> "
+											+ "newPass");
+									myName = newName;
+									pass = newPass;
+								} else {
+									myOut.println("FALSE");
+								}
+							} else {
+								myOut.println("FALSE");
+							}
+						}
+
+						if (cmd.equals("BACK")) {
+							int back = 0;
+							DataInputStream dis = new DataInputStream(myIs);
+							back = dis.readInt();
+							if (Access.updateBack(myName, back)) {
 								myOut.println("TRUE");
-								System.out.println(myName + " >> " + newName
-										+ "   " + pass + " >> " + "newPass");
-								myName = newName;
-								pass = newPass;
+							} else {
+								myOut.println("FALSE");
+							}
+						}
+
+						if (cmd.equals("ICON")) {
+							int icon = 0;
+							DataInputStream dis = new DataInputStream(myIs);
+							icon = dis.readInt();
+							if (Access.updateIcon(myName, icon)) {
+								myOut.println("TRUE");
 							} else {
 								myOut.println("FALSE");
 							}
