@@ -1,12 +1,15 @@
 package jp.ac.ynu.pl2017.gg.reversi.gui;
 
+import javax.management.RuntimeErrorException;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
+import net.ucanaccess.commands.IFeedbackAction;
 import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
 import jp.ac.ynu.pl2017.gg.reversi.ai.Evaluation;
 import jp.ac.ynu.pl2017.gg.reversi.ai.OnlineDummyAI;
 import jp.ac.ynu.pl2017.gg.reversi.util.BoardHelper;
+import jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection;
 import jp.ac.ynu.pl2017.gg.reversi.util.Item;
 import jp.ac.ynu.pl2017.gg.reversi.util.Stone;
 import jp.ac.ynu.pl2017.gg.reversi.util.Direction;
@@ -171,6 +174,18 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		}
 		buttonBoard[r][c].setRolloverIcon(null);
 		board[r][c] = stone;
+		
+		// 置き石送信
+		if (!isCPU && myTurn) {
+			new Thread() {
+				public void run() {
+					if (!ClientConnection.sendPutStone(new int[]{r, c})) {
+						gameOver();
+					}
+				};
+			}.start();
+		}
+		
 		Point point = new Point(r, c);
 		if (itemPoints.contains(point)) {
 			gainItem(point);
