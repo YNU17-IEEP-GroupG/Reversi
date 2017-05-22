@@ -168,7 +168,7 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 	private void makeMatch(String pON) {
 		JDialog lDialog = new JDialog();
 		lDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		lDialog.setModalityType(ModalityType.APPLICATION_MODAL);
+//		lDialog.setModalityType(ModalityType.APPLICATION_MODAL);
 		lDialog.setResizable(false);
 		lDialog.setSize(400, 100);
 		JPanel lDPanel = (JPanel) lDialog.getContentPane();
