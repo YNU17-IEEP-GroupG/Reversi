@@ -449,6 +449,27 @@ public class ClientConnection implements Serializable {
 		return updateIcon;
 	}
 
+	public static boolean exists(String userName) {
+		boolean exist = false;
+		try {
+			out.println("EXISTS");// コマンドの送信
+			try {
+				Thread.sleep(500);
+			}
+			catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			out.println(userName);
+			if ((br.readLine()).equals("TRUE")) {
+				exist = true;
+			} else {
+				exist = false;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return exist;
+	}
 
 	// TODO 座標どう送る?
 

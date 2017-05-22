@@ -401,6 +401,16 @@ class ClientProcThread extends Thread implements Serializable{
 							}
 						}
 
+						if (cmd.equals("EXISTS")) {
+							String name = myIn.readLine();
+							if (Access.exists(name)) {
+								myOut.println("TRUE");
+							}
+							else {
+								myOut.println("FALSE");
+							}
+						}
+
 						if (cmd.equals("BACK")) {
 							int back = 0;
 							DataInputStream dis = new DataInputStream(myIs);

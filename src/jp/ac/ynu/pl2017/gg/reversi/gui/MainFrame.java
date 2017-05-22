@@ -156,7 +156,20 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 		lDPanel.add(lOpponentNameField);
 		
 		JButton lOKButton = new JButton("OK");
-		lOKButton.addActionListener(e -> {lDialog.dispose(); makeMatch(lOpponentNameField.getText());});
+		lOKButton.addActionListener(e -> {
+			String opponentName = lOpponentNameField.getText();
+			if (opponentName.equals(userData.getUserName())) {
+				JOptionPane.showMessageDialog(MainFrame.this, "自分とはマッチング出来ません", "エラー", JOptionPane.ERROR_MESSAGE);
+				lDialog.dispose();
+			}
+			else if (ClientConnection.exists(opponentName)) {
+				lDialog.dispose();
+				makeMatch(opponentName);
+			}
+			else {
+				JOptionPane.showMessageDialog(MainFrame.this, "ユーザー名「" + opponentName + "」は存在しません", "エラー", JOptionPane.ERROR_MESSAGE);
+				lDialog.dispose();
+			}});
 		lDPanel.add(lOKButton);
 		
 		JButton lRMButton = new JButton("ランダムマッチ");
