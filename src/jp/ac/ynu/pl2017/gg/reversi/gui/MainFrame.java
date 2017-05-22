@@ -28,6 +28,7 @@ import java.io.InputStream;
 
 
 
+
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -38,6 +39,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
+
 
 
 
@@ -157,7 +159,7 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 		lDPanel.add(lOKButton);
 		
 		JButton lRMButton = new JButton("ランダムマッチ");
-		lRMButton.addActionListener(e -> {lDialog.dispose(); makeMatch(lOpponentNameField.getText()); lDialog.dispose();});
+		lRMButton.addActionListener(e -> {lDialog.dispose(); makeMatch(""); lDialog.dispose();});
 		lDPanel.add(lRMButton);
 		
 		lDialog.setVisible(true);
@@ -184,9 +186,11 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 			
 			@Override
 			public void onThreadFinish(Object pCallbackParam) {
+//				rthread.interrupt();
 				lDialog.dispose();
 				Object eData = pCallbackParam.toString();
 				if (eData instanceof Object[]) {
+					System.err.println("MATCH FOUND");
 					changePlayPanel(OnlineDummyAI.class, 0, (String)((Object[])eData)[0],
 							userData.getIcon(), (int)((Object[])eData)[1], userData.getBackground());
 				} else {
@@ -197,7 +201,14 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 			
 			@Override
 			public Object doRun() {
-				String data = ClientConnection.match(pON);
+//				rthread.start();
+				System.err.println("MATCH START");
+				String data;
+				if (pON.isEmpty()) {
+					data = ClientConnection.randomMatch();
+				} else {
+					data = ClientConnection.match(pON);
+				}
 				int icon = ClientConnection.getUserData(data).getIcon();
 				return new Object[]{data, icon};
 			}
