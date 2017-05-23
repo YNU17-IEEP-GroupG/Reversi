@@ -326,6 +326,10 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 				dispose();
 			});
 			createButton.addActionListener(e -> {
+				if (passInput.getPassword().length < 8) {
+					JOptionPane.showMessageDialog(this, "パスワードは8文字以上に設定してください", "エラー", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 				login = ClientConnection.createUser(userInput.getText(), new String(passInput.getPassword()));
 				if (!login) {
 					JOptionPane.showMessageDialog(this, "ユーザ作成に失敗しました", "エラー", JOptionPane.ERROR_MESSAGE);

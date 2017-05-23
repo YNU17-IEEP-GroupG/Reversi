@@ -19,6 +19,7 @@ import javax.swing.border.LineBorder;
 
 import jp.ac.ynu.pl2017.gg.reversi.gui.TitlePanel.Transition;
 import jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection;
+import jp.ac.ynu.pl2017.gg.reversi.util.Item;
 import jp.ac.ynu.pl2017.gg.reversi.util.Offline;
 
 public class SettingsPanel extends BackgroundedPanel {
@@ -47,6 +48,14 @@ public class SettingsPanel extends BackgroundedPanel {
 		setSize(MainFrame.panelW, MainFrame.panelH);
 
 		setLayout(new FlowLayout());
+
+		int[] pos = {-1, 1, -1, 1, -1, 1};
+		ClientConnection.sendItemUse(Item.BAN, pos);
+		Item item = ClientConnection.receiveItemUse();
+		int[] getPot = item.getPos();
+		for (int i = 0; i < getPot.length; i++) {
+			System.out.println(getPot[i]);
+		}
 
 		/*
 		 * 画面上部
@@ -224,6 +233,10 @@ public class SettingsPanel extends BackgroundedPanel {
 			public void actionPerformed(ActionEvent arg0) {
 				String password = String.valueOf(lPassField1.getPassword());
 				String subPassword = String.valueOf(lPassField2.getPassword());
+				if (lPassField1.getPassword().length < 8) {
+					JOptionPane.showMessageDialog(lChangeDialog, "パスワードは8文字以上に設定してください", "エラー", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 				if (!password.equals(subPassword)) {
 					JOptionPane.showMessageDialog(lChangeDialog, "同じパスワードを入力してください", "エラー", JOptionPane.ERROR_MESSAGE);
 				} else {

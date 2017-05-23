@@ -421,7 +421,8 @@ class ClientProcThread extends Thread implements Serializable{
 						if (cmd.equals(UPDATE_USER)) {
 							String newName = myIn.readLine();
 							String newPass = myIn.readLine();
-							if (!Access.exists(newName)) {// 登録済かどうか判定
+							boolean exist = Access.exists(newName);
+							if (!exist || (exist && newName.equals(myName))) {// 登録済またはパスワードのみの変更かどうか判定
 								if (Access.updateUser(myName, newName, newPass)) {
 									myOut.println(TRUE);
 									System.out.println(myName + " >> "
