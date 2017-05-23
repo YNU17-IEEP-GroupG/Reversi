@@ -277,7 +277,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 			} else {
 //				// デバッグ用
 //				CPUItemFlag = true;
-				if (CPUItemFlag) {
+				if (isCPU && CPUItemFlag) {
 					// 確率でアイテムを使用にする
 					useItemCPU();
 					callback.onOpponentUseItem();
