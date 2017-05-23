@@ -12,6 +12,9 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import jdk.nashorn.internal.codegen.CompilerConstants.Call;
 import jp.ac.ynu.pl2017.gg.reversi.gui.MainFrame;
@@ -45,6 +48,8 @@ public class ClientConnection implements Serializable {
 	public static final String TURN = "turn";
 	public static final String ITEM_SEND = "itemSend";
 	public static final String ITEM_RECEIVE = "itemReceive";
+	public static final String ITEM_POSITION_S = "sendItemPosition";
+	public static final String ITEM_POSITION_R = "receiveItemPosition";
 	public static final String REMATCH = "rematch";
 	public static final String FULL_USER = "fullUser";
 	public static final String USER = "user";
@@ -378,6 +383,34 @@ public class ClientConnection implements Serializable {
 	 */
 	public static void reload() {
 		out.println("r");
+	}
+	
+	public static boolean sendSelectItemPos(List<Point> pPoints) {
+		boolean sent = false;
+		try {
+			out.println(ITEM_POSITION_S);
+			for (int i = 0; i < 3; i++)
+				out.println(""+pPoints.get(i).getRow()+"/"+pPoints.get(i).getColumn());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return sent;
+	}
+	
+	public static List<Point> receiveSelectItemPos() {
+		ArrayList<Point> tResult = new ArrayList<Point>();
+		out.println(ITEM_POSITION_R);
+		// 読み込み
+		try {
+			for (int i = 0; i < 3; i++) {
+				String temp = br.readLine();
+				String tear[] = temp.split("/");
+				tResult.add(new Point(Integer.parseInt(tear[0]), Integer.parseInt(tear[1])));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return tResult;
 	}
 
 	/**

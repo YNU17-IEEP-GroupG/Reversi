@@ -26,6 +26,8 @@ import static jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection.FULL_USER;
 import static jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection.ICON;
 import static jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection.ITEM_RECEIVE;
 import static jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection.ITEM_SEND;
+import static jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection.ITEM_POSITION_S;
+import static jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection.ITEM_POSITION_R;
 import static jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection.LOGIN;
 import static jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection.MATCH;
 import static jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection.RANDOM;
@@ -62,6 +64,7 @@ class ClientProcThread extends Thread implements Serializable{
 	static String[][] coordinate = new String[MAX_ROOM][2];// 通信路
 	static Item[] item = new Item[MAX_ROOM];// アイテムオブジェクトを格納
 	static int[][] itemPos = new int[6][MAX_ROOM];
+	static String[][] itemPlacer = new String[MAX_ROOM][3];
 //	static String itemName[] = new String[MAX_ROOM];
 	static int[] rematch = new int[MAX_ROOM];// 再戦用0:default,1:再戦,2:拒否,3:再戦受付
 
@@ -246,6 +249,7 @@ class ClientProcThread extends Thread implements Serializable{
 
 							battle = true;
 							change[myRoom] = true;
+							itemPlacer[myRoom] = null;
 							rematch[myRoom] = 0;
 							System.out.println(myName + ": マッチング完了");
 							
@@ -338,6 +342,23 @@ class ClientProcThread extends Thread implements Serializable{
 								myDos.writeInt(itemPos[i][myRoom]);
 							}
 							item[myRoom] = Item.NONE;// オブジェクトを初期化
+						}
+						
+						if (cmd.equals(ITEM_POSITION_S)) {
+							String temp[] = new String[3];
+							for (int i = 0; i < 3; i++) {
+								temp[i] = myIn.readLine();
+							}
+							itemPlacer[myRoom] = temp;
+						}
+						
+						if (cmd.equals(ITEM_POSITION_R)) {
+							while (itemPlacer[myRoom] == null || itemPlacer[myRoom][0] == null) {
+								Thread.sleep(500);
+							}
+							for (int i = 0; i < 3; i++) {
+								myOut.println(itemPlacer[myRoom][i]);
+							}
 						}
 
 						if (cmd.equals(REMATCH)) {

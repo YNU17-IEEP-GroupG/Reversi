@@ -64,7 +64,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	
 	private JButton[][]				buttonBoard		= new JButton[BOARD_SIZE][BOARD_SIZE];
 	private Stone[][]				board			= new Stone[BOARD_SIZE][BOARD_SIZE];
-	private List<Point>			 itemPoints	  = new ArrayList<>();
+	private List<Point>				itemPoints		= new ArrayList<>();
 	private Stone					myStone;												// actionEventで使うため、仕方なくフィールドに
 	private boolean					myTurn;
 	private boolean					passFlag		= false;
@@ -95,7 +95,6 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		// pack();
 
 		Random random = new Random();
-		selectItemPoints();
 		myStone = random.nextBoolean() ? Stone.Black : Stone.White;
 		myTurn = !pMyTurn;
 		
@@ -105,6 +104,16 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		selectedDifficulty = pDifficulty;
 		isCPU = !pAi.equals(OnlineDummyAI.class);
 		System.err.println("CPU?"+isCPU);
+		
+		if (isCPU || !pMyTurn) {
+			// 先攻の場合はアイテム位置を選定
+			selectItemPoints();
+			ClientConnection.sendSelectItemPos(itemPoints);
+		} else {
+			// 後攻の場合はアイテム位置を受信する.
+			itemPoints = ClientConnection.receiveSelectItemPos();
+		}
+
 		
 		initBoard();
 
