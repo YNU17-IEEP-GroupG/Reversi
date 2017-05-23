@@ -19,7 +19,7 @@ public class OnlineDummyAI extends BaseAI {
 
 	@Override
 	public void think() {
-		Item item = ClientConnection.receiveItemUse();
+		Item item = Item.NONE;//ClientConnection.receiveItemUse();
 		int[] posi;
 		switch (item) {
 			case TRIPLE:
@@ -50,6 +50,7 @@ public class OnlineDummyAI extends BaseAI {
 			row = -1;
 			column = -1;
 		}
+		System.err.println("受信しました");
 		row = pos[0];
 		column = pos[1];
 	}

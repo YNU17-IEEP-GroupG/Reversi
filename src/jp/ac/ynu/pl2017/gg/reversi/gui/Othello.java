@@ -135,7 +135,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 			int[] pos = {-1, -1, -1, -1, -1, -1};
 			pos[0] = r; pos[1] = c;
 			if (!isCPU) {
-				ClientConnection.sendItemUse(Item.DROP, pos);
+//				ClientConnection.sendItemUse(Item.DROP, pos);
 			}
 			return;
 		}
@@ -183,18 +183,14 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		// アイテムを使用しないときでの空の情報を送る必要がある。
 		if (!isCPU && useItemTurn) {
 			int[] pos = {-1, -1, -1, -1, -1, -1};
-			ClientConnection.sendItemUse(Item.NONE, pos);
+//			ClientConnection.sendItemUse(Item.NONE, pos);
 		}
 		
 		// 置き石送信
 		if (!isCPU && myTurn) {
-			new Thread() {
-				public void run() {
-					if (!ClientConnection.sendPutStone(new int[]{r, c})) {
-						gameOver();
-					}
-				};
-			}.start();
+			if (!ClientConnection.sendPutStone(new int[]{r, c})) {
+				gameOver();
+			}
 		}
 		
 		Point point = new Point(r, c);
@@ -555,7 +551,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 				grayTurnCPU = 3;
 				if (!isCPU) {
 					// これだけメソッドがないので、ここでアイテム情報送信
-					ClientConnection.sendItemUse(Item.GRAY, pos);
+//					ClientConnection.sendItemUse(Item.GRAY, pos);
 				}
 				break;
 			case TRIPLE:
@@ -579,7 +575,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 				pos[i + 1] = banPoints.get(i).getColumn();
 			}
 			// アイテム使用データ送信
-			ClientConnection.sendItemUse(Item.BAN, pos);
+//			ClientConnection.sendItemUse(Item.BAN, pos);
 		}
 		reflectBan(makeBanPoints());		// ヒントの再表示とパス処理
 		List<Point> hint = makeHint(myStone);
@@ -682,7 +678,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		tripleFlag = true;
 		if (!isCPU) {
 			int[] pos = {-1, -1, -1, -1, -1, -1};
-			ClientConnection.sendItemUse(Item.TRIPLE, pos);
+//			ClientConnection.sendItemUse(Item.TRIPLE, pos);
 		}
 	}
 
