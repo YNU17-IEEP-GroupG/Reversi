@@ -278,8 +278,8 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 	@Override
 	public boolean isLogin() {
 		// TODO Debug
-		return true;
-//		return login;
+//		return true;
+		return login;
 	}
 
 	private class LoginDialog extends JDialog {
