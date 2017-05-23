@@ -13,6 +13,9 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.net.Socket;
 
+import jdk.nashorn.internal.codegen.CompilerConstants.Call;
+import jp.ac.ynu.pl2017.gg.reversi.gui.MainFrame;
+
 public class ClientConnection implements Serializable {
 
 	/**
@@ -252,8 +255,11 @@ public class ClientConnection implements Serializable {
 
 			if ((br.readLine()).equals(TRUE)) {
 				send = true;
-				out.println(pPlace[0]);
-				out.println(pPlace[1]);
+				out.println(""+pPlace[0]);
+				out.println(""+pPlace[1]);
+				
+				// ここで応答があるまで待たないとreadが動いちゃう
+				br.readLine();
 			} else {
 				send = false;
 			}
@@ -276,12 +282,28 @@ public class ClientConnection implements Serializable {
 		try {
 			out.println(READ);// コマンドの送信
 
+			System.out.println("座標取得待ち(Client,");
 			coordinate[0] = Integer.parseInt(br.readLine());
 			coordinate[1] = Integer.parseInt(br.readLine());
 
+			if (coordinate[0] == -2 && coordinate[1] == -2) {
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				return receivePutStone();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
+		} catch (NumberFormatException e) {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException ei) {
+				ei.printStackTrace();
+			}
+			return receivePutStone();
 		}
 
 		return coordinate;

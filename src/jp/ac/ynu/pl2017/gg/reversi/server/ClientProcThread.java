@@ -259,20 +259,22 @@ class ClientProcThread extends Thread implements Serializable{
 
 						if (cmd.equals(WRITE)) {
 							if (battle) {
-								System.out.println(myName + ": 座標の更新%" + turn);
+								System.out.println(myName + ": 座標の更新(Current="+change[myRoom]+"%" + turn);
 
 								if (change[myRoom] == turn) {
-									// myOut.println("座標を入力して下さい");
-									coordinate[myRoom][0] = myIn.readLine();
-									coordinate[myRoom][1] = myIn.readLine();
-
 									// myOut.println(coordinate[myRoom]+
 									// " におきました");
 									myOut.println(TRUE);
 
+									// myOut.println("座標を入力して下さい");
+									coordinate[myRoom][0] = myIn.readLine();
+									coordinate[myRoom][1] = myIn.readLine();
+
 									System.out.println(myName + " が "
 											+ coordinate[myRoom][0] + ","
 											+ coordinate[myRoom][1] + "におきました");
+									
+									myOut.println();
 
 									change[myRoom] = !change[myRoom];// ターンを切り替える
 								} else {
@@ -287,7 +289,10 @@ class ClientProcThread extends Thread implements Serializable{
 						}
 
 						if (cmd.equals(READ)) {// 最後に置いた座標をいつでも読み込める
-							System.out.println(myName + ": 座標の読み込み");
+							System.out.println(myName + ": 座標の読み込み(Current="+change[myRoom]);
+							while (change[myRoom] != turn) {
+								Thread.sleep(500);
+							}
 							myOut.println(coordinate[myRoom][0]);
 							myOut.println(coordinate[myRoom][1]);
 						}
