@@ -49,13 +49,13 @@ public class SettingsPanel extends BackgroundedPanel {
 
 		setLayout(new FlowLayout());
 
-		int[] pos = {-1, 1, -1, 1, -1, 1};
-		ClientConnection.sendItemUse(Item.BAN, pos);
-		Item item = ClientConnection.receiveItemUse();
-		int[] getPot = item.getPos();
-		for (int i = 0; i < getPot.length; i++) {
-			System.out.println(getPot[i]);
-		}
+//		int[] pos = {-1, 1, -1, 1, -1, 1};
+//		ClientConnection.sendItemUse(Item.BAN, pos);
+//		Item item = ClientConnection.receiveItemUse();
+//		int[] getPot = item.getPos();
+//		for (int i = 0; i < getPot.length; i++) {
+//			System.out.println(getPot[i]);
+//		}
 
 		/*
 		 * 画面上部
