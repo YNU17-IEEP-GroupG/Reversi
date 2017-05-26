@@ -19,8 +19,8 @@ public class OnlineDummyAI extends BaseAI {
 
 	@Override
 	public void think() {
-		Item item = Item.NONE;//ClientConnection.receiveItemUse();
-		int[] posi;
+		Item item = ClientConnection.receivePutStone();
+		int[] pos;
 		switch (item) {
 			case TRIPLE:
 				callback.reflectTriple();
@@ -29,14 +29,14 @@ public class OnlineDummyAI extends BaseAI {
 				callback.reflectGray();
 				break;
 			case DROP:
-				posi = item.getPos();
-				callback.reflectDrop(new Point(posi[0], posi[1]));
+				pos = item.getPos();
+				callback.reflectDrop(new Point(pos[0], pos[1]));
 				break;
 			case BAN:
-				posi = item.getPos();
+				pos = item.getPos();
 				List<Point> banPoints = new ArrayList<>();
 				for (int i = 0; i < 3; i++) {
-					banPoints.add(new Point(posi[i * 2], posi[i * 2 + 1]));
+					banPoints.add(new Point(pos[i * 2], pos[i * 2 + 1]));
 				}
 				callback.reflectBan(banPoints);
 				break;
@@ -45,14 +45,10 @@ public class OnlineDummyAI extends BaseAI {
 		}
 
 		// 教訓：下手に別スレッドで待ってはいけない
-		int pos[] = ClientConnection.receivePutStone();
-		if (pos == null) {
-			row = -1;
-			column = -1;
-		}
+		int[] coordinate = item.getCoordinate();
 		System.err.println("受信しました");
-		row = pos[0];
-		column = pos[1];
+		row = coordinate[0];
+		column = coordinate[1];
 	}
 	
 	@Override

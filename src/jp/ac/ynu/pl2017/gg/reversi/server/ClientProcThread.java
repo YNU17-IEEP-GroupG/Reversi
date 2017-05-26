@@ -5,7 +5,6 @@ import jp.ac.ynu.pl2017.gg.reversi.util.User;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
@@ -24,8 +23,6 @@ import static jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection.END;
 import static jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection.EXISTS;
 import static jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection.FULL_USER;
 import static jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection.ICON;
-import static jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection.ITEM_RECEIVE;
-import static jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection.ITEM_SEND;
 import static jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection.ITEM_POSITION_S;
 import static jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection.ITEM_POSITION_R;
 import static jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection.LOGIN;
@@ -41,6 +38,8 @@ import static jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection.UPDATE_RESULT_ON
 import static jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection.UPDATE_USER;
 import static jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection.USER;
 import static jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection.WRITE;
+
+import static jp.ac.ynu.pl2017.gg.reversi.gui.Othello.ITEM_COUNT;
 
 class ClientProcThread extends Thread implements Serializable{
 	private int number;// 自分の番号
@@ -61,10 +60,8 @@ class ClientProcThread extends Thread implements Serializable{
 	public static final int MAX_ROOM = 20;
 	static int room = 0; // 対局が行われている数
 	static boolean[] change = new boolean[MAX_ROOM];
-	static String[][] coordinate = new String[MAX_ROOM][2];// 通信路
-	static Item[] item = new Item[MAX_ROOM];// アイテムオブジェクトを格納
-	static int[][] itemPos = new int[6][MAX_ROOM];
-	static String[][] itemPlacer = new String[MAX_ROOM][3];
+	static Item[] items = new Item[MAX_ROOM];// アイテムオブジェクトを格納
+	static String[][] itemPlacer = new String[MAX_ROOM][ITEM_COUNT];
 //	static String itemName[] = new String[MAX_ROOM];
 	static int[] rematch = new int[MAX_ROOM];// 再戦用0:default,1:再戦,2:拒否,3:再戦受付
 
@@ -271,12 +268,20 @@ class ClientProcThread extends Thread implements Serializable{
 									myOut.println(TRUE);
 
 									// myOut.println("座標を入力して下さい");
-									coordinate[myRoom][0] = myIn.readLine();
-									coordinate[myRoom][1] = myIn.readLine();
+//									coordinate[myRoom][0] = myIn.readLine();
+//									coordinate[myRoom][1] = myIn.readLine();
+									ObjectInputStream ois = new ObjectInputStream(myIs);
+									Item item = (Item)ois.readObject();
+									int[] pos = (int[]) ois.readObject();
+									int[] coordinate = (int[]) ois.readObject();
+									item.setPos(pos);
+									item.setCoordinate(coordinate);
+									items[myRoom] = item;
+
 
 									System.out.println(myName + " が "
-											+ coordinate[myRoom][0] + ","
-											+ coordinate[myRoom][1] + "におきました");
+											+ coordinate[0] + ","
+											+ coordinate[1] + "におきました");
 									
 									myOut.println();
 
@@ -297,8 +302,13 @@ class ClientProcThread extends Thread implements Serializable{
 							while (change[myRoom] != turn) {
 								Thread.sleep(500);
 							}
-							myOut.println(coordinate[myRoom][0]);
-							myOut.println(coordinate[myRoom][1]);
+
+//							myOut.println(coordinate[myRoom][0]);
+//							myOut.println(coordinate[myRoom][1]);
+                            ObjectOutputStream oos = new ObjectOutputStream(myOs);
+							oos.writeObject(items[myRoom]);
+							oos.writeObject(items[myRoom].getPos());
+							oos.writeObject(items[myRoom].getCoordinate());
 						}
 
 						if (cmd.equals(TURN)) {// 自分のターンかどうかを確かめる
@@ -311,42 +321,42 @@ class ClientProcThread extends Thread implements Serializable{
 							}
 						}
 
-						if (cmd.equals(ITEM_SEND)) {// アイテム送信
-//							itemName[myRoom] = myIn.readLine();// アイテム名を受信
-							ObjectInputStream myOis = new ObjectInputStream(
-									myIs);
-							item[myRoom] = (Item) myOis.readObject();// アイテムオブジェクトを受信
-							DataInputStream myDis = new DataInputStream(myIs);
-							// アイテムの影響を及ぼした座標は必ず長さ6で扱う
-							for (int i = 0; i < 6; i++) {
-								itemPos[i][myRoom] = myDis.readInt();
-							}
-							if (item[myRoom] != null) {
-								myOut.println(TRUE);
-
-								/* アイテム使用数をDBに記録 */
-								Access.updateItem(myName, 1);
-
-							} else {
-								myOut.println(FALSE);
-							}
-						}
-
-						if (cmd.equals(ITEM_RECEIVE)) {// アイテム受信
-							ObjectOutputStream myOos = new ObjectOutputStream(
-									myOs);
-							myOos.writeObject(item[myRoom]);// クライアントへ送信
-							DataOutputStream myDos = new DataOutputStream(myOs);
-							// アイテムの影響を及ぼした座標は必ず長さ6で扱う
-							for (int i = 0; i < 6; i++) {
-								myDos.writeInt(itemPos[i][myRoom]);
-							}
-							item[myRoom] = Item.NONE;// オブジェクトを初期化
-						}
-						
+//						if (cmd.equals(ITEM_SEND)) {// アイテム送信
+////							itemName[myRoom] = myIn.readLine();// アイテム名を受信
+//							ObjectInputStream myOis = new ObjectInputStream(
+//									myIs);
+//							items[myRoom] = (Item) myOis.readObject();// アイテムオブジェクトを受信
+//							DataInputStream myDis = new DataInputStream(myIs);
+//							// アイテムの影響を及ぼした座標は必ず長さ6で扱う
+//							for (int i = 0; i < 6; i++) {
+//								itemPos[i][myRoom] = myDis.readInt();
+//							}
+//							if (items[myRoom] != null) {
+//								myOut.println(TRUE);
+//
+//								/* アイテム使用数をDBに記録 */
+//								Access.updateItem(myName, 1);
+//
+//							} else {
+//								myOut.println(FALSE);
+//							}
+//						}
+//
+//						if (cmd.equals(ITEM_RECEIVE)) {// アイテム受信
+//							ObjectOutputStream myOos = new ObjectOutputStream(
+//									myOs);
+//							myOos.writeObject(items[myRoom]);// クライアントへ送信
+//							DataOutputStream myDos = new DataOutputStream(myOs);
+//							// アイテムの影響を及ぼした座標は必ず長さ6で扱う
+//							for (int i = 0; i < 6; i++) {
+//								myDos.writeInt(itemPos[i][myRoom]);
+//							}
+//							items[myRoom] = Item.NONE;// オブジェクトを初期化
+//						}
+//
 						if (cmd.equals(ITEM_POSITION_S)) {
-							String temp[] = new String[3];
-							for (int i = 0; i < 3; i++) {
+							String temp[] = new String[ITEM_COUNT];
+							for (int i = 0; i < ITEM_COUNT; i++) {
 								temp[i] = myIn.readLine();
 							}
 							itemPlacer[myRoom] = temp;
@@ -356,7 +366,7 @@ class ClientProcThread extends Thread implements Serializable{
 							while (itemPlacer[myRoom] == null || itemPlacer[myRoom][0] == null) {
 								Thread.sleep(500);
 							}
-							for (int i = 0; i < 3; i++) {
+							for (int i = 0; i < ITEM_COUNT; i++) {
 								myOut.println(itemPlacer[myRoom][i]);
 							}
 						}

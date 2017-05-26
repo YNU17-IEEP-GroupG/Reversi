@@ -1,7 +1,6 @@
 package jp.ac.ynu.pl2017.gg.reversi.util;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,11 +12,9 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import jdk.nashorn.internal.codegen.CompilerConstants.Call;
-import jp.ac.ynu.pl2017.gg.reversi.gui.MainFrame;
+import static jp.ac.ynu.pl2017.gg.reversi.gui.Othello.ITEM_COUNT;
 
 public class ClientConnection implements Serializable {
 
@@ -249,19 +246,24 @@ public class ClientConnection implements Serializable {
 	/**
 	 * 自分の置き石送信
 	 * 
-	 * @param pPlace
+	 * @param item
 	 * @return 通信可否(相手のターンに送信するとfalseを返す
 	 */
-	public static boolean sendPutStone(int[] pPlace) {
+	public static boolean sendPutStone(Item item) {
 		boolean send = false;
+//        System.out.println("sendPutStone:" + item.toString());
 
 		try {
 			out.println(WRITE);// コマンドの送信
 
 			if ((br.readLine()).equals(TRUE)) {
 				send = true;
-				out.println(""+pPlace[0]);
-				out.println(""+pPlace[1]);
+//				out.println(""+pPlace[0]);
+//				out.println(""+pPlace[1]);
+				ObjectOutputStream oos = new ObjectOutputStream(os);
+				oos.writeObject(item);
+				oos.writeObject(item.getPos());
+				oos.writeObject(item.getCoordinate());
 				
 				// ここで応答があるまで待たないとreadが動いちゃう
 				br.readLine();
@@ -281,15 +283,23 @@ public class ClientConnection implements Serializable {
 	 * 
 	 * @return 相手が石を置く座標.nullだと通信失敗
 	 */
-	public static int[] receivePutStone() {
-		int[] coordinate = new int[2];
+	public static Item receivePutStone() {
+        Item item = Item.NONE;
 
 		try {
 			out.println(READ);// コマンドの送信
 
 			System.out.println("座標取得待ち(Client,");
-			coordinate[0] = Integer.parseInt(br.readLine());
-			coordinate[1] = Integer.parseInt(br.readLine());
+//			coordinate[0] = Integer.parseInt(br.readLine());
+//			coordinate[1] = Integer.parseInt(br.readLine());
+            ObjectInputStream ois = new ObjectInputStream(is);
+            item = (Item)ois.readObject();
+            int[] pos = (int[])ois.readObject();
+            int[] coordinate = (int[])ois.readObject();
+            item.setPos(pos);
+            item.setCoordinate(coordinate);
+            // この出力がないと動かない。謎すぎる
+            System.out.println("readPutStone:" + item);
 
 			if (coordinate[0] == -2 && coordinate[1] == -2) {
 				try {
@@ -310,8 +320,11 @@ public class ClientConnection implements Serializable {
 			}
 			return receivePutStone();
 		}
+		catch (ClassNotFoundException e) {
+		    e.printStackTrace();
+        }
 
-		return coordinate;
+		return item;
 	}
 
 	/**
@@ -387,9 +400,9 @@ public class ClientConnection implements Serializable {
 	
 	public static boolean sendSelectItemPos(List<Point> pPoints) {
 		boolean sent = false;
-		try {
+        try {
 			out.println(ITEM_POSITION_S);
-			for (int i = 0; i < 3; i++)
+			for (int i = 0; i < ITEM_COUNT; i++)
 				out.println(""+pPoints.get(i).getRow()+"/"+pPoints.get(i).getColumn());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -402,7 +415,7 @@ public class ClientConnection implements Serializable {
 		out.println(ITEM_POSITION_R);
 		// 読み込み
 		try {
-			for (int i = 0; i < 3; i++) {
+			for (int i = 0; i < ITEM_COUNT; i++) {
 				String temp = br.readLine();
 				String tear[] = temp.split("/");
 				tResult.add(new Point(Integer.parseInt(tear[0]), Integer.parseInt(tear[1])));
@@ -413,68 +426,68 @@ public class ClientConnection implements Serializable {
 		return tResult;
 	}
 
-	/**
-	 * アイテムの使用を送信。使用しなかったら空のデータを送信する。
-	 *
-	 * @param pItemData
-	 *            アイテムの効果データ
-	 * @param pos
-	 * 			  アイテムが効果を発揮した座標。最大数の3に合わせて必ず長さ6の配列にする
-	 * 			  値が必要ないときには-1でも入れておく
-	 * @return　通信可否
-	 */
-	public static boolean sendItemUse(Item pItemData, int[] pos) {
-		boolean item = false;
-
-		try {
-			out.println(ITEM_SEND);// コマンドの送信
-			ObjectOutputStream oos = new ObjectOutputStream(os);
-			oos.writeObject(pItemData);// アイテムの送信
-			DataOutputStream dos = new DataOutputStream(os);
-			// 必ずposの長さは6にする
-			for (int i = 0; i < 6; i++) {
-				dos.writeInt(pos[i]);// 座標の送信
-			}
-
-
-			if ((br.readLine()).equals(TRUE)) {
-				item = true;
-			} else {
-				item = false;
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return item;
-	}
-
-	/**
-	 * アイテムの使用を受信
-	 * 
-	 * @return {アイテムの種類(アイテムが影響を及ぼした座標を含む)}からなる.Item.NONEの場合,相手はアイテムを使用していない
-	 */
-	public static Item receiveItemUse() {
-		Item itemData = null;
-		int[] pos = new int[6];
-
-		try {
-			out.println(ITEM_RECEIVE);// コマンドの送信
-			ObjectInputStream ois = new ObjectInputStream(is);
-			itemData = (Item) ois.readObject();// アイテムの受信
-			DataInputStream dis = new DataInputStream(is);
-			// 読み込む長さは必ず6
-			for (int i = 0; i < 6; i++) {
-				pos[i] = dis.readInt();// 座標の受信
-			}
-			itemData.setPos(pos);
-		} catch (IOException | ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-
-		return itemData;
-	}
+//	/**
+//	 * アイテムの使用を送信。使用しなかったら空のデータを送信する。
+//	 *
+//	 * @param pItemData
+//	 *            アイテムの効果データ
+//	 * @param pos
+//	 * 			  アイテムが効果を発揮した座標。最大数の3に合わせて必ず長さ6の配列にする
+//	 * 			  値が必要ないときには-1でも入れておく
+//	 * @return　通信可否
+//	 */
+//	public static boolean sendItemUse(Item pItemData, int[] pos) {
+//		boolean item = false;
+//
+//		try {
+//			out.println(ITEM_SEND);// コマンドの送信
+//			ObjectOutputStream oos = new ObjectOutputStream(os);
+//			oos.writeObject(pItemData);// アイテムの送信
+//			DataOutputStream dos = new DataOutputStream(os);
+//			// 必ずposの長さは6にする
+//			for (int i = 0; i < 6; i++) {
+//				dos.writeInt(pos[i]);// 座標の送信
+//			}
+//
+//
+//			if ((br.readLine()).equals(TRUE)) {
+//				item = true;
+//			} else {
+//				item = false;
+//			}
+//
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//
+//		return item;
+//	}
+//
+//	/**
+//	 * アイテムの使用を受信
+//	 *
+//	 * @return {アイテムの種類(アイテムが影響を及ぼした座標を含む)}からなる.Item.NONEの場合,相手はアイテムを使用していない
+//	 */
+//	public static Item receiveItemUse() {
+//		Item itemData = null;
+//		int[] pos = new int[6];
+//
+//		try {
+//			out.println(ITEM_RECEIVE);// コマンドの送信
+//			ObjectInputStream ois = new ObjectInputStream(is);
+//			itemData = (Item) ois.readObject();// アイテムの受信
+//			DataInputStream dis = new DataInputStream(is);
+//			// 読み込む長さは必ず6
+//			for (int i = 0; i < 6; i++) {
+//				pos[i] = dis.readInt();// 座標の受信
+//			}
+//			itemData.setPos(pos);
+//		} catch (IOException | ClassNotFoundException e) {
+//			e.printStackTrace();
+//		}
+//
+//		return itemData;
+//	}
 
 	public static boolean updateResultCPU(int type, int difficulty, int judgement) {
 		boolean result = false;

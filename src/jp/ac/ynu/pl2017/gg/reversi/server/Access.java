@@ -211,7 +211,7 @@ public class Access {
     /**
      * ユーザデータの一部を取得。オンライン対戦の相手のデータ取得などに利用
      * @param name ユーザネーム
-     * @return id,userName,item,icon,background,onlineWin,onlineLoseのみのUserクラスのインスタンス
+     * @return id,userName,items,icon,background,onlineWin,onlineLoseのみのUserクラスのインスタンス
      */
     public static synchronized User requestUserData(String name) {
         String sql = "SELECT * FROM user U, online O WHERE U.user_name = " + q(name) + " AND U.id = O.user_id";
@@ -346,7 +346,7 @@ public class Access {
 //        System.out.println("getAllUserString: sql = " + sql);
 
         StringBuffer sb = new StringBuffer();
-        sb.append("id, user_name, password, item, icon, background\n");
+        sb.append("id, user_name, password, items, icon, background\n");
         Connection con = DBConnectionUtil.getConnection();
         try (
             Statement stmt = con.createStatement();

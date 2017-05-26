@@ -73,7 +73,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	private int					 grayTurnCPU    = 0;
 	private boolean				 tripleFlag	  = false;
 	private List<Point>			 triplePoints	= new ArrayList<>();
-	private boolean				 useItemTurn = false;
+	private Item                 usedItem           = Item.NONE;
 
 	private Class<? extends BaseAI>			selectedAI;
 	private int						selectedDifficulty;
@@ -144,7 +144,8 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 			int[] pos = {-1, -1, -1, -1, -1, -1};
 			pos[0] = r; pos[1] = c;
 			if (!isCPU) {
-//				ClientConnection.sendItemUse(Item.DROP, pos);
+			    usedItem = Item.DROP;
+			    usedItem.setPos(pos);
 			}
 			return;
 		}
@@ -188,18 +189,15 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		}
 		buttonBoard[r][c].setRolloverIcon(null);
 		board[r][c] = stone;
-
-		// アイテムを使用しないときでの空の情報を送る必要がある。
-		if (!isCPU && useItemTurn) {
-			int[] pos = {-1, -1, -1, -1, -1, -1};
-//			ClientConnection.sendItemUse(Item.NONE, pos);
-		}
 		
 		// 置き石送信
 		if (!isCPU && myTurn) {
-			if (!ClientConnection.sendPutStone(new int[]{r, c})) {
+		    int[] coordinate = {r, c};
+		    usedItem.setCoordinate(coordinate);
+			if (!ClientConnection.sendPutStone(usedItem)) {
 				gameOver();
 			}
+			usedItem = Item.NONE;
 		}
 		
 		Point point = new Point(r, c);
@@ -231,7 +229,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 			int c,
 			Stone stone) {
 		EnumSet<Direction> directions = EnumSet.noneOf(Direction.class);
-		if (board[r][c] != Stone.Empty)
+        if (board[r][c] != Stone.Empty)
 			return directions;
 		EnumSet.allOf(Direction.class).stream().filter(d -> checkLine(r, c, stone, d)).forEach(directions::add);
 		return directions;
@@ -516,12 +514,10 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		buttonBoard[4][3].setRolloverIcon(null);
 		buttonBoard[4][4].setRolloverIcon(null);
 
-		buttonBoard[itemPoints.get(0).getRow()][itemPoints.get(0).getColumn()].setIcon(itemIcon);
-		buttonBoard[itemPoints.get(1).getRow()][itemPoints.get(1).getColumn()].setIcon(itemIcon);
-		buttonBoard[itemPoints.get(2).getRow()][itemPoints.get(2).getColumn()].setIcon(itemIcon);
-		buttonBoard[itemPoints.get(0).getRow()][itemPoints.get(0).getColumn()].setRolloverIcon(itemRollOver);
-		buttonBoard[itemPoints.get(1).getRow()][itemPoints.get(1).getColumn()].setRolloverIcon(itemRollOver);
-		buttonBoard[itemPoints.get(2).getRow()][itemPoints.get(2).getColumn()].setRolloverIcon(itemRollOver);
+		for (int i = 0; i < itemPoints.size(); i++) {
+            buttonBoard[itemPoints.get(i).getRow()][itemPoints.get(i).getColumn()].setIcon(itemIcon);
+            buttonBoard[itemPoints.get(i).getRow()][itemPoints.get(i).getColumn()].setRolloverIcon(itemRollOver);
+        }
 	}
 
 	private void selectItemPoints() {
@@ -548,7 +544,6 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	}
 
 	public void useItem(Item item) {
-		int[] pos = {-1, -1, -1, -1, -1, -1};
 		switch (item) {
 			case BAN:
 				useBan();
@@ -559,8 +554,8 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 			case GRAY:
 				grayTurnCPU = 3;
 				if (!isCPU) {
-					// これだけメソッドがないので、ここでアイテム情報送信
-//					ClientConnection.sendItemUse(Item.GRAY, pos);
+					// これだけメソッドがないので、ここでアイテム情報セット
+                    usedItem = Item.GRAY;
 				}
 				break;
 			case TRIPLE:
@@ -569,24 +564,25 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 //			case CONTROLER:
 //				break;
 		}
-		useItemTurn = true;
 	}
 
 	private void useBan() {
 	    // 先手で1ターン目に使用するとこのメソッドが２回呼ばれてしまうバグあり
 		// 特に重要でも無いので一旦保留
 	    hideHint();
-	    List<Point> banPoints = new ArrayList<>();
+	    List<Point> banPoints = makeBanPoints();
 	    if (!isCPU) {
 			int[] pos = new int[6];
 			for (int i = 0; i < 3; i++) {
-				pos[i]     = banPoints.get(i).getRow();
-				pos[i + 1] = banPoints.get(i).getColumn();
+				pos[i * 2]     = banPoints.get(i).getRow();
+				pos[i * 2 + 1] = banPoints.get(i).getColumn();
 			}
 			// アイテム使用データ送信
 //			ClientConnection.sendItemUse(Item.BAN, pos);
+            usedItem = Item.BAN;
+			usedItem.setPos(pos);
 		}
-		reflectBan(makeBanPoints());		// ヒントの再表示とパス処理
+		reflectBan(banPoints);		// ヒントの再表示とパス処理
 		List<Point> hint = makeHint(myStone);
 		if (hint.isEmpty())
 			nextTurn();
@@ -677,6 +673,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 
 	// 相手側のクラスで呼び出す
 	private void undoGray() {
+	    // TODO: 三倍石の描画がもとに戻らないようにする
 		for (int i = 0; i < BOARD_SIZE; i++)
 			for (int j = 0; j < BOARD_SIZE; j++)
 				if (buttonBoard[i][j].getIcon() == grayIcon)
@@ -686,30 +683,24 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	private void useTriple() {
 		tripleFlag = true;
 		if (!isCPU) {
-			int[] pos = {-1, -1, -1, -1, -1, -1};
-//			ClientConnection.sendItemUse(Item.TRIPLE, pos);
+		    usedItem = Item.TRIPLE;
 		}
 	}
 
 	private void useItemCPU() {
 		// controlが無いので今は4
 		int select = new Random().nextInt(4);
-//		System.out.print("use item:");
 		switch (select) {
 			case 0:
-//				System.out.println("ban");
 				reflectBan(makeBanPoints());
 				break;
 			case 1:
-//				System.out.println("drop");
 				reflectDrop(Evaluation.getMaxEvaluatedPoint(BoardHelper.getPoints(myStone.getReverse(), board)));
 				break;
 			case 2:
-//				System.out.println("gray");
 				reflectGray();
 				break;
 			case 3:
-//				System.out.println("triple");
 				reflectTriple();
 				break;
 		}
@@ -728,20 +719,24 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 			buttonBoard[p.getRow()][p.getColumn()].setIcon(cannotPutIcon);
 			buttonBoard[p.getRow()][p.getColumn()].setRolloverIcon(null);
 		});
+		callback.onOpponentUseItem();
 	}
 
 	@Override
 	public void reflectDrop(Point point) {
 		drop(point.getRow(), point.getColumn());
+		callback.onOpponentUseItem();
 	}
 
 	@Override
 	public void reflectGray() {
 		useGray();
+		callback.onOpponentUseItem();
 	}
 
 	@Override
 	public void reflectTriple() {
 		tripleFlag = true;
+		callback.onOpponentUseItem();
 	}
 }
