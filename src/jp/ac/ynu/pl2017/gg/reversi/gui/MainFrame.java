@@ -143,7 +143,11 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 	public void showRoomSearchDialog() {
 		JDialog lDialog = new JDialog();
 		lDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		lDialog.setSize(400, 150);
+		int width = 400;
+		int height = 150;
+		lDialog.setSize(width, height);
+		Dimension pSize = getSize();
+		lDialog.setLocation(getLocation().x + (int)(pSize.getWidth() - width) / 2, getLocation().y + (int)(pSize.getHeight() - height) / 2);
 		lDialog.setModalityType(ModalityType.APPLICATION_MODAL);
 		lDialog.setResizable(false);
 		JPanel lDPanel = (JPanel) lDialog.getContentPane();
@@ -184,7 +188,11 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 		lDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 //		lDialog.setModalityType(ModalityType.APPLICATION_MODAL);
 		lDialog.setResizable(false);
-		lDialog.setSize(400, 100);
+		int width = 400;
+		int height = 80;
+		lDialog.setSize(width, height);
+		Dimension pSize = getSize();
+		lDialog.setLocation(getLocation().x + (int)(pSize.getWidth() - width) / 2, getLocation().y + (int)(pSize.getHeight() - height) / 2);
 		JPanel lDPanel = (JPanel) lDialog.getContentPane();
 		lDPanel.setLayout(new FlowLayout());
 		
@@ -234,6 +242,12 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 
 	@Override
 	public void changeSettingsPanel() {
+		if (!isLogin()) {
+			showLoginDialog();
+			if (!isLogin()) {
+				return;
+			}
+		}
 		setContentPane(new SettingsPanel(this));
 		validate();
 	}
@@ -292,7 +306,7 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 			int height = 150;
 			setSize(width, height);
 			Dimension pSize = mainFrame.getSize();
-			setLocation((int)(pSize.getWidth() - width) / 2, (int)(pSize.getHeight() - height) / 2);
+			setLocation(getLocation().x + (int)(pSize.getWidth() - width) / 2, getLocation().y + (int)(pSize.getHeight() - height) / 2);
 			setModal(true);
 
 			JLabel userLabel = new JLabel("ユーザー名");
@@ -322,8 +336,8 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 						e1.printStackTrace();
 					}
 					userData = ClientConnection.getFullUserData();
+					dispose();
 				}
-				dispose();
 			});
 			createButton.addActionListener(e -> {
 				if (passInput.getPassword().length < 8) {
