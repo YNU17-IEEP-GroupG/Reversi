@@ -33,7 +33,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 
 	public static final int			BOARD_SIZE		= 8;
 	public static final int			IMAGE_ICON_SIZE	= 40;
-	public static final int			ITEM_COUNT	  = 3;
+	public static final int			ITEM_COUNT	  = 20;
 	public static final ImageIcon	emptyIcon		= new ImageIcon("image/board/Empty.png");
 	public static final ImageIcon	blackIcon		= new ImageIcon("image/board/black.png");
 	public static final ImageIcon	whiteIcon		= new ImageIcon("image/board/white.png");
@@ -665,19 +665,19 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	// 相手側のクラスで呼び出す
 	private void useGray() {
 		grayTurn = 1;
-		for (JButton[] buttons : buttonBoard)
-			for (JButton button : buttons)
-				if (button.getIcon() == blackIcon || button.getIcon() == whiteIcon)
-					button.setIcon(grayIcon);
+		for (int i = 0; i < BOARD_SIZE; i++)
+			for (int j = 0; j < BOARD_SIZE; j++)
+				if (board[i][j] == Stone.Black || board[i][j] == Stone.White)
+					buttonBoard[i][j].setIcon(grayIcon);
 	}
 
 	// 相手側のクラスで呼び出す
 	private void undoGray() {
-	    // TODO: 三倍石の描画がもとに戻らないようにする
 		for (int i = 0; i < BOARD_SIZE; i++)
 			for (int j = 0; j < BOARD_SIZE; j++)
 				if (buttonBoard[i][j].getIcon() == grayIcon)
 					buttonBoard[i][j].setIcon(board[i][j].getImageIcon());
+		triplePoints.forEach(p -> buttonBoard[p.getRow()][p.getColumn()].setIcon(board[p.getRow()][p.getColumn()].getTripleImageIcon()));
 	}
 
 	private void useTriple() {
