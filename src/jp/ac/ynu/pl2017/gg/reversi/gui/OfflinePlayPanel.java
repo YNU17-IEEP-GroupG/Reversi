@@ -55,10 +55,10 @@ public class OfflinePlayPanel extends JPanel {
 
 		// ラベルキャプション
 		JLabel lCap1 = new JLabel("");
-		JLabel lCap2 = new JLabel("α");
-		JLabel lCap3 = new JLabel("β");
-		JLabel lCap4 = new JLabel("γ");
-		JLabel lCap5 = new JLabel("ω");
+		JLabel lCap2 = new JLabel("Type α");
+		JLabel lCap3 = new JLabel("Type β");
+		JLabel lCap4 = new JLabel("Type γ");
+		JLabel lCap5 = new JLabel("Type ω");
 
 		lDifficultyPanel.add(lCap1);
 		lDifficultyPanel.add(lCap2);
