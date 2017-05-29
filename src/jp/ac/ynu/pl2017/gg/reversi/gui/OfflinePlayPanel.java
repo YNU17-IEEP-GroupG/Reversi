@@ -4,7 +4,11 @@ import static jp.ac.ynu.pl2017.gg.reversi.gui.MainFrame.panelH;
 import static jp.ac.ynu.pl2017.gg.reversi.gui.MainFrame.panelW;
 
 import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.font.TextAttribute;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import javax.swing.BorderFactory;
@@ -51,14 +55,15 @@ public class OfflinePlayPanel extends JPanel {
 		add(lTopPanel, BorderLayout.NORTH);
 
 		JPanel lDifficultyPanel = new JPanel();
+		lDifficultyPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		lDifficultyPanel.setLayout(new GridLayout(4, 5));
 
 		// ラベルキャプション
 		JLabel lCap1 = new JLabel("");
-		JLabel lCap2 = new JLabel("Type α");
-		JLabel lCap3 = new JLabel("Type β");
-		JLabel lCap4 = new JLabel("Type γ");
-		JLabel lCap5 = new JLabel("Type ω");
+		JLabel lCap2 = new JLabel(new ImageIcon("image/icon/typea.png"));
+		JLabel lCap3 = new JLabel(new ImageIcon("image/icon/typeb.png"));
+		JLabel lCap4 = new JLabel(new ImageIcon("image/icon/typec.png"));
+		JLabel lCap5 = new JLabel(new ImageIcon("image/icon/typez.png"));
 
 		lDifficultyPanel.add(lCap1);
 		lDifficultyPanel.add(lCap2);
@@ -68,16 +73,21 @@ public class OfflinePlayPanel extends JPanel {
 
 		// 各難易度選択
 		String ROW[] = {
-				"弱い",
-				"普通",
-				"強い" };
+				"　　　弱い",
+				"　　　普通",
+				"　　　強い" };
 		for (int tLevel = 2; tLevel >= 0; tLevel--) {
 			for (int tCPUType = -1; tCPUType < 4; tCPUType++) {
 				if (tCPUType == -1) {
 					JLabel tLvLabel = new JLabel(ROW[tLevel]);
+					Font tFont = new Font("Serif", Font.ITALIC, 30);
+					Map<TextAttribute, Object> attrs = new HashMap<>(tFont.getAttributes());
+					attrs.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_LOW_ONE_PIXEL);
+					tLvLabel.setFont(tFont.deriveFont(attrs));
 					lDifficultyPanel.add(tLvLabel);
 				} else {
 					JButton tPlayButton = new JButton(new ImageIcon("image/unlock.png"));
+					tPlayButton.setContentAreaFilled(false);
 					final int tAiType = tCPUType;
 					final int tAiDiff = tLevel;
 					// 戦績条件を満たさない場合は無効化する
