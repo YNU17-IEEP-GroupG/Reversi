@@ -1,21 +1,7 @@
 package jp.ac.ynu.pl2017.gg.reversi.gui;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-
-import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
-import jp.ac.ynu.pl2017.gg.reversi.ai.Evaluation;
-import jp.ac.ynu.pl2017.gg.reversi.ai.OnlineDummyAI;
-import jp.ac.ynu.pl2017.gg.reversi.util.BoardHelper;
-import jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection;
-import jp.ac.ynu.pl2017.gg.reversi.util.Item;
-import jp.ac.ynu.pl2017.gg.reversi.util.Stone;
-import jp.ac.ynu.pl2017.gg.reversi.util.Direction;
-import jp.ac.ynu.pl2017.gg.reversi.util.FinishListenedThread;
-import jp.ac.ynu.pl2017.gg.reversi.util.FinishListenedThread.ThreadFinishListener;
-import jp.ac.ynu.pl2017.gg.reversi.util.Point;
-
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Constructor;
@@ -26,6 +12,25 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
+import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
+import jp.ac.ynu.pl2017.gg.reversi.ai.Evaluation;
+import jp.ac.ynu.pl2017.gg.reversi.ai.OnlineDummyAI;
+import jp.ac.ynu.pl2017.gg.reversi.util.BoardHelper;
+import jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection;
+import jp.ac.ynu.pl2017.gg.reversi.util.Direction;
+import jp.ac.ynu.pl2017.gg.reversi.util.FinishListenedThread;
+import jp.ac.ynu.pl2017.gg.reversi.util.FinishListenedThread.ThreadFinishListener;
+import jp.ac.ynu.pl2017.gg.reversi.util.Item;
+import jp.ac.ynu.pl2017.gg.reversi.util.Point;
+import jp.ac.ynu.pl2017.gg.reversi.util.Stone;
+
 /**
  * Created by shiita on 2017/04/29.
  */
@@ -33,7 +38,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 
 	public static final int			BOARD_SIZE		= 8;
 	public static final int			IMAGE_ICON_SIZE	= 40;
-	public static final int			ITEM_COUNT	  = 20;
+	public static final int			ITEM_COUNT	  = 3;
 	public static final ImageIcon	emptyIcon		= new ImageIcon("image/board/Empty.png");
 	public static final ImageIcon	blackIcon		= new ImageIcon("image/board/black.png");
 	public static final ImageIcon	whiteIcon		= new ImageIcon("image/board/white.png");
@@ -97,21 +102,24 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		Random random = new Random();
 		myStone = random.nextBoolean() ? Stone.Black : Stone.White;
 		myTurn = !pMyTurn;
-		
 		callback = pCallback;
 
 		selectedAI = pAi;
 		selectedDifficulty = pDifficulty;
 		isCPU = !pAi.equals(OnlineDummyAI.class);
-		System.err.println("CPU?"+isCPU);
+//		System.err.println("CPU?"+isCPU);
 		
-		if (isCPU || !pMyTurn) {
-			// 先攻の場合はアイテム位置を選定
-			selectItemPoints();
-			ClientConnection.sendSelectItemPos(itemPoints);
+		if (!isCPU) {
+			if (!pMyTurn) {
+				// 先攻の場合はアイテム位置を選定
+				selectItemPoints();
+				ClientConnection.sendSelectItemPos(itemPoints);
+			} else {
+				// 後攻の場合はアイテム位置を受信する.
+				itemPoints = ClientConnection.receiveSelectItemPos();
+			}
 		} else {
-			// 後攻の場合はアイテム位置を受信する.
-			itemPoints = ClientConnection.receiveSelectItemPos();
+			selectItemPoints();
 		}
 
 		
