@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 
 import java.awt.event.ActionEvent;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -14,6 +15,7 @@ import org.junit.Test;
 
 import jp.ac.ynu.pl2017.gg.reversi.ai.BaseAI;
 import jp.ac.ynu.pl2017.gg.reversi.util.BoardHelper;
+import jp.ac.ynu.pl2017.gg.reversi.util.Item;
 import jp.ac.ynu.pl2017.gg.reversi.util.Point;
 import jp.ac.ynu.pl2017.gg.reversi.util.Stone;
 
@@ -116,37 +118,86 @@ public class OthelloTest {
 
 	@Test
 	public void testMakeHint() {
-		fail("まだ実装されていません");
+		List<Point> expected = new ArrayList<>();
+		expected.add(new Point(2, 4));
+		expected.add(new Point(3, 5));
+		expected.add(new Point(4, 2));
+		expected.add(new Point(5, 3));
+
+		List<Point> actual = othello.makeHint(Black);
+
+		assertEquals(expected, actual);
 	}
 
 	@Test
-	public void testOnThreadFinish() {
-		fail("まだ実装されていません");
+	public void testUseItemTriple() throws Exception {
+		// アイテム使用後に石を置く
+		othello.useItem(Item.TRIPLE);
+		Class c = othello.getClass();
+        Field fld1 = c.getDeclaredField("buttonBoard");
+        fld1.setAccessible(true);
+        ((JButton[][])(fld1.get(othello)))[2][4].doClick();
+
+        Field fld2 = c.getDeclaredField("triplePoints");
+        fld2.setAccessible(true);
+        int actual = ((List<Point>)(fld2.get(othello))).size();
+
+		assertEquals(1, actual);
 	}
 
 	@Test
-	public void testUseItem() {
-		fail("まだ実装されていません");
+	public void testReflectBan() throws Exception {
+		List<Point> banPoints = new ArrayList<>();
+		banPoints.add(new Point(0, 0));
+		banPoints.add(new Point(1, 3));
+
+		othello.reflectBan(banPoints);
+        Class c = othello.getClass();
+        Field fld = c.getDeclaredField("board");
+        fld.setAccessible(true);
+        Stone[][] board = (Stone[][])(fld.get(othello));
+
+        assertEquals(Ban, board[0][0]);
+		assertEquals(Ban, board[1][3]);
 	}
 
 	@Test
-	public void testReflectBan() {
-		fail("まだ実装されていません");
+	public void testReflectDrop() throws Exception {
+		Point dropPoint = new Point(3, 5);
+
+		othello.reflectDrop(dropPoint);
+        Class c = othello.getClass();
+        Field fld = c.getDeclaredField("board");
+        fld.setAccessible(true);
+        Stone[][] board = (Stone[][])(fld.get(othello));
+
+        assertEquals(Empty, board[dropPoint.getRow()][dropPoint.getColumn()]);
 	}
 
 	@Test
-	public void testReflectDrop() {
-		fail("まだ実装されていません");
+	public void testReflectGray() throws Exception {
+		othello.reflectGray();
+
+        Class c = othello.getClass();
+        Field fld = c.getDeclaredField("grayTurn");
+        fld.setAccessible(true);
+
+        assertTrue((Integer)(fld.get(othello)) > 0);
 	}
 
 	@Test
-	public void testReflectGray() {
-		fail("まだ実装されていません");
-	}
+	public void testReflectTriple() throws Exception {
+		Point triplePoint = new Point(2, 4);
 
-	@Test
-	public void testReflectTriple() {
-		fail("まだ実装されていません");
-	}
+		othello.reflectTriple();
+        Class c = othello.getClass();
+        Field fld1 = c.getDeclaredField("buttonBoard");
+        fld1.setAccessible(true);
+        ((JButton[][])(fld1.get(othello)))[triplePoint.getRow()][triplePoint.getColumn()].doClick();
+        Field fld2 = c.getDeclaredField("triplePoints");
+        fld2.setAccessible(true);
+        Point actual = ((List<Point>)(fld2.get(othello))).get(0);
 
+        assertEquals(triplePoint, actual);
+	}
 }
