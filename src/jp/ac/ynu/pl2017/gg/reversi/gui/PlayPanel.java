@@ -1,5 +1,25 @@
 package jp.ac.ynu.pl2017.gg.reversi.gui;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dialog.ModalityType;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Image;
+import java.io.InputStream;
+import java.util.Map;
+import java.util.Random;
+
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
 import javazoom.jlgui.basicplayer.BasicController;
 import javazoom.jlgui.basicplayer.BasicPlayer;
 import javazoom.jlgui.basicplayer.BasicPlayerEvent;
@@ -14,14 +34,8 @@ import jp.ac.ynu.pl2017.gg.reversi.ai.OnlineDummyAI;
 import jp.ac.ynu.pl2017.gg.reversi.util.ClientConnection;
 import jp.ac.ynu.pl2017.gg.reversi.util.Item;
 import jp.ac.ynu.pl2017.gg.reversi.util.Offline;
+import jp.ac.ynu.pl2017.gg.reversi.util.Stone;
 import jp.ac.ynu.pl2017.gg.reversi.util.User;
-
-import javax.swing.*;
-
-import java.awt.*;
-import java.io.InputStream;
-import java.util.Map;
-import java.util.Random;
 
 /**
  * ゲーム画面を構築するJPanel. 対人・対CPU問わずここに飛んでくる発想.
@@ -286,7 +300,43 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback, BasicP
 				user.setOnlineLose(user.getOnlineLose() - 1);
 			}
 		}
-		int lDialogResult = JOptionPane.showConfirmDialog(null, "再戦しますか？", "Retry?",
+
+		// 結果表示ダイアログ(モーダル)
+		JDialog lResultDialog = new JDialog();
+		lResultDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		lResultDialog.setLocationRelativeTo(this);
+		lResultDialog.setSize(400, 170);
+		lResultDialog.setModalityType(ModalityType.APPLICATION_MODAL);
+		lResultDialog.setResizable(false);
+		
+		JPanel lResultPanel = (JPanel) lResultDialog.getContentPane();
+		lResultDialog.setLayout(new FlowLayout());
+		
+		JPanel lWLWrapper = new JPanel();
+		lWLWrapper.setPreferredSize(new Dimension(400, 55));
+		
+		JLabel lWLabel = new JLabel(new ImageIcon("image/res" + (result == 1 ? "win": "lose") + ".png"));
+		lWLabel.setFont(new Font("Serif", Font.BOLD, 36));
+		lWLWrapper.add(lWLabel);
+		
+		JPanel lBWWrapper = new JPanel();
+		lBWWrapper.setPreferredSize(new Dimension(400, 25));
+		
+		JLabel lBWLabel = new JLabel(
+				String.format("黒:%2d, 白:%2d", lOthelloPanel.countStone(Stone.Black), lOthelloPanel.countStone(Stone.White)));
+		lBWWrapper.add(lBWLabel);
+		
+		JButton lResultOK = new JButton("OK");
+		lResultOK.addActionListener(e -> lResultDialog.dispose());
+		
+		lResultPanel.add(lWLWrapper);
+		lResultPanel.add(lBWWrapper);
+		lResultPanel.add(lResultOK);
+		
+		lResultDialog.setVisible(true);
+		
+		// 再戦確認
+		int lDialogResult = JOptionPane.showConfirmDialog(this, "再戦しますか？", "Retry?",
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 		try {
 			player.stop();

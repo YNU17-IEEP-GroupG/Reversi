@@ -14,8 +14,6 @@ import java.util.Random;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -460,8 +458,10 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 
 	private void gameOver() {
 		int black = countStone(Stone.Black); int white = countStone(Stone.White);
-		String result = String.format("黒：%d  白：%d", black, white);
-		JOptionPane.showMessageDialog(this, new JLabel(result), "ゲームセット", JOptionPane.INFORMATION_MESSAGE);
+
+//		String result = String.format("黒：%d  白：%d", black, white);
+//		JOptionPane.showMessageDialog(this, new JLabel(result), "ゲームセット", JOptionPane.INFORMATION_MESSAGE);
+
 		// 灰色の石を元に戻す
 		undoGray();
 		// 全てのボタンを無効化。ImageIconは見えるように
@@ -485,7 +485,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		callback.onGameOver(ret);
 	}
 
-	private int countStone(
+	public int countStone(
 			Stone stone) {
 		int count = (int) Arrays.stream(board).mapToLong(ss -> Arrays.stream(ss).filter(s -> s == stone).count()).sum();
 		// 三倍石の反映
