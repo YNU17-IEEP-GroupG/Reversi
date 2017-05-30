@@ -15,11 +15,11 @@ public class OfflineDataDriver {
 		lOffline.setHardWin(2);
 		lOffline.setHardLose(3);
 		
-		System.out.printf("[弱い]勝敗:%d/%d, [普通]勝敗:%d/%d, [強い]勝敗:%d/%d\n",
+		System.out.printf("getEasyWin()/Lose():%d/%d, getNormalWin()/Lose():d/%d, getHardWin()/Lose():%d/%d\n",
 				lOffline.getEasyWin(), lOffline.getEasyLose(),
 				lOffline.getNormalWin(), lOffline.getNormalLose(),
 				lOffline.getHardWin(), lOffline.getHardLose());
-		System.out.printf("取得用配列:{{%d,%d},{%d,%d},{%d,%d}}",
+		System.out.printf("getWLLists():{{%d,%d},{%d,%d},{%d,%d}}",
 				lOffline.getWLLists()[0][0], lOffline.getWLLists()[0][1],
 				lOffline.getWLLists()[1][0], lOffline.getWLLists()[1][1],
 				lOffline.getWLLists()[2][0], lOffline.getWLLists()[2][1]);

@@ -27,16 +27,20 @@ public class UserDataDriver {
 		// テスト済み
 		lUser.setOfflines(new Offline[]{lOffline, new Offline(), new Offline(), new Offline()});
 		
-		System.out.printf("名前:%s\nオンライン勝敗:{%d/%d}\nアイコン設定:%d\n背景設定:%d\nアイテム使用回数:%d\n", 
+		System.out.printf("getUserName():%s\n"
+				+ "getOnlineWin()/Lose():{%d/%d}\n"
+				+ "getIcon():%d\n"
+				+ "getBackground():%d\n"
+				+ "getItem():%d\n", 
 				lUser.getUserName(),
 				lUser.getOnlineWin(), lUser.getOnlineLose(),
 				lUser.getIcon(),
 				lUser.getBackground(),
 				lUser.getItem());
-		System.out.printf("オフライン戦績α:{{%d,%d},{%d,%d},{%d,%d}}\n",
-				lOffline.getWLLists()[0][0], lOffline.getWLLists()[0][1],
-				lOffline.getWLLists()[1][0], lOffline.getWLLists()[1][1],
-				lOffline.getWLLists()[2][0], lOffline.getWLLists()[2][1]);
+		System.out.printf("getOfflines()[0]:{{%d,%d},{%d,%d},{%d,%d}}\n",
+				lUser.getOfflines()[0].getWLLists()[0][0], lUser.getOfflines()[0].getWLLists()[0][1],
+				lUser.getOfflines()[0].getWLLists()[1][0], lUser.getOfflines()[0].getWLLists()[1][1],
+				lUser.getOfflines()[0].getWLLists()[2][0], lUser.getOfflines()[0].getWLLists()[2][1]);
 	}
 
 }
