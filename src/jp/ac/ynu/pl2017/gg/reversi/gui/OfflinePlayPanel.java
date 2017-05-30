@@ -95,6 +95,7 @@ public class OfflinePlayPanel extends JPanel {
 						Offline tOffline = callback.getUserData().getOfflines()[tAiType];
 						if (tOffline.getWLLists()[tAiDiff - 1][0] <= 0) {
 							tPlayButton.setIcon(new ImageIcon("image/lock.png"));
+							tPlayButton.setDisabledIcon(new ImageIcon("image/lock.png"));
 							tPlayButton.setEnabled(false);
 						}
 					}

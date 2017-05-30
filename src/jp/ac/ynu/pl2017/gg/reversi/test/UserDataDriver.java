@@ -7,8 +7,9 @@ public class UserDataDriver {
 	
 	public static void main(String[] args) {
 		User lUser = new User();
-		System.out.println("UserDriver Start");
+		System.out.println("Set name=9s, id=43, online=5/3, icon=1, background=3, item=15");
 		lUser.setUserName("9s");
+		lUser.setId(43);
 		lUser.setOnlineWin(5);
 		lUser.setOnlineLose(3);
 		lUser.setBackground(3);
@@ -28,11 +29,13 @@ public class UserDataDriver {
 		lUser.setOfflines(new Offline[]{lOffline, new Offline(), new Offline(), new Offline()});
 		
 		System.out.printf("getUserName():%s\n"
+				+ "getId():%d\n"
 				+ "getOnlineWin()/Lose():{%d/%d}\n"
 				+ "getIcon():%d\n"
 				+ "getBackground():%d\n"
 				+ "getItem():%d\n", 
 				lUser.getUserName(),
+				lUser.getId(),
 				lUser.getOnlineWin(), lUser.getOnlineLose(),
 				lUser.getIcon(),
 				lUser.getBackground(),

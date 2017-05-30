@@ -8,6 +8,7 @@ public class OfflineDataDriver {
 		System.out.println("Offline Data Driver Start");
 		
 		Offline lOffline = new Offline();
+		System.out.println("Put data: Easy=7/0, Normal=4/2, Hard=2/3");
 		lOffline.setEasyWin(7);
 		lOffline.setEasyLose(0);
 		lOffline.setNormalWin(4);
@@ -15,7 +16,9 @@ public class OfflineDataDriver {
 		lOffline.setHardWin(2);
 		lOffline.setHardLose(3);
 		
-		System.out.printf("getEasyWin()/Lose():%d/%d, getNormalWin()/Lose():d/%d, getHardWin()/Lose():%d/%d\n",
+		System.out.printf("getEasyWin()/Lose():%d/%d,"
+				+ " getNormalWin()/Lose():d/%d,"
+				+ " getHardWin()/Lose():%d/%d\n",
 				lOffline.getEasyWin(), lOffline.getEasyLose(),
 				lOffline.getNormalWin(), lOffline.getNormalLose(),
 				lOffline.getHardWin(), lOffline.getHardLose());
