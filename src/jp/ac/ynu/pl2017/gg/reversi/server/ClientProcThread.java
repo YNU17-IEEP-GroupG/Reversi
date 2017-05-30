@@ -44,8 +44,6 @@ import static jp.ac.ynu.pl2017.gg.reversi.gui.Othello.ITEM_COUNT;
 class ClientProcThread extends Thread implements Serializable{
 	private int number;// 自分の番号
 	private Socket incoming;// 自分のソケット
-	private Socket Eincoming; // 対戦相手のソケット
-	// private InputStreamReader myIsr;
 	private InputStream myIs;
 	private OutputStream myOs;
 	private BufferedReader myIn;
@@ -78,18 +76,11 @@ class ClientProcThread extends Thread implements Serializable{
 		myOs = os;
 		myIn = new BufferedReader(new InputStreamReader(is));
 		myOut = new PrintWriter(os, true);
-		// myOis = new ObjectInputStream(is);
-		// myOos = new ObjectOutputStream(os);
 	}
 
 	public void run() {
 		try {
-			/*
-			 * myOut.println("Hello, client No." + number + "¥nコマンド一覧\n" +
-			 * "*******************************\n" +
-			 * "END:終了　MATCH:マッチング　CANCEL:キャンセル　WRITE:座標送信　READ:座標読み込み　TURN:ターン確認　r:更新\n"
-			 * + "*******************************");// 初回だけ呼ばれる
-			 */
+		
 			while (true) {
 				String firstCmd = myIn.readLine();
 				if (firstCmd.equals(LOGIN)) {
@@ -131,14 +122,12 @@ class ClientProcThread extends Thread implements Serializable{
 							+ "(" + myName + "), Messages: " + cmd);
 
 					if (cmd.equals(END)) {
-						// myOut.println("終了します");
 						break;
 					}
 
 					if (cmd.equals(MATCH)) {
 						System.out.println(myName + ": マッチング準備");
 
-						// myOut.println("対戦相手の名前を入力して下さい");
 						String enemyName = myIn.readLine();
 						if (!enemyName.equals(CANCEL)
 								&& !enemyName.equals(myName) && Access.exists(enemyName)) {// 自分の名前をいれたらキャンセルされる,また,存在しないユーザ名もキャンセル
@@ -149,8 +138,6 @@ class ClientProcThread extends Thread implements Serializable{
 							MatchMap.put(myName, myMatch);
 							System.out.println(myName + ": " + enemyName
 									+ "に対戦申し込み");
-							// myOut.println(enemyName
-							// + " に対戦を申し込みしました。しばらくお待ちください");
 
 							while (!battle) {// マッチング待ち
 
@@ -160,8 +147,6 @@ class ClientProcThread extends Thread implements Serializable{
 											.getEnemyName()).equals(myName)) { // 対戦相手が自分を指名しているかチェック
 										myRoom = (MatchMap.get(enemyName))
 												.getRoom();// 対戦相手のルーム番号を取得
-										// myOut.printf(enemyName
-										// + " とマッチングしました!　　あなたは");
 
 										battle = true;
 
@@ -173,20 +158,6 @@ class ClientProcThread extends Thread implements Serializable{
 								} else {// 先に接続しているので先手にする
 									turn = true;
 								}
-
-								/*
-								String matching = myIn.readLine();
-
-								if (matching != null) { // マッチングキャンセル
-									if (matching.equals("CANCEL")) {
-										MatchMap.remove(myName);
-										System.out.println(myName
-												+ ": マッチングキャンセル");
-										// myOut.println("キャンセルしました");
-										break;
-									}
-								}
-								*/
 
 							}// マッチング待ち終了
 
@@ -204,7 +175,6 @@ class ClientProcThread extends Thread implements Serializable{
 
 						} else {
 							System.out.println(myName + ": マッチングキャンセル");
-							// myOut.println("キャンセルしました");
 							myOut.println(FALSE);
 						}
 
@@ -228,19 +198,6 @@ class ClientProcThread extends Thread implements Serializable{
 									room++;// room番号をインクリメント
 									break;
 								}
-
-								/*
-								String matching = myIn.readLine();
-								if (matching != null) { // マッチングキャンセル
-									if (matching.equals("CANCEL")) {
-										randomList.remove(0);
-										System.out.println(myName
-												+ ": マッチングキャンセル");
-										// myOut.println("キャンセルしました");
-										break;
-									}
-								}
-								*/
 							}
 
 						} else {
@@ -268,13 +225,9 @@ class ClientProcThread extends Thread implements Serializable{
 							System.out.println(myName + ": 座標の更新(Current="+change[myRoom]+"%" + turn);
 
 							if (change[myRoom] == turn) {
-								// myOut.println(coordinate[myRoom]+
-								// " におきました");
+								
 								myOut.println(TRUE);
 
-								// myOut.println("座標を入力して下さい");
-//									coordinate[myRoom][0] = myIn.readLine();
-//									coordinate[myRoom][1] = myIn.readLine();
 								ObjectInputStream ois = new ObjectInputStream(myIs);
 								Item item = (Item)ois.readObject();
 								int[] pos = (int[]) ois.readObject();
@@ -292,11 +245,9 @@ class ClientProcThread extends Thread implements Serializable{
 
 								change[myRoom] = !change[myRoom];// ターンを切り替える
 							} else {
-								// myOut.println("相手のターンです");
 								myOut.println(FALSE);
 							}
 						} else {
-							// myOut.println("対局が始まってません");
 							myOut.println(FALSE);
 						}
 
@@ -307,9 +258,6 @@ class ClientProcThread extends Thread implements Serializable{
 						while (change[myRoom] != turn) {
 							Thread.sleep(500);
 						}
-
-//							myOut.println(coordinate[myRoom][0]);
-//							myOut.println(coordinate[myRoom][1]);
 						ObjectOutputStream oos = new ObjectOutputStream(myOs);
 						oos.writeObject(items[myRoom]);
 						oos.writeObject(items[myRoom].getPos());
@@ -318,10 +266,8 @@ class ClientProcThread extends Thread implements Serializable{
 
 					if (cmd.equals(TURN)) {// 自分のターンかどうかを確かめる
 						if (change[myRoom] == turn) {
-							// myOut.println("あなたのターンです");
 							myOut.println(TRUE);
 						} else {
-							// myOut.println("相手のターンです");
 							myOut.println(FALSE);
 						}
 					}
@@ -345,59 +291,46 @@ class ClientProcThread extends Thread implements Serializable{
 
 					if (cmd.equals(REMATCH)) {
 						if (rematch[myRoom] == 0) {// 相手が未応答
-							// myOut.println("再戦:1,終了:2");
 							rematch[myRoom] = Integer.parseInt(myIn
 									.readLine());
 
 							if (rematch[myRoom] == 1) {
-								// myOut.println("対戦相手を待っています");
+								System.out.println(myName+": 再戦申し込み");
 								while (true) {// 相手待ち
 
-									String cancel = myIn.readLine();
-									if (cancel.equals(CANCEL)) {
-										myOut.println("キャンセルしました");
-										rematch[myRoom] = 2;
-										break;
-									}
-
 									if (rematch[myRoom] == 2) {
-										// myOut.println("再戦が拒否されました");
 										myOut.println(FALSE);
 										break;
 									} else if (rematch[myRoom] == 3) {
-										// myOut.println("再戦を行います");
 										myOut.println(TRUE);
 										break;
 									}
 								}
 							} else if (rematch[myRoom] == 2) {
-								// myOut.println("終了します");
 								myOut.println(FALSE);
 							} else {
-								// myOut.println("不正な値です");
 								rematch[myRoom] = 0;
 							}
 						} else {// 相手が応答済
 							if (rematch[myRoom] == 2) {
-								// myOut.println("再戦が拒否されました");
 								rematch[myRoom] = Integer.parseInt(myIn
 										.readLine());
 								rematch[myRoom] = 0;
 								myOut.println(FALSE);
 
 							} else if (rematch[myRoom] == 1) {
-								// myOut.println("再戦:1,終了:2");
+								
 								rematch[myRoom] = Integer.parseInt(myIn
 										.readLine());
 								if (rematch[myRoom] == 1) {
-									// myOut.println("再戦を行います");
+									
 									myOut.println(TRUE);
 									rematch[myRoom] = 3;
 								} else if (rematch[myRoom] == 2) {
-									myOut.println("終了します");
+									myOut.println(FALSE);
 									rematch[myRoom] = 0;
 								} else {
-									myOut.println("不正な値です");
+									myOut.println(FALSE);
 								}
 							}
 						}
@@ -462,6 +395,7 @@ class ClientProcThread extends Thread implements Serializable{
 						back = dis.readInt();
 						if (Access.updateBack(myName, back)) {
 							myOut.println(TRUE);
+							System.out.println(myName+": 背景を設定しました");
 						} else {
 							myOut.println(FALSE);
 						}
@@ -473,6 +407,7 @@ class ClientProcThread extends Thread implements Serializable{
 						icon = dis.readInt();
 						if (Access.updateIcon(myName, icon)) {
 							myOut.println(TRUE);
+							System.out.println(myName+": アイコンを設定しました");
 						} else {
 							myOut.println(FALSE);
 						}
@@ -503,10 +438,10 @@ class ClientProcThread extends Thread implements Serializable{
 				}
 			}
 		} catch (Exception e) {
-			// ここにプログラムが到達するときは，接続が切れたとき
+			
 			System.out.println("Disconnect from client No." + number + "("
 					+ myName + ")");
-			Server.SetFlag(number, false);// 接続が切れたのでフラグを下げる
+			Server.SetFlag(number, false);
 		} finally {
 			Access.closeConnection();
 			if(MatchMap.containsKey(myName)){
