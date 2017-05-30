@@ -100,7 +100,9 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		// pack();
 
 		myTurn = !pMyTurn;
-		myStone = pMyTurn ? Stone.Black : Stone.White;
+		// よく考えたら必ず先攻から処理されるわけで,myTurnで判断する必要がない.
+		// 両サイドとも同じStoneで始めちゃうと,makeHintあたりでたぶん躓いたんだと思ふ.
+		myStone = Stone.White;
 		callback = pCallback;
 
 		selectedAI = pAi;
