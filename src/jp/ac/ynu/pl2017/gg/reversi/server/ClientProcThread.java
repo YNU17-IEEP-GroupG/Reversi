@@ -54,8 +54,9 @@ class ClientProcThread extends Thread implements Serializable{
 	private boolean battle = false;// 対局可能かどうか
 	private boolean turn = false;// true:先手/false:後手
 	private int myRoom = 0;
-
+	
 	public static final int MAX_ROOM = 20;
+	static boolean randomflag = false;
 	static int room = 0; // 対局が行われている数
 	static boolean[] change = new boolean[MAX_ROOM];
 	static Item[] items = new Item[MAX_ROOM];// アイテムオブジェクトを格納
@@ -189,21 +190,26 @@ class ClientProcThread extends Thread implements Serializable{
 							turn = true;
 							while (true) {
 
-								if (randomList.size() == 2) {
+								if (randomflag) {
 									enemyName = randomList.get(1);
 									randomList.remove(0);
 									randomList.remove(0);
-
+									System.out.println(myName + "OKOKOKOK");
 									myRoom = room;
 									room++;// room番号をインクリメント
+									
+									randomflag = false;
 									break;
 								}
+								
+								Thread.sleep(500);
 							}
 
 						} else {
 							myRoom = room;
-							enemyName = randomList.get(0);
 							randomList.add(myName);
+							enemyName = randomList.get(0);
+							randomflag = true;
 						}
 
 						battle = true;
