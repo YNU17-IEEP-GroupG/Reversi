@@ -31,6 +31,13 @@ public class OnlineDummyAI extends BaseAI {
 			case DROP:
 				pos = item.getPos();
 				callback.reflectDrop(new Point(pos[0], pos[1]));
+				// アニメーション反映までの待ち時間
+				try {
+					Thread.sleep(700);
+				}
+				catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				break;
 			case BAN:
 				pos = item.getPos();
