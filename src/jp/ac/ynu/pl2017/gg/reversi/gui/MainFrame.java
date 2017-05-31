@@ -215,7 +215,7 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 					String ePData[] = ((String) eData).split("/");
 					System.err.println("MATCH FOUND");
 					changePlayPanel(OnlineDummyAI.class, 0, ePData[0],
-							userData.getIcon(), 0, userData.getBackground(), Boolean.parseBoolean(ePData[1]));
+							userData.getIcon(), Integer.parseInt(ePData[2]), userData.getBackground(), Boolean.parseBoolean(ePData[1]));
 				} else {
 					JOptionPane.showMessageDialog(MainFrame.this, "マッチングできませんでした", "エラー", JOptionPane.ERROR_MESSAGE);
 				}
@@ -232,8 +232,8 @@ public class MainFrame extends JFrame implements TitlePanel.Transition {
 				} else {
 					data = ClientConnection.match(pON);
 				}
-//				int icon = ClientConnection.getUserData(data).getIcon();
-				return data;
+				int icon = ClientConnection.getUserData(data.split("/")[0]).getIcon();
+				return data + "/" + icon;
 			}
 		}.start();
 

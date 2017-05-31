@@ -191,9 +191,9 @@ public class ClientConnection implements Serializable {
 
 		try {
 			out.println(USER);// コマンドの送信
-			ObjectInputStream ois = new ObjectInputStream(is);
-
 			out.println(enemyName);// 情報の欲しいユーザ名を送信
+
+			ObjectInputStream ois = new ObjectInputStream(is);
 			user = (User) ois.readObject();//受け取り
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
@@ -426,69 +426,6 @@ public class ClientConnection implements Serializable {
 		return tResult;
 	}
 
-//	/**
-//	 * アイテムの使用を送信。使用しなかったら空のデータを送信する。
-//	 *
-//	 * @param pItemData
-//	 *            アイテムの効果データ
-//	 * @param pos
-//	 * 			  アイテムが効果を発揮した座標。最大数の3に合わせて必ず長さ6の配列にする
-//	 * 			  値が必要ないときには-1でも入れておく
-//	 * @return　通信可否
-//	 */
-//	public static boolean sendItemUse(Item pItemData, int[] pos) {
-//		boolean item = false;
-//
-//		try {
-//			out.println(ITEM_SEND);// コマンドの送信
-//			ObjectOutputStream oos = new ObjectOutputStream(os);
-//			oos.writeObject(pItemData);// アイテムの送信
-//			DataOutputStream dos = new DataOutputStream(os);
-//			// 必ずposの長さは6にする
-//			for (int i = 0; i < 6; i++) {
-//				dos.writeInt(pos[i]);// 座標の送信
-//			}
-//
-//
-//			if ((br.readLine()).equals(TRUE)) {
-//				item = true;
-//			} else {
-//				item = false;
-//			}
-//
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//
-//		return item;
-//	}
-//
-//	/**
-//	 * アイテムの使用を受信
-//	 *
-//	 * @return {アイテムの種類(アイテムが影響を及ぼした座標を含む)}からなる.Item.NONEの場合,相手はアイテムを使用していない
-//	 */
-//	public static Item receiveItemUse() {
-//		Item itemData = null;
-//		int[] pos = new int[6];
-//
-//		try {
-//			out.println(ITEM_RECEIVE);// コマンドの送信
-//			ObjectInputStream ois = new ObjectInputStream(is);
-//			itemData = (Item) ois.readObject();// アイテムの受信
-//			DataInputStream dis = new DataInputStream(is);
-//			// 読み込む長さは必ず6
-//			for (int i = 0; i < 6; i++) {
-//				pos[i] = dis.readInt();// 座標の受信
-//			}
-//			itemData.setPos(pos);
-//		} catch (IOException | ClassNotFoundException e) {
-//			e.printStackTrace();
-//		}
-//
-//		return itemData;
-//	}
-
 	public static boolean updateResultCPU(int type, int difficulty, int judgement) {
 		boolean result = false;
 		try {
@@ -630,37 +567,4 @@ public class ClientConnection implements Serializable {
 		}
 		return exist;
 	}
-
-	// TODO 座標どう送る?
-
-	/*
-	 * public static void send(int coordinate){
-	 * 
-	 * try { OutputStream os = theSocket.getOutputStream(); DataOutputStream dos
-	 * = new DataOutputStream(os);
-	 * 
-	 * InputStream is = theSocket.getInputStream(); DataInputStream dis = new
-	 * DataInputStream(is);
-	 * 
-	 * 
-	 * dos.writeInt(coordinate);
-	 * 
-	 * } catch (IOException e) { e.printStackTrace(); }
-	 * 
-	 * }
-	 * 
-	 * public static int recieve(){ int Ecoordinate=0;
-	 * 
-	 * try{ OutputStream os = theSocket.getOutputStream(); DataOutputStream dos
-	 * = new DataOutputStream(os);
-	 * 
-	 * InputStream is = theSocket.getInputStream(); DataInputStream dis = new
-	 * DataInputStream(is);
-	 * 
-	 * 
-	 * Ecoordinate = dis.readInt(); } catch (IOException e) {
-	 * e.printStackTrace(); }
-	 * 
-	 * return Ecoordinate; }
-	 */
 }
