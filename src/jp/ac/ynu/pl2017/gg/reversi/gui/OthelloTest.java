@@ -101,15 +101,15 @@ public class OthelloTest {
 	@Test
 	public void testActionPerformed() throws Exception {
 		// sourceがnullだと例外を吐くので適当に指定
-		ActionEvent event = new ActionEvent(new Object(), 10000, "2,4");
+		ActionEvent event = new ActionEvent(new Object(), 10000, "5,4");
 		Stone[][] newBoard = BoardHelper.cloneBoard(defaultBoard);
-		newBoard[2][4] = Black;
-		newBoard[3][4] = Black;
+		newBoard[5][4] = White;
+		newBoard[4][4] = White;
 
         Class c = othello.getClass();
         Field fld1 = c.getDeclaredField("buttonBoard");
         fld1.setAccessible(true);
-        ((JButton[][])(fld1.get(othello)))[2][4].doClick();
+        ((JButton[][])(fld1.get(othello)))[5][4].doClick();
 
         Field fld2 = c.getDeclaredField("board");
         fld2.setAccessible(true);
@@ -136,7 +136,7 @@ public class OthelloTest {
 		Class c = othello.getClass();
         Field fld1 = c.getDeclaredField("buttonBoard");
         fld1.setAccessible(true);
-        ((JButton[][])(fld1.get(othello)))[2][4].doClick();
+        ((JButton[][])(fld1.get(othello)))[5][4].doClick();
 
         Field fld2 = c.getDeclaredField("triplePoints");
         fld2.setAccessible(true);
@@ -187,7 +187,7 @@ public class OthelloTest {
 
 	@Test
 	public void testReflectTriple() throws Exception {
-		Point triplePoint = new Point(2, 4);
+		Point triplePoint = new Point(5, 4);
 
 		othello.reflectTriple();
         Class c = othello.getClass();
