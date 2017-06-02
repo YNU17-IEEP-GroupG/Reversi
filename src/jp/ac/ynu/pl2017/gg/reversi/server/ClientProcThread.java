@@ -229,6 +229,10 @@ class ClientProcThread extends Thread implements Serializable{
 					if (cmd.equals(WRITE)) {
 						if (battle) {
 							System.out.println(myName + ": 座標の更新(Current="+change[myRoom]+"%" + turn);
+							boolean disconnect = false;
+							if (items[myRoom] != null) {
+								disconnect = items[myRoom].getPos().equals(new int[] {-1, -1});
+							}
 
 							if (change[myRoom] == turn) {
 								
@@ -240,7 +244,9 @@ class ClientProcThread extends Thread implements Serializable{
 								int[] coordinate = (int[]) ois.readObject();
 								item.setPos(pos);
 								item.setCoordinate(coordinate);
-								items[myRoom] = item;
+
+								if (!disconnect)
+									items[myRoom] = item;
 
 
 								System.out.println(myName + " が "
@@ -249,7 +255,8 @@ class ClientProcThread extends Thread implements Serializable{
 
 								myOut.println();
 
-								change[myRoom] = !change[myRoom];// ターンを切り替える
+								if (!disconnect)
+									change[myRoom] = !change[myRoom];// ターンを切り替える
 							} else {
 								myOut.println(FALSE);
 							}
