@@ -448,6 +448,12 @@ class ClientProcThread extends Thread implements Serializable{
 			System.out.println("Disconnect from client No." + number + "("
 					+ myName + ")");
 			Server.SetFlag(number, false);
+			if (change[myRoom]) {
+				Item item = Item.NONE;
+				item.setCoordinate(new int[] {-1, -1});
+				items[myRoom] = item;
+				change[myRoom] = false;
+			}
 		} finally {
 			Access.closeConnection();
 			if(MatchMap.containsKey(myName)){

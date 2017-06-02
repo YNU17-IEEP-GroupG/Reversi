@@ -77,6 +77,7 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 	private boolean				 tripleFlag	  = false;
 	private List<Point>			 triplePoints	= new ArrayList<>();
 	private Item                 usedItem           = Item.NONE;
+	private boolean				 disconnectedFlag = false;
 
 	private Class<? extends BaseAI>			selectedAI;
 	private int						selectedDifficulty;
@@ -348,6 +349,12 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 				((OnlineDummyAI)ai).setCallback(this);
 			}
 			ai.think();
+			// オンラインの対戦相手の切断が確認された時
+			if (ai.getRow() == -1 && ai.getColumn() == -1) {
+				disconnectedFlag = true;
+				gameOver();
+				return;
+			}
 			putStone(ai.getRow(), ai.getColumn(), myStone);
 		} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException |
 				IllegalArgumentException | InvocationTargetException e) {
@@ -480,6 +487,8 @@ public class Othello extends JPanel implements ActionListener, ThreadFinishListe
 		else {
 			ret = white > black ? 1 : 0;
 		}
+		if (disconnectedFlag)
+			ret = -1;
 		System.out.println(ret);
 		// PlayPanelにコールバック
 		callback.onGameOver(ret);

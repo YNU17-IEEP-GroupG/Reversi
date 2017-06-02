@@ -292,7 +292,7 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback, BasicP
 		}
 		else {
 			// オンライン戦は事前に負け数を増やしているので、勝ちの処理だけでいい
-			if (result == 1) {
+			if (result == 1 || result == -1) {
 				ClientConnection.updateResultOnline(1, 1);
 				ClientConnection.updateResultOnline(0, -1);
 				User user = callback.getUserData();
@@ -315,15 +315,17 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback, BasicP
 		JPanel lWLWrapper = new JPanel();
 		lWLWrapper.setPreferredSize(new Dimension(400, 55));
 		
-		JLabel lWLabel = new JLabel(new ImageIcon("image/res" + (result == 1 ? "win": "lose") + ".png"));
+		JLabel lWLabel = new JLabel(new ImageIcon("image/res" + ((result == 1 || result == -1) ? "win": "lose") + ".png"));
 		lWLabel.setFont(new Font("Serif", Font.BOLD, 36));
 		lWLWrapper.add(lWLabel);
 		
 		JPanel lBWWrapper = new JPanel();
 		lBWWrapper.setPreferredSize(new Dimension(400, 25));
-		
-		JLabel lBWLabel = new JLabel(
-				String.format("黒:%2d, 白:%2d", lOthelloPanel.countStone(Stone.Black), lOthelloPanel.countStone(Stone.White)));
+		JLabel lBWLabel = new JLabel();
+		if (result == -1)
+			lBWLabel.setText("相手の通信が切断されました");
+		else
+			lBWLabel = new JLabel(String.format("黒:%2d, 白:%2d", lOthelloPanel.countStone(Stone.Black), lOthelloPanel.countStone(Stone.White)));
 		lBWWrapper.add(lBWLabel);
 		
 		JButton lResultOK = new JButton("OK");
@@ -336,8 +338,11 @@ public class PlayPanel extends BackgroundedPanel implements PlayCallback, BasicP
 		lResultDialog.setVisible(true);
 		
 		// 再戦確認
-		int lDialogResult = JOptionPane.showConfirmDialog(this, "再戦しますか？", "Retry?",
-				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+		int lDialogResult = JOptionPane.NO_OPTION;
+		if (result != -1) {
+			lDialogResult = JOptionPane.showConfirmDialog(this, "再戦しますか？", "Retry?",
+					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+		}
 		try {
 			player.stop();
 		} catch (BasicPlayerException e) {
